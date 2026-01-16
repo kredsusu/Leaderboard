@@ -341,7 +341,7 @@ function loop(){
   hudScore.textContent = "Pont: " + score;
 
   // dino-szerű folyamatos gyorsulás + plafon
-  speed = Math.min(11, 4 + score / 500);
+  speed = Math.min(7, 3.2 + score / 1000);
 
   // fizika
   vy -= GRAVITY;
@@ -396,3 +396,4 @@ overOverlay.style.display = "none";
 
 </body>
 </html>
+
