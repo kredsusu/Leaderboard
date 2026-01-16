@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-<title>Flakon leaderboard </title>
+<title>Majom Jump</title>
 <style>
 body{
   margin:0;
@@ -66,11 +66,9 @@ body{
 .rightCol{display:flex;flex-direction:column;gap:10px;align-items:flex-start;}
 .hud{width:680px;display:flex;justify-content:space-between;gap:10px;font-weight:800;text-shadow:2px 2px 6px #000;}
 .pill{background:rgba(0,0,0,.35);padding:8px 12px;border-radius:999px;white-space:nowrap;}
-.pill strong{font-weight:900}
 
 #game{
   width:680px;height:380px;
-
   background-image: url("jatekhatter.jpg");
   background-size: cover;
   background-repeat: repeat-x;
@@ -87,6 +85,7 @@ body{
   position:absolute;
   left:60px;
   width:90px;
+  bottom:30px;
   user-select:none;
   -webkit-user-drag:none;
   transform-origin:bottom;
@@ -98,7 +97,7 @@ body{
   -webkit-user-drag:none;
 }
 
-/* ===== Overlay (Start/GameOver) ===== */
+/* Start/GameOver overlay */
 .overlay{
   position:absolute;inset:0;
   background:rgba(0,0,0,.55);
@@ -126,35 +125,13 @@ body{
   cursor:pointer;font-weight:900;
 }
 .hint{margin-top:10px;font-size:12px;opacity:.9;}
-.small{font-size:12px;opacity:.85;margin-top:6px;}
 
-/* ===== MOBILE (telefon) ===== */
 @media (max-width: 1100px) {
-  body{
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    padding: 20px 12px;
-  }
-  .leaderboard{
-    width: min(600px, 92vw);
-    padding: 22px;
-  }
-  .rightCol{
-    width: min(680px, 92vw);
-    align-items: center;
-  }
-  .hud{
-    width: 100%;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  #game{
-    width: 100%;
-    height: 52vw;
-    max-height: 420px;
-    min-height: 300px;
-  }
+  body{flex-direction:column;align-items:center;gap:20px;padding:20px 12px;}
+  .leaderboard{width:min(600px,92vw);padding:22px;}
+  .rightCol{width:min(680px,92vw);align-items:center;}
+  .hud{width:100%;flex-wrap:wrap;justify-content:center;}
+  #game{width:100%;height:52vw;max-height:420px;min-height:300px;}
 }
 </style>
 </head>
@@ -205,7 +182,6 @@ body{
   <div id="game">
     <img id="player" src="majomka.png" alt="player">
 
-    <!-- START -->
     <div id="startOverlay" class="overlay">
       <div class="modal">
         <h3>Majom Jump</h3>
@@ -213,13 +189,10 @@ body{
         <input id="nameInput" maxlength="18" placeholder="Pl. On3door">
         <br>
         <button id="startBtn">START</button>
-        <div class="hint">Ugrás: Space / ▲ / tap</div>
-        <div class="hint">Gugolás: S</div>
-        <div class="small">Tipp: a lelógó INDA alá gugolni kell 😉</div>
+        <div class="hint">Ugrás: Space / tap</div>
       </div>
     </div>
 
-    <!-- GAME OVER -->
     <div id="overOverlay" class="overlay" style="display:none;">
       <div class="modal">
         <h3>Game Over</h3>
@@ -228,64 +201,22 @@ body{
       </div>
     </div>
 
-    <!-- MOBIL VEZÉRLÉS -->
-    <div id="mobileControls" style="
-      position:absolute; left:0; right:0; bottom:12px;
-      display:none; justify-content:space-between;
-      padding:0 12px; gap:12px; pointer-events:none;">
-      <button id="btnJump" style="
-        pointer-events:auto; flex:1;
-        padding:14px 0; border-radius:16px;
-        border:none; font-weight:900; font-size:16px;
-        background:rgba(0,0,0,0.45); color:#fff;">
-        UGRÁS
-      </button>
-      <button id="btnCrouch" style="
-        pointer-events:auto; width:38%;
-        padding:14px 0; border-radius:16px;
-        border:none; font-weight:900; font-size:16px;
-        background:rgba(0,0,0,0.45); color:#fff;">
-        GUGOL
-      </button>
-    </div>
-
   </div>
 </div>
 
 <script>
-/* ====== Sebesség (játszhatóbb) ====== */
-const BASE_SPEED = 3.2;
-const SPEED_DIV  = 1100;
-const MAX_SPEED  = 7.2;
+/* ===== Sebesség (Chrome dínó feeling) ===== */
+const BASE_SPEED = 3.0;
+const SPEED_DIV  = 1200;
+const MAX_SPEED  = 7.0;
 
-/* ====== Fizika ====== */
+/* ===== Fizika ===== */
 const GRAVITY = 0.9;
 const JUMP_V  = 19;
 
-/* ====== API ====== */
+/* ===== API ===== */
 const API_URL = "https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
 
-/* ====== INDA (beépített SVG, nincs külön fájl) ====== */
-const VINES_SVG = encodeURIComponent(`
-<svg xmlns="http://www.w3.org/2000/svg" width="80" height="140" viewBox="0 0 80 140">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#36a84a"/>
-      <stop offset="1" stop-color="#0f5a24"/>
-    </linearGradient>
-  </defs>
-  <path d="M40 0 C33 25, 54 40, 40 62 C26 84, 54 102, 40 140" stroke="url(#g)" stroke-width="7" fill="none" stroke-linecap="round"/>
-  <path d="M22 0 C18 22, 32 34, 22 52 C12 72, 30 94, 22 138" stroke="url(#g)" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.95"/>
-  <path d="M58 0 C62 20, 50 38, 58 58 C66 78, 50 100, 58 138" stroke="url(#g)" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.95"/>
-  <path d="M28 28 C18 22,14 34,24 40 C34 46,40 32,28 28Z" fill="#2ed063" opacity="0.95"/>
-  <path d="M52 44 C62 38,66 50,56 56 C46 62,42 48,52 44Z" fill="#2ed063" opacity="0.95"/>
-  <path d="M26 78 C16 72,12 84,22 90 C32 96,38 82,26 78Z" fill="#1fb454" opacity="0.95"/>
-  <path d="M54 96 C64 90,68 102,58 108 C48 114,44 100,54 96Z" fill="#1fb454" opacity="0.95"/>
-</svg>
-`);
-const VINES_SRC = "data:image/svg+xml;charset=UTF-8," + VINES_SVG;
-
-/* ====== DOM ====== */
 const game = document.getElementById("game");
 const playerEl = document.getElementById("player");
 
@@ -300,14 +231,9 @@ const nameInput    = document.getElementById("nameInput");
 const startBtn     = document.getElementById("startBtn");
 const restartBtn   = document.getElementById("restartBtn");
 
-const mobileControls = document.getElementById("mobileControls");
-const btnJump = document.getElementById("btnJump");
-const btnCrouch = document.getElementById("btnCrouch");
-
-/* ====== rekord ====== */
+/* rekord */
 let bestName = "-";
 let bestScore = 0;
-
 async function loadBest(){
   try{
     const r = await fetch(API_URL, { method:"GET" });
@@ -330,52 +256,29 @@ async function trySaveBest(playerName, score){
 }
 loadBest();
 
-/* ====== JÁTÉK ====== */
+/* játék */
 let running=false, alive=false;
 let playerName="-";
 let score=0, speed=4;
 let y=0, vy=0;
-let crouch=false;
-
 let obstacles=[];
 let dist=0, nextSpawnDist=0;
 let bgX=0;
 
-let lastType="banana";
-
-function setPlayerBottom(){ playerEl.style.bottom = (30 + y) + "px"; }
-function setCrouch(v){
-  crouch = v;
-  playerEl.style.transform = crouch ? "scaleY(0.75)" : "scaleY(1)";
-}
-
-function updateMobileUI(){
-  const isMobile = window.matchMedia("(max-width: 1100px)").matches;
-  mobileControls.style.display = isMobile ? "flex" : "none";
-}
-window.addEventListener("resize", updateMobileUI);
-updateMobileUI();
-
-btnJump.addEventListener("pointerdown", (e)=>{ e.preventDefault(); jump(); });
-btnCrouch.addEventListener("pointerdown", (e)=>{ e.preventDefault(); setCrouch(true); });
-btnCrouch.addEventListener("pointerup", (e)=>{ e.preventDefault(); setCrouch(false); });
-btnCrouch.addEventListener("pointercancel", ()=> setCrouch(false));
-btnCrouch.addEventListener("pointerleave", ()=> setCrouch(false));
-
 function resetGame(){
-  score=0; speed=4; y=0; vy=0; dist=0; bgX=0;
-  game.style.backgroundPosition = "0px 0px";
+  score=0; y=0; vy=0; dist=0; bgX=0;
+  game.style.backgroundPosition="0px 0px";
   obstacles.forEach(o=>o.el.remove());
   obstacles=[];
-  nextSpawnDist = 380 + Math.random()*260;
-  hudScore.textContent = "Pont: 0";
-  setCrouch(false);
-  setPlayerBottom();
+  nextSpawnDist = 420 + Math.random()*260;
+  hudScore.textContent="Pont: 0";
+  playerEl.style.bottom="30px";
 }
 
 function startGame(){
   playerName = (nameInput.value || "").trim() || "Névtelen";
   hudPlayer.textContent = "Játékos: " + playerName;
+
   resetGame();
   alive=true; running=true;
   startOverlay.style.display="none";
@@ -390,71 +293,62 @@ function jump(){
 
 startBtn.addEventListener("click", startGame);
 restartBtn.addEventListener("click", startGame);
-nameInput.addEventListener("keydown", (e)=>{ if(e.key==="Enter") startGame(); });
+nameInput.addEventListener("keydown",(e)=>{ if(e.key==="Enter") startGame(); });
 
-/* ===== Billentyűk =====
-   Ugrás: Space / ArrowUp
-   Gugolás: S (KeyS)  ✅
-*/
 document.addEventListener("keydown",(e)=>{
-  if (e.code === "KeyS") setCrouch(true);      // ✅ S = gugolás
   if (e.code === "Space" || e.code === "ArrowUp"){
     e.preventDefault();
     jump();
   }
 });
-document.addEventListener("keyup",(e)=>{
-  if (e.code === "KeyS") setCrouch(false);
-});
-
-game.addEventListener("pointerdown", ()=> {
+game.addEventListener("pointerdown",()=>{
   if (startOverlay.style.display !== "none") return;
   if (overOverlay.style.display !== "none") return;
   jump();
 });
 
-/* ===== Akadályok ===== */
+/* akadály */
 function spawnObstacle(){
+  const el = document.createElement("img");
+  el.className="obstacle";
+
+  // 3 típus: banana / stone / bird
   const r = Math.random();
   let type;
-  if (r < 0.55) type = "banana";
-  else if (r < 0.82) type = "stone";
-  else type = "vines";          // ✅ felső akadály: inda
-
-  // ne legyen nehéz-nehez egymás után
-  if ((type === "stone" || type === "vines") && (lastType === "stone" || lastType === "vines")) {
-    type = "banana";
-  }
-  lastType = type;
-
-  const el = document.createElement("img");
-  el.className = "obstacle";
-
-  let w, h, bottomPx;
+  if (r < 0.50) type = "banana";
+  else if (r < 0.80) type = "stone";
+  else type = "bird";
 
   if (type === "banana"){
-    el.src="banana.png"; w=52; h=52; bottomPx=30;
+    el.src = "banana.png";
+    el.style.width = "52px";
+    el.style.height = "52px";
+    el.style.bottom = "30px";
   } else if (type === "stone"){
-    el.src="stone.png"; w=46; h=46; bottomPx=30;
+    el.src = "stone.png";
+    el.style.width = "46px";
+    el.style.height = "46px";
+    el.style.bottom = "30px";
   } else {
-    // ✅ INDA: úgy lóg le, hogy állva beleérsz, S-sel gugolva nem
-    el.src = VINES_SRC;
-    w = 72;
-    h = 140;
-    bottomPx = 70;  // <<< EZ A KULCS: lejjebb van, ezért KELL gugolni
+    el.src = "madar.gif";              // ✅ a te GIF-ed
+    el.style.width = "60px";
+    el.style.height = "40px";
+    el.style.bottom = "140px";         // ✅ repülési magasság
   }
 
-  el.style.width = w+"px";
-  el.style.height = h+"px";
-  el.style.bottom = bottomPx+"px";
-  el.style.left = game.clientWidth+"px";
+  el.style.left = game.clientWidth + "px";
   game.appendChild(el);
 
-  const mult = 0.95 + Math.random()*0.16; // játszható szórás
+  const w = parseInt(el.style.width, 10);
+  const h = parseInt(el.style.height, 10);
+  const bottom = parseInt(el.style.bottom, 10);
 
-  obstacles.push({ el, x: game.clientWidth, w, h, type, bottom: bottomPx, mult });
+  const mult = 0.92 + Math.random()*0.18;
 
-  const gapMin = 420, gapMax = 700;
+  obstacles.push({ el, x: game.clientWidth, w, h, bottom, mult, type });
+
+  // gap: nem lehetetlen, de változó
+  const gapMin=460, gapMax=760;
   nextSpawnDist = dist + (gapMin + Math.random()*(gapMax-gapMin));
 }
 
@@ -474,7 +368,7 @@ function loop(){
   if (!running || !alive) return;
 
   score++;
-  hudScore.textContent = "Pont: " + score;
+  hudScore.textContent="Pont: "+score;
 
   speed = Math.min(MAX_SPEED, BASE_SPEED + score / SPEED_DIV);
 
@@ -485,36 +379,29 @@ function loop(){
   vy -= GRAVITY;
   y += vy;
   if (y < 0){ y=0; vy=0; }
-  setPlayerBottom();
+  playerEl.style.bottom = (30 + y) + "px";
 
   if (dist >= nextSpawnDist) spawnObstacle();
 
-  /* ===== Player hitbox (földtől mért koordinátában) =====
-     ÁLLVA: magasabb (fej is)
-     GUGOLVA: alacsony, ezért fér el az inda alatt
-  */
+  // player hitbox
   const baseY = (30 + y);
-  const playerBox = crouch
-    ? { x: 60 + 16, y: baseY + 8,  w: 90 - 32, h: 34 }  // gugolva kicsi
-    : { x: 60 + 16, y: baseY + 14, w: 90 - 32, h: 66 }; // állva magas (ütközik indába)
+  const playerBox = { x: 60 + 16, y: baseY + 14, w: 90 - 32, h: 66 };
 
-  for (let i = obstacles.length - 1; i >= 0; i--){
+  for (let i=obstacles.length-1;i>=0;i--){
     const o = obstacles[i];
-
     o.x -= speed * o.mult;
-    o.el.style.left = o.x + "px";
+    o.el.style.left = o.x+"px";
 
-    if (o.x < -160){
+    if (o.x < -140){
       o.el.remove();
       obstacles.splice(i,1);
       continue;
     }
 
-    // ✅ INDA hitbox legyen szigorúbb (kelljen gugolni)
-    let shrink;
-    if (o.type === "vines") shrink = 10;
-    else if (o.type === "stone") shrink = 22;
-    else shrink = 14;
+    // hitbox shrink
+    let shrink = 14;
+    if (o.type==="stone") shrink = 22;
+    if (o.type==="bird")  shrink = 10;
 
     const obsBox = {
       x: o.x + shrink,
@@ -524,6 +411,7 @@ function loop(){
     };
 
     if (rectsOverlap(playerBox, obsBox)){
+      // később ide jön a hang
       gameOver();
       return;
     }
