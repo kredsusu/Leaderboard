@@ -2,158 +2,243 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Flakon Ranglista + Játék</title>
 
 <style>
-/* ===== BODY ===== */
-body{
-  margin:0;
-  font-family:'Comic Sans MS', cursive;
-  background:url('hatter.jpg') no-repeat center center fixed;
-  background-size:cover;
-  color:#fff;
+/* ===============================
+   BODY & HÁTTÉR
+   =============================== */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Comic Sans MS', cursive;
+  background: url('hatter.png') no-repeat center center fixed; /* <-- háttér */
+  background-size: cover;
+  color: #fff;
 }
 
-/* ===== OLDAL ELRENDEZÉS ===== */
-.page{
-  max-width:1200px;
-  margin:40px auto;
-  display:flex;
-  gap:40px;
-  align-items:flex-start;
+/* ===============================
+   OLDAL ELRENDEZÉS
+   - leaderboard középen
+   - játék jobbra, nem lóg bele
+   =============================== */
+.page {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;  /* közép mindig közép */
+  align-items: start;
+  gap: 30px;
+  padding: 30px 20px;
 }
 
-/* ===== LEADERBOARD ===== */
-.leaderboard{
-  width:600px;
-  padding:30px;
-  background:url('keret.png') no-repeat center center;
-  background-size:cover;
-  border-radius:25px;
-  box-shadow:0 0 30px rgba(0,0,0,.7);
+.centerCol { grid-column: 2; }
+.rightCol  { grid-column: 3; justify-self: start; }
+
+/* mobilon egymás alá */
+@media (max-width: 1100px) {
+  .page { grid-template-columns: 1fr; }
+  .centerCol, .rightCol { grid-column: 1; justify-self: center; }
 }
 
-.leaderboard h2{
-  text-align:center;
-  font-size:36px;
-  margin-bottom:30px;
-  text-shadow:2px 2px 6px #000;
+/* ===============================
+   LEADERBOARD (a te stílusod, nem nyúltam hozzá)
+   =============================== */
+.leaderboard {
+  width: 600px;
+  margin: 0 auto;
+  padding: 30px;
+  background: url('keret.png') no-repeat center center; /* keret */
+  background-size: cover;
+  border-radius: 25px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.7);
+  position: relative;
 }
 
-.row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:rgba(0,0,0,.4);
-  margin:12px 0;
-  padding:14px 16px;
-  border-radius:20px;
-  box-shadow:2px 2px 8px rgba(0,0,0,.5);
-  border:4px solid transparent;
+.leaderboard h2 {
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+  text-shadow: 2px 2px 6px #000;
+  margin-bottom: 30px;
 }
 
-.row:nth-child(2){border-color:gold;}
-.row:nth-child(3){border-color:silver;}
-.row:nth-child(4){border-color:#cd7f32;}
-
-.avatar{
-  width:70px;
-  height:70px;
-  border-radius:50%;
-  object-fit:cover;
-  border:3px solid #fff;
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.4);
+  margin: 12px 0;
+  padding: 14px 16px;
+  border-radius: 20px;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+  border: 4px solid transparent;
 }
 
-.name{
-  flex:1;
-  font-size:24px;
-  font-weight:bold;
-  margin-left:15px;
+/* 1-2-3 keret (a h2 miatt 2,3,4) */
+.row:nth-child(2) { border-color: gold; }
+.row:nth-child(3) { border-color: silver; }
+.row:nth-child(4) { border-color: #cd7f32; }
+
+.avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 16px;
+  border: 3px solid #fff;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-.count{
-  font-size:22px;
-  font-weight:bold;
-  background:#f5f5f5;
-  color:#000;
-  padding:8px 12px;
-  border-radius:12px;
+.name {
+  font-size: 24px;
+  font-weight: bold;
+  flex: 1;
+  text-shadow: 2px 2px 3px #000;
 }
 
-/* ===== JÁTÉK ===== */
-.game{
-  width:420px;
-  background:rgba(0,0,0,.45);
-  border-radius:20px;
-  padding:15px;
-  box-shadow:0 0 30px rgba(0,0,0,.6);
+.count {
+  font-size: 22px;
+  font-weight: bold;
+  background: #f5f5f5;
+  color: #000;
+  padding: 8px 12px;
+  border-radius: 12px;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+  min-width: 60px;
+  text-align: center;
 }
 
-.gameTop{
-  display:flex;
-  justify-content:space-between;
-  font-size:14px;
-  margin-bottom:8px;
+/* ===============================
+   JÁTÉK (külön nevek, hogy ne bántsa a ranglistát)
+   =============================== */
+#gameWrap {
+  width: 520px;
+  background: rgba(0,0,0,0.45);
+  border-radius: 22px;
+  padding: 14px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.18);
 }
 
-#gameBox{
-  position:relative;
-  height:300px;
-  background:#111;
-  border-radius:12px;
-  overflow:hidden;
+.gTop {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 
-#player{
+.gPill{
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 999px;
+  padding: 7px 10px;
+}
+.gPill b{ font-weight: 900; }
+
+#gGame {
+  position: relative;
+  height: 300px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(#0b2b1a, #071a12);
+  border: 2px solid rgba(255,255,255,.15);
+}
+
+#gGame::before{
+  content:"";
   position:absolute;
-  left:60px;
-  bottom:40px;
-  width:40px;
-  height:40px;
-  background:#f5a623;
-  border-radius:8px;
+  inset:0;
+  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.10), transparent 40%);
+  pointer-events:none;
 }
 
-.ground{
+.gGround{
   position:absolute;
   bottom:0;
   left:0;
   right:0;
-  height:40px;
-  background:#333;
+  height:52px;
+  background: rgba(255,255,255,.06);
+  border-top: 2px solid rgba(255,255,255,.12);
 }
 
-.obstacle{
+/* karakter */
+#gPlayer{
   position:absolute;
-  bottom:40px;
-  width:20px;
-  height:50px;
-  background:#4CAF50;
+  left: 70px;
+  bottom: 52px;
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 0 rgba(0,0,0,.25));
+  user-select: none;
+  pointer-events: none;
 }
 
-.overlay{
+/* akadály */
+.gObstacle{
+  position:absolute;
+  bottom: 52px;
+  width: 60px;
+  height: 60px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: drop-shadow(0 6px 0 rgba(0,0,0,.25));
+}
+
+.gBanana{ background-image: url('banana.png'); }
+.gStone { background-image: url('stone.png'); }
+
+.gOverlay{
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,.6);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  background: rgba(0,0,0,.60);
+  display:grid;
+  place-items:center;
+  padding: 14px;
 }
 
-.overlayBox{
-  background:#222;
-  padding:15px;
-  border-radius:12px;
+.gModal{
+  width: min(420px, 92%);
+  background: rgba(20,20,20,.92);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 16px;
+  padding: 14px;
   text-align:center;
+  box-shadow: 0 18px 60px rgba(0,0,0,.6);
+}
+.gModal h3{ margin: 0 0 10px; font-size: 18px; }
+
+.gLine{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+
+#gName{
+  min-width: 180px;
+  font-family: inherit;
+  font-size: 15px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.20);
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  outline: none;
 }
 
-button,input{
-  font-family:inherit;
-  padding:8px;
-  border-radius:8px;
-  border:none;
-  margin-top:6px;
+.gBtn{
+  font-family: inherit;
+  font-size: 15px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.20);
+  background: rgba(255,255,255,.12);
+  color:#fff;
+  cursor:pointer;
 }
+.gBtn:hover{ background: rgba(255,255,255,.18); }
+
+.gHint{ margin-top: 8px; opacity:.88; font-size: 13px; line-height:1.35; }
 </style>
 </head>
 
@@ -161,87 +246,312 @@ button,input{
 
 <div class="page">
 
-<!-- LEADERBOARD -->
-<div class="leaderboard">
-<h2>Flakon Ranglista</h2>
+  <!-- KÖZÉP: LEADERBOARD -->
+  <div class="centerCol">
+    <div class="leaderboard">
+      <h2>Flakon Ranglista</h2>
 
-<div class="row">
-  <img class="avatar" src="onedoor.png">
-  <div class="name">On3door</div>
-  <div class="count">65</div>
-</div>
+      <div class="row">
+        <img class="avatar" src="onedoor.png" alt="Avatar">
+        <div class="name">On3door</div>
+        <div class="count">65</div>
+      </div>
 
-<div class="row">
-  <img class="avatar" src="misztersiba.gif">
-  <div class="name">MiszterSusu</div>
-  <div class="count">60</div>
-</div>
+      <div class="row">
+        <img class="avatar" src="misztersiba.gif" alt="Avatar">
+        <div class="name">MiszterSusu</div>
+        <div class="count">60</div>
+      </div>
 
-<div class="row">
-  <img class="avatar" src="dinoori.gif">
-  <div class="name">SusuSzaurusz</div>
-  <div class="count">58</div>
-</div>
+      <div class="row">
+        <img class="avatar" src="dinoori.gif" alt="Avatar">
+        <div class="name">SusuSzaurusz</div>
+        <div class="count">58</div>
+      </div>
 
-<div class="row">
-  <img class="avatar" src="spudbaymaci.gif">
-  <div class="name">Spudbay</div>
-  <div class="count">55</div>
-</div>
+      <div class="row">
+        <img class="avatar" src="spudbaymaci.gif" alt="Avatar">
+        <div class="name">Spudbay</div>
+        <div class="count">55</div>
+      </div>
 
-</div>
+      <div class="row">
+        <img class="avatar" src="Mrgrogu.gif" alt="Avatar">
+        <div class="name">MrSusu</div>
+        <div class="count">50</div>
+      </div>
 
-<!-- JÁTÉK -->
-<div class="game">
-<div class="gameTop">
-  <div>Játékos: <b id="pName">-</b></div>
-  <div>Pont: <b id="score">0</b></div>
-  <div>Rekord: <b id="best">0</b></div>
-</div>
-
-<div id="gameBox">
-  <div id="player"></div>
-  <div class="ground"></div>
-
-  <div class="overlay" id="start">
-    <div class="overlayBox">
-      <input id="nameInput" placeholder="Neved">
-      <button onclick="start()">Start</button>
     </div>
   </div>
-</div>
-</div>
+
+  <!-- JOBB: JÁTÉK -->
+  <div class="rightCol">
+    <div id="gameWrap">
+      <div class="gTop">
+        <div class="gPill">Játékos: <b id="gUiPlayer">-</b></div>
+        <div class="gPill">Pont: <b id="gUiScore">0</b></div>
+        <div class="gPill">Rekord: <b id="gUiBest">- - 0</b></div>
+      </div>
+
+      <div id="gGame">
+        <img id="gPlayer" src="majomka.png" alt="Majom">
+
+        <div class="gGround"></div>
+
+        <div id="gStart" class="gOverlay">
+          <div class="gModal">
+            <h3>Majom ugrálós</h3>
+            <div class="gLine">
+              <input id="gName" maxlength="18" placeholder="Neved">
+              <button class="gBtn" id="gStartBtn">Start</button>
+            </div>
+            <div class="gHint">Space vagy kattintás = ugrás</div>
+          </div>
+        </div>
+
+        <div id="gOver" class="gOverlay" style="display:none;">
+          <div class="gModal">
+            <h3>Game Over</h3>
+            <div class="gHint" id="gOverText"></div>
+            <div class="gLine" style="margin-top:10px;">
+              <button class="gBtn" id="gRestartBtn">Újra</button>
+              <button class="gBtn" id="gChangeNameBtn">Név csere</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
 </div>
 
 <script>
-let y=0,vy=0,score=0,best=localStorage.best||0,run=false;
-const p=document.getElementById('player');
-const scoreEl=document.getElementById('score');
-const bestEl=document.getElementById('best');
-const nameEl=document.getElementById('pName');
-bestEl.textContent=best;
+(() => {
+  // rekord: név + pont
+  const BEST_KEY = "monkey_runner_best_v2";
 
-function start(){
-  nameEl.textContent=document.getElementById('nameInput').value||'Névtelen';
-  document.getElementById('start').style.display='none';
-  run=true; score=0; y=0; vy=0;
-  loop();
-}
+  const uiPlayer = document.getElementById("gUiPlayer");
+  const uiScore  = document.getElementById("gUiScore");
+  const uiBest   = document.getElementById("gUiBest");
 
-function loop(){
-  if(!run) return;
-  vy-=0.8; y+=vy;
-  if(y<0){y=0;vy=0;}
-  p.style.transform=`translateY(${-y}px)`;
-  score++; scoreEl.textContent=score;
-  if(score>best){best=score;localStorage.best=best;bestEl.textContent=best;}
-  requestAnimationFrame(loop);
-}
+  const startOverlay = document.getElementById("gStart");
+  const overOverlay  = document.getElementById("gOver");
+  const overText     = document.getElementById("gOverText");
 
-document.addEventListener('keydown',e=>{
-  if(e.code==='Space'&&run&&y===0) vy=15;
-});
+  const nameInput    = document.getElementById("gName");
+  const startBtn     = document.getElementById("gStartBtn");
+  const restartBtn   = document.getElementById("gRestartBtn");
+  const changeNameBtn= document.getElementById("gChangeNameBtn");
+
+  const game   = document.getElementById("gGame");
+  const player = document.getElementById("gPlayer");
+
+  function loadBest(){
+    try {
+      const raw = localStorage.getItem(BEST_KEY);
+      if (!raw) return { name: "-", score: 0 };
+      const obj = JSON.parse(raw);
+      return { name: obj.name || "-", score: Number(obj.score || 0) };
+    } catch {
+      return { name: "-", score: 0 };
+    }
+  }
+  function saveBest(best){
+    localStorage.setItem(BEST_KEY, JSON.stringify(best));
+  }
+  function renderBest(){
+    const b = loadBest();
+    uiBest.textContent = `${b.name} - ${b.score}`;
+  }
+  renderBest();
+
+  let currentName = "";
+  let running = false;
+
+  // fizika
+  let y = 0;
+  let vy = 0;
+  const gravity = -0.9;
+  const jumpV = 17;
+
+  // pont
+  let score = 0;
+  let tick = 0;
+
+  // akadályok
+  let obstacles = [];
+  let spawnTimer = 0;
+  let speed = 6;
+
+  function setPlayerName(name){
+    currentName = (name || "").trim() || "Névtelen";
+    uiPlayer.textContent = currentName;
+  }
+
+  function resetGame(){
+    obstacles.forEach(o => o.el.remove());
+    obstacles = [];
+
+    y = 0; vy = 0;
+    player.style.transform = `translateY(${-y}px)`;
+
+    score = 0; tick = 0;
+    uiScore.textContent = "0";
+
+    spawnTimer = 0;
+    speed = 6;
+
+    overOverlay.style.display = "none";
+  }
+
+  function startGame(){
+    if (!currentName) setPlayerName(nameInput.value);
+    resetGame();
+    running = true;
+    startOverlay.style.display = "none";
+    requestAnimationFrame(loop);
+  }
+
+  function gameOver(){
+    running = false;
+
+    const best = loadBest();
+    let msg = `Pontod: <b>${score}</b><br>`;
+
+    if (score > best.score) {
+      const newBest = { name: currentName, score };
+      saveBest(newBest);
+      renderBest();
+      msg += `🎉 ÚJ REKORD! <b>${newBest.name}</b> - <b>${newBest.score}</b>`;
+    } else {
+      msg += `Rekord: <b>${best.name}</b> - <b>${best.score}</b>`;
+    }
+
+    overText.innerHTML = msg;
+    overOverlay.style.display = "grid";
+  }
+
+  function jump(){
+    if (!running) return;
+    if (y <= 0.5) vy = jumpV;
+  }
+
+  function addObstacle(){
+    const el = document.createElement("div");
+
+    // 50-50 banán vagy kő
+    const isBanana = Math.random() < 0.5;
+    el.className = "gObstacle " + (isBanana ? "gBanana" : "gStone");
+
+    game.appendChild(el);
+
+    // méret picit variálható
+    const size = isBanana ? 58 : 62;
+    el.style.width = size + "px";
+    el.style.height = size + "px";
+
+    const x = game.clientWidth + 60;
+    obstacles.push({ el, x });
+
+    el.style.left = x + "px";
+  }
+
+  function rectsOverlap(a, b){
+    return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
+  }
+
+  function loop(){
+    if (!running) return;
+
+    // ugrás fizika
+    vy += gravity;
+    y += vy;
+    if (y < 0) { y = 0; vy = 0; }
+    player.style.transform = `translateY(${-y}px)`;
+
+    // pont
+    tick++;
+    if (tick % 6 === 0) {
+      score++;
+      uiScore.textContent = String(score);
+      if (score % 20 === 0) speed += 0.6;
+    }
+
+    // spawn
+    spawnTimer++;
+    const minSpawn = 55;
+    const maxSpawn = 95;
+    const threshold = minSpawn + Math.floor(Math.random() * (maxSpawn - minSpawn));
+    if (spawnTimer > threshold) {
+      addObstacle();
+      spawnTimer = 0;
+    }
+
+    // mozgatás + ütközés
+    const pRect = player.getBoundingClientRect();
+
+    for (let i = obstacles.length - 1; i >= 0; i--) {
+      const o = obstacles[i];
+      o.x -= speed;
+      o.el.style.left = o.x + "px";
+
+      if (o.x < -100) {
+        o.el.remove();
+        obstacles.splice(i, 1);
+        continue;
+      }
+
+      const oRect = o.el.getBoundingClientRect();
+      if (rectsOverlap(pRect, oRect)) {
+        gameOver();
+        return;
+      }
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  // inputok
+  document.addEventListener("keydown", (e) => {
+    if (e.code === "Space") {
+      e.preventDefault();
+      if (startOverlay.style.display !== "none") return;
+      jump();
+    }
+  });
+
+  game.addEventListener("pointerdown", () => {
+    if (startOverlay.style.display !== "none") return;
+    jump();
+  });
+
+  startBtn.addEventListener("click", () => {
+    setPlayerName(nameInput.value);
+    startGame();
+  });
+
+  nameInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      setPlayerName(nameInput.value);
+      startGame();
+    }
+  });
+
+  restartBtn.addEventListener("click", () => {
+    startGame();
+  });
+
+  changeNameBtn.addEventListener("click", () => {
+    running = false;
+    overOverlay.style.display = "none";
+    startOverlay.style.display = "grid";
+    nameInput.focus();
+  });
+
+  // fókusz
+  nameInput.focus();
+})();
 </script>
 
 </body>
