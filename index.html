@@ -16,7 +16,7 @@ body {
   padding-top: 40px;
 }
 
-/* LEADERBOARD (AZ EREDETI DIZÁJNOD) */
+/* LEADERBOARD (5 SOR, AHOGY KÉRTED) */
 .leaderboard {
   width: 600px;
   padding: 30px;
@@ -25,7 +25,6 @@ body {
   color: white;
   box-shadow: 0 0 30px rgba(0,0,0,0.7);
 }
-
 .leaderboard h2 {
   text-align: center;
   font-size: 36px;
@@ -33,7 +32,6 @@ body {
   text-shadow: 2px 2px 6px #000;
   margin-bottom: 30px;
 }
-
 .row {
   display: flex;
   align-items: center;
@@ -46,8 +44,6 @@ body {
   box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
   border: 4px solid transparent;
 }
-
-/* 1-2-3 keret színek (fejléc az 1. child, ezért 2/3/4) */
 .row:nth-child(2) { border-color: gold; }
 .row:nth-child(3) { border-color: silver; }
 .row:nth-child(4) { border-color: #cd7f32; }
@@ -61,14 +57,12 @@ body {
   border: 3px solid #fff;
   box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
-
 .name {
   font-size: 24px;
   font-weight: bold;
   flex: 1;
   text-shadow: 2px 2px 3px #000;
 }
-
 .count {
   font-size: 22px;
   font-weight: bold;
@@ -81,7 +75,7 @@ body {
   text-align: center;
 }
 
-/* JÁTÉK */
+/* JOBB OLDAL (JÁTÉK) */
 .rightCol {
   display: flex;
   flex-direction: column;
@@ -98,7 +92,6 @@ body {
   color: #fff;
   text-shadow: 2px 2px 6px #000;
 }
-
 .hud .pill {
   background: rgba(0,0,0,.35);
   padding: 8px 12px;
@@ -117,7 +110,6 @@ body {
 
 #player {
   position: absolute;
-  bottom: 30px;
   left: 60px;
   width: 90px;
   user-select: none;
@@ -130,12 +122,57 @@ body {
   user-select: none;
   -webkit-user-drag: none;
 }
+
+/* START / GAME OVER overlay */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: grid;
+  place-items: center;
+  padding: 14px;
+}
+.modal {
+  background: rgba(0,0,0,0.80);
+  padding: 16px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.55);
+  color: white;
+  width: min(420px, 92%);
+}
+.modal h3 {
+  margin: 0 0 10px 0;
+  font-size: 22px;
+}
+.modal input {
+  width: 90%;
+  max-width: 280px;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+.modal button {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+.hint {
+  margin-top: 10px;
+  font-size: 12px;
+  opacity: 0.9;
+}
 </style>
 </head>
 
 <body>
 
-<!-- LEADERBOARD: 5 SOR, AHOGY AZ EREDETIBEN -->
+<!-- LEADERBOARD (NEM VÁLTOZTATVA) -->
 <div class="leaderboard">
   <h2>Flakon Ranglista</h2>
 
@@ -180,6 +217,29 @@ body {
 
   <div id="game">
     <img id="player" src="majomka.png" alt="player">
+
+    <!-- START OVERLAY -->
+    <div id="startOverlay" class="overlay">
+      <div class="modal">
+        <h3>Majom Jump</h3>
+        <div>Írd be a neved:</div>
+        <input id="nameInput" maxlength="18" placeholder="Pl. On3door">
+        <br>
+        <button id="startBtn">START</button>
+        <div class="hint">Ugrás: Space / ▲ / kattintás</div>
+      </div>
+    </div>
+
+    <!-- GAME OVER OVERLAY -->
+    <div id="overOverlay" class="overlay" style="display:none;">
+      <div class="modal">
+        <h3>Game Over</h3>
+        <div id="overText">Pont: 0</div>
+        <button id="restartBtn">Újra</button>
+        <div class="hint">Ugrás: Space / ▲ / kattintás</div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -193,16 +253,18 @@ const hudPlayer = document.getElementById("hudPlayer");
 const hudScore  = document.getElementById("hudScore");
 const hudBest   = document.getElementById("hudBest");
 
-let playerName = localStorage.getItem("mj_name") || "";
-if (!playerName) {
-  playerName = prompt("Add meg a neved:") || "Névtelen";
-  localStorage.setItem("mj_name", playerName);
-}
-hudPlayer.textContent = "Játékos: " + playerName;
+const startOverlay = document.getElementById("startOverlay");
+const overOverlay  = document.getElementById("overOverlay");
+const overText     = document.getElementById("overText");
+const nameInput    = document.getElementById("nameInput");
+const startBtn     = document.getElementById("startBtn");
+const restartBtn   = document.getElementById("restartBtn");
 
+let playerName = "";
 let bestName = "-";
 let bestScore = 0;
 
+/* ====== globális rekord betöltés/mentés ====== */
 async function loadBest() {
   try {
     const r = await fetch(API_URL, { method: "GET" });
@@ -229,18 +291,28 @@ async function trySaveBest(score) {
 
 loadBest();
 
-/* ====== JÁTÉK LOGIKA (DINO-SZERŰ) ====== */
+/* ====== JÁTÉK ====== */
+let running = false;
+let alive = true;
+
 let score = 0;
 let speed = 4;
 
 let y = 0;
 let vy = 0;
 const GRAVITY = 0.9;
-const JUMP_V = 16.5;
+const JUMP_V = 19;                 // ✅ nagyobb ugrás
 
 let obstacles = [];
 let nextSpawnAt = 0;
-let alive = true;
+
+function showStart() {
+  running = false;
+  startOverlay.style.display = "grid";
+  overOverlay.style.display = "none";
+  hudPlayer.textContent = "Játékos: -";
+  hudScore.textContent = "Pont: 0";
+}
 
 function resetGame() {
   score = 0;
@@ -256,22 +328,42 @@ function resetGame() {
 
   hudScore.textContent = "Pont: 0";
   playerEl.style.bottom = (30 + y) + "px";
+}
 
+function startGame() {
+  playerName = (nameInput.value || "").trim() || "Névtelen";
+  hudPlayer.textContent = "Játékos: " + playerName;
+
+  startOverlay.style.display = "none";
+  overOverlay.style.display = "none";
+
+  resetGame();
+  running = true;
   requestAnimationFrame(loop);
 }
 
 function jump() {
-  if (!alive) return;
+  if (!running || !alive) return;
   if (y <= 0) vy = JUMP_V;
 }
 
 document.addEventListener("keydown", (e) => {
   if (e.code === "Space" || e.code === "ArrowUp") {
     e.preventDefault();
+    if (startOverlay.style.display !== "none") return;
     jump();
   }
 });
-game.addEventListener("pointerdown", jump);
+game.addEventListener("pointerdown", () => {
+  if (startOverlay.style.display !== "none") return;
+  jump();
+});
+
+startBtn.addEventListener("click", startGame);
+nameInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") startGame();
+});
+restartBtn.addEventListener("click", startGame);
 
 function spawnObstacle() {
   const isBanana = Math.random() < 0.5;
@@ -281,11 +373,16 @@ function spawnObstacle() {
 
   const size = isBanana ? 52 : 46;
   el.style.width = size + "px";
-
   el.style.left = game.clientWidth + "px";
   game.appendChild(el);
 
-  obstacles.push({ el, x: game.clientWidth, w: size, h: size, type: isBanana ? "banana" : "stone" });
+  obstacles.push({
+    el,
+    x: game.clientWidth,
+    w: size,
+    h: size,
+    type: isBanana ? "banana" : "stone"
+  });
 
   nextSpawnAt = score + 80 + Math.floor(Math.random() * 140);
 }
@@ -294,27 +391,47 @@ function rectsOverlap(a, b) {
   return (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y);
 }
 
+function gameOver() {
+  alive = false;
+  running = false;
+
+  overText.innerHTML = `Pont: <b>${score}</b>`;
+
+  // ha jobb a globális rekordnál, akkor feltoljuk
+  if (score > bestScore) {
+    trySaveBest(score);
+  } else {
+    // csak frissítjük, hogy mindig ugyanazt lássa mindenki
+    loadBest();
+  }
+
+  overOverlay.style.display = "grid";
+}
+
 function loop() {
-  if (!alive) return;
+  if (!running || !alive) return;
 
   score++;
   hudScore.textContent = "Pont: " + score;
 
-  // DINO-SZERŰ FOKOZATOS GYORSULÁS (plafonnal)
+  // ✅ Chrome dino jellegű folyamatos gyorsulás (plafonnal)
   speed = Math.min(11, 4 + score / 500);
 
+  // ugrás fizika
   vy -= GRAVITY;
   y += vy;
   if (y < 0) { y = 0; vy = 0; }
   playerEl.style.bottom = (30 + y) + "px";
 
+  // spawn random
   if (score >= nextSpawnAt) spawnObstacle();
 
+  // ✅ hitbox javítás: kisebb játékos hitbox (fair)
   const playerBox = {
-    x: 60 + 12,
-    y: (30 + y) + 12,
-    w: 90 - 24,
-    h: 90 - 24
+    x: 60 + 18,
+    y: (30 + y) + 18,
+    w: 90 - 36,
+    h: 90 - 36
   };
 
   for (let i = obstacles.length - 1; i >= 0; i--) {
@@ -328,16 +445,17 @@ function loop() {
       continue;
     }
 
-    const shrink = o.type === "stone" ? 16 : 10;
-    const obsBox = { x: o.x + shrink, y: 30 + shrink, w: o.w - shrink * 2, h: o.h - shrink * 2 };
+    // ✅ akadály hitbox shrink (kő nagyobb shrink -> fair)
+    const shrink = o.type === "stone" ? 22 : 14;
+    const obsBox = {
+      x: o.x + shrink,
+      y: 30 + shrink,
+      w: o.w - shrink * 2,
+      h: o.h - shrink * 2
+    };
 
     if (rectsOverlap(playerBox, obsBox)) {
-      alive = false;
-      if (score > bestScore) trySaveBest(score);
-      setTimeout(() => {
-        alert("Game Over! Pont: " + score);
-        resetGame();
-      }, 10);
+      gameOver();
       return;
     }
   }
@@ -345,7 +463,8 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
-resetGame();
+// induláskor csak a start overlay látszik
+showStart();
 </script>
 
 </body>
