@@ -70,7 +70,13 @@ body{
 
 #game{
   width:680px;height:380px;
-  background:url("jatekhatter.jpg") center/cover no-repeat;
+
+  /* FIX: jatekhatter.jpg + mozgó háttér */
+  background-image: url("jatekhatter.jpg");
+  background-size: cover;
+  background-repeat: repeat-x;
+  background-position: 0px 0px;
+
   border-radius:20px;
   position:relative;
   overflow:hidden;
@@ -248,11 +254,12 @@ body{
 </div>
 
 <script>
-/* ====== ÁLLÍTSD ITT, HA KELL ====== */
-const BASE_SPEED = 3.5;
-const SPEED_DIV  = 800;
-const MAX_SPEED  = 8;
+/* ====== Sebesség (játszhatóbb) ====== */
+const BASE_SPEED = 3.2;
+const SPEED_DIV  = 1100;  // lassabban gyorsul
+const MAX_SPEED  = 7.2;   // plafon
 
+/* ====== Fizika ====== */
 const GRAVITY = 0.9;
 const JUMP_V  = 19;
 
@@ -303,7 +310,6 @@ async function trySaveBest(playerName, score){
   } catch {}
   await loadBest();
 }
-
 loadBest();
 
 /* ====== JÁTÉK ÁLLAPOT ====== */
@@ -320,34 +326,20 @@ let vy = 0;
 let crouch = false;
 
 let obstacles = [];
-let nextSpawnDist = 0;
 let dist = 0;
+let nextSpawnDist = 0;
 
 let bgX = 0;
+
+let lastType = "banana"; // spawn védelem
 
 function setPlayerBottom(){
   playerEl.style.bottom = (30 + y) + "px";
 }
-setPlayerBottom();
-
 function setCrouch(v){
   crouch = v;
   playerEl.style.transform = crouch ? "scaleY(0.75)" : "scaleY(1)";
 }
-
-/* mobil UI */
-function updateMobileUI(){
-  const isMobile = window.matchMedia("(max-width: 1100px)").matches;
-  mobileControls.style.display = isMobile ? "flex" : "none";
-}
-window.addEventListener("resize", updateMobileUI);
-updateMobileUI();
-
-btnJump.addEventListener("pointerdown", (e) => { e.preventDefault(); jump(); });
-btnCrouch.addEventListener("pointerdown", (e) => { e.preventDefault(); setCrouch(true); });
-btnCrouch.addEventListener("pointerup", (e) => { e.preventDefault(); setCrouch(false); });
-btnCrouch.addEventListener("pointercancel", () => setCrouch(false));
-btnCrouch.addEventListener("pointerleave", () => setCrouch(false));
 
 function resetGame(){
   score = 0;
@@ -361,7 +353,8 @@ function resetGame(){
   obstacles.forEach(o=>o.el.remove());
   obstacles = [];
 
-  nextSpawnDist = 220 + Math.random()*200;
+  // játszható kezdő rés
+  nextSpawnDist = 320 + Math.random()*220;
 
   hudScore.textContent = "Pont: 0";
   setCrouch(false);
@@ -387,6 +380,20 @@ function jump(){
   if (y <= 0) vy = JUMP_V;
 }
 
+/* ===== MOBILE UI ===== */
+function updateMobileUI(){
+  const isMobile = window.matchMedia("(max-width: 1100px)").matches;
+  mobileControls.style.display = isMobile ? "flex" : "none";
+}
+window.addEventListener("resize", updateMobileUI);
+updateMobileUI();
+
+btnJump.addEventListener("pointerdown", (e)=>{ e.preventDefault(); jump(); });
+btnCrouch.addEventListener("pointerdown", (e)=>{ e.preventDefault(); setCrouch(true); });
+btnCrouch.addEventListener("pointerup", (e)=>{ e.preventDefault(); setCrouch(false); });
+btnCrouch.addEventListener("pointercancel", ()=> setCrouch(false));
+btnCrouch.addEventListener("pointerleave", ()=> setCrouch(false));
+
 /* INPUT */
 startBtn.addEventListener("click", startGame);
 restartBtn.addEventListener("click", startGame);
@@ -394,19 +401,19 @@ nameInput.addEventListener("keydown", (e)=>{ if(e.key==="Enter") startGame(); })
 
 document.addEventListener("keydown",(e)=>{
   if(e.code==="ArrowDown") setCrouch(true);
-
   if(e.code==="Space" || e.code==="ArrowUp"){
     e.preventDefault();
     jump();
   }
 });
-
 document.addEventListener("keyup",(e)=>{
   if(e.code==="ArrowDown") setCrouch(false);
 });
 
-game.addEventListener("pointerdown", () => {
+/* tap a pályán csak játék közben ugorjon */
+game.addEventListener("pointerdown", ()=> {
   if (startOverlay.style.display !== "none") return;
+  if (overOverlay.style.display !== "none") return;
   jump();
 });
 
@@ -414,9 +421,15 @@ game.addEventListener("pointerdown", () => {
 function spawnObstacle(){
   const r = Math.random();
   let type;
-  if (r < 0.45) type = "banana";
-  else if (r < 0.80) type = "stone";
+  if (r < 0.50) type = "banana";
+  else if (r < 0.82) type = "stone";
   else type = "stone_fly";
+
+  // ne legyen kő-kő egymás után
+  if ((type === "stone" || type === "stone_fly") && (lastType === "stone" || lastType === "stone_fly")) {
+    type = "banana";
+  }
+  lastType = type;
 
   const el = document.createElement("img");
   el.className = "obstacle";
@@ -427,13 +440,15 @@ function spawnObstacle(){
   const size = isBanana ? 52 : 46;
   el.style.width = size + "px";
 
-  const bottomPx = (type === "stone_fly") ? 120 : 30;
+  // FIX: felső kő tényleg “arcban” legyen -> gugolni kell
+  const bottomPx = (type === "stone_fly") ? 150 : 30;
   el.style.bottom = bottomPx + "px";
 
   el.style.left = game.clientWidth + "px";
   game.appendChild(el);
 
-  const mult = 0.85 + Math.random()*0.40; // változó sebesség
+  // változó sebesség, de kisebb szórással (játszható)
+  const mult = 0.92 + Math.random()*0.22; // 0.92 - 1.14
 
   obstacles.push({
     el,
@@ -445,8 +460,9 @@ function spawnObstacle(){
     mult
   });
 
-  const gapMin = 240;
-  const gapMax = 420;
+  // FIX: játszható gap
+  const gapMin = 320;
+  const gapMax = 520;
   nextSpawnDist = dist + (gapMin + Math.random()*(gapMax-gapMin));
 }
 
@@ -461,11 +477,8 @@ function gameOver(){
   overText.innerHTML = `Pont: <b>${score}</b>`;
   overOverlay.style.display = "grid";
 
-  if (score > bestScore) {
-    trySaveBest(playerName, score);
-  } else {
-    loadBest();
-  }
+  if (score > bestScore) trySaveBest(playerName, score);
+  else loadBest();
 }
 
 function loop(){
@@ -474,6 +487,7 @@ function loop(){
   score++;
   hudScore.textContent = "Pont: " + score;
 
+  // sebesség görbe
   speed = Math.min(MAX_SPEED, BASE_SPEED + score / SPEED_DIV);
 
   // mozgó háttér
@@ -487,10 +501,12 @@ function loop(){
   if (y < 0){ y = 0; vy = 0; }
   setPlayerBottom();
 
+  // spawn
   if (dist >= nextSpawnDist) spawnObstacle();
 
+  // player hitbox (gugolásnál alacsony)
   const playerBox = crouch
-    ? { x: 60 + 20, y: (30 + y) + 42, w: 90 - 40, h: 90 - 62 }
+    ? { x: 60 + 18, y: (30 + y) + 55, w: 90 - 36, h: 90 - 70 }
     : { x: 60 + 18, y: (30 + y) + 18, w: 90 - 36, h: 90 - 36 };
 
   for (let i = obstacles.length - 1; i >= 0; i--){
@@ -499,14 +515,17 @@ function loop(){
     o.x -= speed * o.mult;
     o.el.style.left = o.x + "px";
 
-    if (o.x < -90){
+    if (o.x < -100){
       o.el.remove();
       obstacles.splice(i,1);
       continue;
     }
 
-    const isStone = (o.type === "stone" || o.type === "stone_fly");
-    const shrink = isStone ? 22 : 14;
+    // FIX: felső kő legyen engedékenyebb
+    let shrink;
+    if (o.type === "stone_fly") shrink = 28;
+    else if (o.type === "stone") shrink = 22;
+    else shrink = 14;
 
     const obsBox = {
       x: o.x + shrink,
