@@ -2,200 +2,264 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>flakon leaderboard – V2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<title>Majom Jump</title>
 <style>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:url("hatter.jpg") center/cover no-repeat fixed;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  gap:60px;
+  padding-top:40px;
+  color:#fff;
+}
+
+/* ===== Leaderboard (5 sor, eredeti) ===== */
+.leaderboard{
+  width:600px;
+  padding:30px;
+  background:url("keret.png") center/cover no-repeat;
+  border-radius:25px;
+  box-shadow:0 0 30px rgba(0,0,0,.7);
+}
+.leaderboard h2{
+  text-align:center;
+  font-size:36px;
+  font-weight:800;
+  text-shadow:2px 2px 6px #000;
+  margin:0 0 30px 0;
+}
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  background:rgba(0,0,0,.4);
+  padding:14px 16px;
+  border-radius:20px;
+  margin:12px 0;
+  box-shadow:2px 2px 8px rgba(0,0,0,.5);
+  border:4px solid transparent;
+}
+.row:nth-child(2){border-color:gold;}
+.row:nth-child(3){border-color:silver;}
+.row:nth-child(4){border-color:#cd7f32;}
+
+.avatar{
+  width:70px;height:70px;border-radius:50%;
+  object-fit:cover;border:3px solid #fff;
+  box-shadow:2px 2px 4px rgba(0,0,0,.5);
+}
+.name{font-size:24px;font-weight:800;flex:1;text-shadow:2px 2px 3px #000;}
+.count{
+  font-size:22px;font-weight:800;
+  background:#f5f5f5;color:#000;
+  padding:8px 12px;border-radius:12px;
+  min-width:60px;text-align:center;
+  box-shadow:2px 2px 4px rgba(0,0,0,.4);
+}
+
+/* ===== Jobb oldal: HUD + Game ===== */
+.rightCol{display:flex;flex-direction:column;gap:10px;align-items:flex-start;}
+.hud{width:680px;display:flex;justify-content:space-between;gap:10px;font-weight:800;text-shadow:2px 2px 6px #000;}
+.pill{background:rgba(0,0,0,.35);padding:8px 12px;border-radius:999px;white-space:nowrap;}
+.pill strong{font-weight:900}
+
+#game{
+  width:680px;height:380px;
+  background:url("jatekhatter.jpg") center/cover no-repeat;
+  border-radius:20px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 0 20px rgba(0,0,0,.6);
+  touch-action: manipulation;
+}
+
+#player{
+  position:absolute;
+  left:60px;
+  width:90px;
+  user-select:none;
+  -webkit-user-drag:none;
+  transform-origin:bottom;
+}
+
+.obstacle{
+  position:absolute;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+
+/* ===== Overlay (Start/GameOver) ===== */
+.overlay{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,.55);
+  display:grid;place-items:center;
+  padding:14px;
+}
+.modal{
+  background:rgba(0,0,0,.82);
+  padding:16px 18px;
+  border-radius:14px;
+  width:min(440px,92%);
+  box-shadow:0 12px 40px rgba(0,0,0,.55);
+  text-align:center;
+}
+.modal h3{margin:0 0 10px 0;font-size:22px;}
+.modal input{
+  width:90%;max-width:280px;
+  padding:10px;border-radius:10px;border:none;
+  outline:none;font-size:16px;
+}
+.modal button{
+  margin-top:10px;
+  padding:10px 14px;
+  border-radius:10px;border:none;
+  cursor:pointer;font-weight:900;
+}
+.hint{margin-top:10px;font-size:12px;opacity:.9;}
+.small{font-size:12px;opacity:.85;margin-top:6px;}
+
+/* ===== MOBILE (telefon) ===== */
+@media (max-width: 1100px) {
   body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:url("hatter.jpg") center/cover no-repeat fixed;
-    display:flex;
-    justify-content:center;
-    align-items:flex-start;
-    gap:60px;
-    padding-top:40px;
-    color:#fff;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 12px;
   }
-
-  /* ===== Leaderboard (5 sor, eredeti) ===== */
   .leaderboard{
-    width:600px;
-    padding:30px;
-    background:url("keret.png") center/cover no-repeat;
-    border-radius:25px;
-    box-shadow:0 0 30px rgba(0,0,0,.7);
+    width: min(600px, 92vw);
+    padding: 22px;
   }
-  .leaderboard h2{
-    text-align:center;
-    font-size:36px;
-    font-weight:800;
-    text-shadow:2px 2px 6px #000;
-    margin:0 0 30px 0;
+  .rightCol{
+    width: min(680px, 92vw);
+    align-items: center;
   }
-  .row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:15px;
-    background:rgba(0,0,0,.4);
-    padding:14px 16px;
-    border-radius:20px;
-    margin:12px 0;
-    box-shadow:2px 2px 8px rgba(0,0,0,.5);
-    border:4px solid transparent;
+  .hud{
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
   }
-  .row:nth-child(2){border-color:gold;}
-  .row:nth-child(3){border-color:silver;}
-  .row:nth-child(4){border-color:#cd7f32;}
-
-  .avatar{
-    width:70px;height:70px;border-radius:50%;
-    object-fit:cover;border:3px solid #fff;
-    box-shadow:2px 2px 4px rgba(0,0,0,.5);
-  }
-  .name{font-size:24px;font-weight:800;flex:1;text-shadow:2px 2px 3px #000;}
-  .count{
-    font-size:22px;font-weight:800;
-    background:#f5f5f5;color:#000;
-    padding:8px 12px;border-radius:12px;
-    min-width:60px;text-align:center;
-    box-shadow:2px 2px 4px rgba(0,0,0,.4);
-  }
-
-  /* ===== Jobb oldal: HUD + Game ===== */
-  .rightCol{display:flex;flex-direction:column;gap:10px;align-items:flex-start;}
-  .hud{width:680px;display:flex;justify-content:space-between;gap:10px;font-weight:800;text-shadow:2px 2px 6px #000;}
-  .pill{background:rgba(0,0,0,.35);padding:8px 12px;border-radius:999px;white-space:nowrap;}
-  .pill strong{font-weight:900}
-
   #game{
-    width:680px;height:380px;
-    background:url("jatekhatter.jpg") center/cover no-repeat;
-    border-radius:20px;
-    position:relative;
-    overflow:hidden;
-    box-shadow:0 0 20px rgba(0,0,0,.6);
+    width: 100%;
+    height: 52vw;
+    max-height: 420px;
+    min-height: 300px;
   }
-  #player{
-    position:absolute;
-    left:60px;
-    width:90px;
-    user-select:none;
-    -webkit-user-drag:none;
-  }
-  .obstacle{
-    position:absolute;
-    bottom:30px;
-    user-select:none;
-    -webkit-user-drag:none;
-  }
-
-  /* ===== Overlay (Start/GameOver) ===== */
-  .overlay{
-    position:absolute;inset:0;
-    background:rgba(0,0,0,.55);
-    display:grid;place-items:center;
-    padding:14px;
-  }
-  .modal{
-    background:rgba(0,0,0,.82);
-    padding:16px 18px;
-    border-radius:14px;
-    width:min(440px,92%);
-    box-shadow:0 12px 40px rgba(0,0,0,.55);
-    text-align:center;
-  }
-  .modal h3{margin:0 0 10px 0;font-size:22px;}
-  .modal input{
-    width:90%;max-width:280px;
-    padding:10px;border-radius:10px;border:none;
-    outline:none;font-size:16px;
-  }
-  .modal button{
-    margin-top:10px;
-    padding:10px 14px;
-    border-radius:10px;border:none;
-    cursor:pointer;font-weight:900;
-  }
-  .hint{margin-top:10px;font-size:12px;opacity:.9;}
+}
 </style>
 </head>
 
 <body>
 
-  <div class="leaderboard">
-    <h2>Flakon Ranglista</h2>
+<div class="leaderboard">
+  <h2>Flakon Ranglista</h2>
 
-    <div class="row">
-      <img class="avatar" src="onedoor.png" alt="Avatar">
-      <div class="name">On3door</div>
-      <div class="count">65</div>
-    </div>
-
-    <div class="row">
-      <img class="avatar" src="misztersiba.gif" alt="Avatar">
-      <div class="name">MiszterSusu</div>
-      <div class="count">60</div>
-    </div>
-
-    <div class="row">
-      <img class="avatar" src="dinoori.gif" alt="Avatar">
-      <div class="name">SusuSzaurusz</div>
-      <div class="count">58</div>
-    </div>
-
-    <div class="row">
-      <img class="avatar" src="spudbaymaci.gif" alt="Avatar">
-      <div class="name">Spudbay</div>
-      <div class="count">55</div>
-    </div>
-
-    <div class="row">
-      <img class="avatar" src="Mrgrogu.gif" alt="Avatar">
-      <div class="name">MrSusu</div>
-      <div class="count">50</div>
-    </div>
+  <div class="row">
+    <img class="avatar" src="onedoor.png" alt="Avatar">
+    <div class="name">On3door</div>
+    <div class="count">65</div>
   </div>
 
-  <div class="rightCol">
-    <div class="hud">
-      <div class="pill">VERZIÓ: <strong>V2</strong></div>
-      <div class="pill" id="hudPlayer">Játékos: -</div>
-      <div class="pill" id="hudScore">Pont: 0</div>
-      <div class="pill" id="hudBest">Rekord: - - 0</div>
-    </div>
-
-    <div id="game">
-      <img id="player" src="majomka.png" alt="player">
-
-      <div id="startOverlay" class="overlay">
-        <div class="modal">
-          <h3>Majom Jump</h3>
-          <div>Írd be a neved:</div>
-          <input id="nameInput" maxlength="18" placeholder="Pl. On3door">
-          <br>
-          <button id="startBtn">START</button>
-          <div class="hint">Ugrás: Space / ▲ / kattintás</div>
-        </div>
-      </div>
-
-      <div id="overOverlay" class="overlay" style="display:none;">
-        <div class="modal">
-          <h3>Game Over</h3>
-          <div id="overText">Pont: 0</div>
-          <button id="restartBtn">Újra</button>
-          <div class="hint">Ugrás: Space / ▲ / kattintás</div>
-        </div>
-      </div>
-
-    </div>
+  <div class="row">
+    <img class="avatar" src="misztersiba.gif" alt="Avatar">
+    <div class="name">MiszterSusu</div>
+    <div class="count">60</div>
   </div>
+
+  <div class="row">
+    <img class="avatar" src="dinoori.gif" alt="Avatar">
+    <div class="name">SusuSzaurusz</div>
+    <div class="count">58</div>
+  </div>
+
+  <div class="row">
+    <img class="avatar" src="spudbaymaci.gif" alt="Avatar">
+    <div class="name">Spudbay</div>
+    <div class="count">55</div>
+  </div>
+
+  <div class="row">
+    <img class="avatar" src="Mrgrogu.gif" alt="Avatar">
+    <div class="name">MrSusu</div>
+    <div class="count">50</div>
+  </div>
+</div>
+
+<div class="rightCol">
+  <div class="hud">
+    <div class="pill" id="hudPlayer">Játékos: -</div>
+    <div class="pill" id="hudScore">Pont: 0</div>
+    <div class="pill" id="hudBest">Rekord: - - 0</div>
+  </div>
+
+  <div id="game">
+    <img id="player" src="majomka.png" alt="player">
+
+    <!-- START -->
+    <div id="startOverlay" class="overlay">
+      <div class="modal">
+        <h3>Majom Jump</h3>
+        <div>Írd be a neved:</div>
+        <input id="nameInput" maxlength="18" placeholder="Pl. On3door">
+        <br>
+        <button id="startBtn">START</button>
+        <div class="hint">Ugrás: Space / ▲ / tap</div>
+        <div class="hint">Gugolás: ▼ / GUGOL gomb</div>
+        <div class="small">Tipp: a felső kő alá gugolni kell 😉</div>
+      </div>
+    </div>
+
+    <!-- GAME OVER -->
+    <div id="overOverlay" class="overlay" style="display:none;">
+      <div class="modal">
+        <h3>Game Over</h3>
+        <div id="overText">Pont: 0</div>
+        <button id="restartBtn">Újra</button>
+      </div>
+    </div>
+
+    <!-- MOBIL VEZÉRLÉS -->
+    <div id="mobileControls" style="
+      position:absolute; left:0; right:0; bottom:12px;
+      display:none; justify-content:space-between;
+      padding:0 12px; gap:12px; pointer-events:none;">
+      <button id="btnJump" style="
+        pointer-events:auto; flex:1;
+        padding:14px 0; border-radius:16px;
+        border:none; font-weight:900; font-size:16px;
+        background:rgba(0,0,0,0.45); color:#fff;">
+        UGRÁS
+      </button>
+      <button id="btnCrouch" style="
+        pointer-events:auto; width:38%;
+        padding:14px 0; border-radius:16px;
+        border:none; font-weight:900; font-size:16px;
+        background:rgba(0,0,0,0.45); color:#fff;">
+        GUGOL
+      </button>
+    </div>
+
+  </div>
+</div>
 
 <script>
-/* === API === */
+/* ====== ÁLLÍTSD ITT, HA KELL ====== */
+const BASE_SPEED = 3.5;
+const SPEED_DIV  = 800;
+const MAX_SPEED  = 8;
+
+const GRAVITY = 0.9;
+const JUMP_V  = 19;
+
+/* ====== API ====== */
 const API_URL = "https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
 
-/* === DOM === */
+/* ====== DOM ====== */
 const game = document.getElementById("game");
 const playerEl = document.getElementById("player");
 
@@ -210,9 +274,14 @@ const nameInput    = document.getElementById("nameInput");
 const startBtn     = document.getElementById("startBtn");
 const restartBtn   = document.getElementById("restartBtn");
 
-/* === rekord === */
+const mobileControls = document.getElementById("mobileControls");
+const btnJump = document.getElementById("btnJump");
+const btnCrouch = document.getElementById("btnCrouch");
+
+/* ====== rekord ====== */
 let bestName = "-";
 let bestScore = 0;
+
 async function loadBest(){
   try{
     const r = await fetch(API_URL, { method:"GET" });
@@ -220,9 +289,10 @@ async function loadBest(){
     bestName = (j && j.name) ? String(j.name) : "-";
     bestScore = Number(j && j.score ? j.score : 0);
     if (isNaN(bestScore)) bestScore = 0;
-  }catch{}
+  } catch {}
   hudBest.textContent = `Rekord: ${bestName} - ${bestScore}`;
 }
+
 async function trySaveBest(playerName, score){
   try{
     await fetch(API_URL, {
@@ -230,15 +300,15 @@ async function trySaveBest(playerName, score){
       headers:{ "Content-Type":"text/plain;charset=utf-8" },
       body: JSON.stringify({ name: playerName, score })
     });
-  }catch{}
+  } catch {}
   await loadBest();
 }
+
 loadBest();
 
-/* === JÁTÉK ÁLLAPOT === */
-let running = false;   // <-- START gomb nélkül NEM fut
-let alive   = false;
-
+/* ====== JÁTÉK ÁLLAPOT ====== */
+let running = false;
+let alive = false;
 let playerName = "-";
 
 let score = 0;
@@ -246,23 +316,55 @@ let speed = 4;
 
 let y = 0;
 let vy = 0;
-const GRAVITY = 0.9;
-const JUMP_V  = 19;     // ✅ nagyobb ugrás
+
+let crouch = false;
 
 let obstacles = [];
-let nextSpawnAt = 0;
+let nextSpawnDist = 0;
+let dist = 0;
+
+let bgX = 0;
 
 function setPlayerBottom(){
   playerEl.style.bottom = (30 + y) + "px";
 }
 setPlayerBottom();
 
+function setCrouch(v){
+  crouch = v;
+  playerEl.style.transform = crouch ? "scaleY(0.75)" : "scaleY(1)";
+}
+
+/* mobil UI */
+function updateMobileUI(){
+  const isMobile = window.matchMedia("(max-width: 1100px)").matches;
+  mobileControls.style.display = isMobile ? "flex" : "none";
+}
+window.addEventListener("resize", updateMobileUI);
+updateMobileUI();
+
+btnJump.addEventListener("pointerdown", (e) => { e.preventDefault(); jump(); });
+btnCrouch.addEventListener("pointerdown", (e) => { e.preventDefault(); setCrouch(true); });
+btnCrouch.addEventListener("pointerup", (e) => { e.preventDefault(); setCrouch(false); });
+btnCrouch.addEventListener("pointercancel", () => setCrouch(false));
+btnCrouch.addEventListener("pointerleave", () => setCrouch(false));
+
 function resetGame(){
-  score = 0; speed = 4; y = 0; vy = 0;
+  score = 0;
+  speed = 4;
+  y = 0;
+  vy = 0;
+  dist = 0;
+  bgX = 0;
+  game.style.backgroundPosition = "0px 0px";
+
   obstacles.forEach(o=>o.el.remove());
   obstacles = [];
-  nextSpawnAt = 60 + Math.floor(Math.random()*80);
+
+  nextSpawnDist = 220 + Math.random()*200;
+
   hudScore.textContent = "Pont: 0";
+  setCrouch(false);
   setPlayerBottom();
 }
 
@@ -277,7 +379,7 @@ function startGame(){
   startOverlay.style.display = "none";
   overOverlay.style.display = "none";
 
-  requestAnimationFrame(loop); // <-- CSAK ITT INDUL
+  requestAnimationFrame(loop);
 }
 
 function jump(){
@@ -285,35 +387,67 @@ function jump(){
   if (y <= 0) vy = JUMP_V;
 }
 
-/* input / gombok */
+/* INPUT */
 startBtn.addEventListener("click", startGame);
 restartBtn.addEventListener("click", startGame);
 nameInput.addEventListener("keydown", (e)=>{ if(e.key==="Enter") startGame(); });
 
-/* ugrás vezérlés (csak ha fut) */
 document.addEventListener("keydown",(e)=>{
+  if(e.code==="ArrowDown") setCrouch(true);
+
   if(e.code==="Space" || e.code==="ArrowUp"){
     e.preventDefault();
     jump();
   }
 });
-game.addEventListener("pointerdown", jump);
 
-/* akadály */
+document.addEventListener("keyup",(e)=>{
+  if(e.code==="ArrowDown") setCrouch(false);
+});
+
+game.addEventListener("pointerdown", () => {
+  if (startOverlay.style.display !== "none") return;
+  jump();
+});
+
+/* OBSTACLES */
 function spawnObstacle(){
-  const isBanana = Math.random() < 0.5;
+  const r = Math.random();
+  let type;
+  if (r < 0.45) type = "banana";
+  else if (r < 0.80) type = "stone";
+  else type = "stone_fly";
+
   const el = document.createElement("img");
-  el.src = isBanana ? "banana.png" : "stone.png";
   el.className = "obstacle";
 
-  const size = isBanana ? 52 : 46; // ✅ banán 52
+  const isBanana = (type === "banana");
+  el.src = isBanana ? "banana.png" : "stone.png";
+
+  const size = isBanana ? 52 : 46;
   el.style.width = size + "px";
+
+  const bottomPx = (type === "stone_fly") ? 120 : 30;
+  el.style.bottom = bottomPx + "px";
+
   el.style.left = game.clientWidth + "px";
   game.appendChild(el);
 
-  obstacles.push({ el, x: game.clientWidth, w: size, h: size, type: isBanana ? "banana" : "stone" });
+  const mult = 0.85 + Math.random()*0.40; // változó sebesség
 
-  nextSpawnAt = score + 80 + Math.floor(Math.random()*140);
+  obstacles.push({
+    el,
+    x: game.clientWidth,
+    w: size,
+    h: size,
+    type,
+    bottom: bottomPx,
+    mult
+  });
+
+  const gapMin = 240;
+  const gapMax = 420;
+  nextSpawnDist = dist + (gapMin + Math.random()*(gapMax-gapMin));
 }
 
 function rectsOverlap(a,b){
@@ -340,8 +474,12 @@ function loop(){
   score++;
   hudScore.textContent = "Pont: " + score;
 
-  // dino-szerű folyamatos gyorsulás + plafon
-  speed = Math.min(7, 3.2 + score / 1000);
+  speed = Math.min(MAX_SPEED, BASE_SPEED + score / SPEED_DIV);
+
+  // mozgó háttér
+  dist += speed;
+  bgX -= speed;
+  game.style.backgroundPosition = `${bgX}px 0px`;
 
   // fizika
   vy -= GRAVITY;
@@ -349,33 +487,30 @@ function loop(){
   if (y < 0){ y = 0; vy = 0; }
   setPlayerBottom();
 
-  // spawn random
-  if (score >= nextSpawnAt) spawnObstacle();
+  if (dist >= nextSpawnDist) spawnObstacle();
 
-  // ✅ hitbox: játékos kisebb, fair
-  const playerBox = {
-    x: 60 + 18,
-    y: (30 + y) + 18,
-    w: 90 - 36,
-    h: 90 - 36
-  };
+  const playerBox = crouch
+    ? { x: 60 + 20, y: (30 + y) + 42, w: 90 - 40, h: 90 - 62 }
+    : { x: 60 + 18, y: (30 + y) + 18, w: 90 - 36, h: 90 - 36 };
 
   for (let i = obstacles.length - 1; i >= 0; i--){
     const o = obstacles[i];
-    o.x -= speed;
+
+    o.x -= speed * o.mult;
     o.el.style.left = o.x + "px";
 
-    if (o.x < -80){
+    if (o.x < -90){
       o.el.remove();
       obstacles.splice(i,1);
       continue;
     }
 
-    // ✅ hitbox: kőnél nagyobb shrink
-    const shrink = (o.type === "stone") ? 22 : 14;
+    const isStone = (o.type === "stone" || o.type === "stone_fly");
+    const shrink = isStone ? 22 : 14;
+
     const obsBox = {
       x: o.x + shrink,
-      y: 30 + shrink,
+      y: o.bottom + shrink,
       w: o.w - shrink*2,
       h: o.h - shrink*2
     };
@@ -389,12 +524,10 @@ function loop(){
   requestAnimationFrame(loop);
 }
 
-/* IMPORTANT: NINCS auto-start. Itt csak overlay látszik. */
+/* nincs auto-start */
 startOverlay.style.display = "grid";
 overOverlay.style.display = "none";
 </script>
 
 </body>
 </html>
-
-
