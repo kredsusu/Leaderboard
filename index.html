@@ -64,7 +64,7 @@ body{
 
 /* ===== Jobb oldal: HUD + Game ===== */
 .rightCol{display:flex;flex-direction:column;gap:10px;align-items:flex-start;}
-.hud{width:680px;display:flex;justify-content:space-between;gap:10px;font-weight:800;text-shadow:2px 2px 6px #000;}
+.hud{width:680px;display:flex;justify-content:space-between;gap:10px;font-weight:800;text-shadow:2px 2px 6px #000;flex-wrap:wrap;}
 .pill{background:rgba(0,0,0,.35);padding:8px 12px;border-radius:999px;white-space:nowrap;}
 
 #game{
@@ -89,6 +89,12 @@ body{
   user-select:none;
   -webkit-user-drag:none;
   transform-origin:bottom;
+  transition: transform 60ms linear;
+}
+
+/* gugolás animáció (kicsit összenyom) */
+#player.crouch{
+  transform: scaleY(0.72);
 }
 
 .obstacle{
@@ -130,7 +136,7 @@ body{
   body{flex-direction:column;align-items:center;gap:20px;padding:20px 12px;}
   .leaderboard{width:min(600px,92vw);padding:22px;}
   .rightCol{width:min(680px,92vw);align-items:center;}
-  .hud{width:100%;flex-wrap:wrap;justify-content:center;}
+  .hud{width:100%;justify-content:center;}
   #game{width:100%;height:52vw;max-height:420px;min-height:300px;}
 }
 </style>
@@ -177,6 +183,7 @@ body{
     <div class="pill" id="hudPlayer">Játékos: -</div>
     <div class="pill" id="hudScore">Pont: 0</div>
     <div class="pill" id="hudBest">Rekord: - - 0</div>
+    <div class="pill">Ugrás: Space/tap | Gugolás: S (tart)</div>
   </div>
 
   <div id="game">
@@ -189,7 +196,7 @@ body{
         <input id="nameInput" maxlength="18" placeholder="Pl. On3door">
         <br>
         <button id="startBtn">START</button>
-        <div class="hint">Ugrás: Space / tap</div>
+        <div class="hint">Ugrás: Space / tap • Gugolás: S (tart)</div>
       </div>
     </div>
 
@@ -205,7 +212,7 @@ body{
 </div>
 
 <script>
-/* ===== Sebesség (Chrome dínó feeling) ===== */
+/* ===== Sebesség ===== */
 const BASE_SPEED = 3.0;
 const SPEED_DIV  = 1200;
 const MAX_SPEED  = 7.0;
@@ -256,11 +263,13 @@ async function trySaveBest(playerName, score){
 }
 loadBest();
 
-/* játék */
+/* ===== játék állapot ===== */
 let running=false, alive=false;
 let playerName="-";
 let score=0, speed=4;
 let y=0, vy=0;
+
+let crouch=false; // ✅ gugolás állapot
 let obstacles=[];
 let dist=0, nextSpawnDist=0;
 let bgX=0;
@@ -273,6 +282,12 @@ function resetGame(){
   nextSpawnDist = 420 + Math.random()*260;
   hudScore.textContent="Pont: 0";
   playerEl.style.bottom="30px";
+  setCrouch(false);
+}
+
+function setCrouch(on){
+  crouch = !!on;
+  playerEl.classList.toggle("crouch", crouch);
 }
 
 function startGame(){
@@ -291,6 +306,7 @@ function jump(){
   if (y <= 0) vy = JUMP_V;
 }
 
+/* ===== input ===== */
 startBtn.addEventListener("click", startGame);
 restartBtn.addEventListener("click", startGame);
 nameInput.addEventListener("keydown",(e)=>{ if(e.key==="Enter") startGame(); });
@@ -300,19 +316,44 @@ document.addEventListener("keydown",(e)=>{
     e.preventDefault();
     jump();
   }
+  if (e.code === "KeyS" || e.code === "ArrowDown"){
+    e.preventDefault();
+    setCrouch(true);
+  }
 });
+document.addEventListener("keyup",(e)=>{
+  if (e.code === "KeyS" || e.code === "ArrowDown"){
+    e.preventDefault();
+    setCrouch(false);
+  }
+});
+
+/* mobil: tap = ugrás, hosszú érintés = gugolás */
+let holdTimer = null;
 game.addEventListener("pointerdown",()=>{
   if (startOverlay.style.display !== "none") return;
   if (overOverlay.style.display !== "none") return;
-  jump();
+
+  // ha tartja 180ms-ig -> gugol
+  holdTimer = setTimeout(()=>setCrouch(true), 180);
+});
+game.addEventListener("pointerup",()=>{
+  if (holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
+  if (crouch){ setCrouch(false); return; } // ha gugolt, csak feláll
+  // ha nem gugolt: ugrás
+  if (startOverlay.style.display === "none" && overOverlay.style.display === "none") jump();
+});
+game.addEventListener("pointercancel",()=>{
+  if (holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
+  setCrouch(false);
 });
 
-/* akadály */
+/* ===== akadály ===== */
 function spawnObstacle(){
   const el = document.createElement("img");
   el.className="obstacle";
 
-  // 3 típus: banana / stone / bird
+  // 3 típus
   const r = Math.random();
   let type;
   if (r < 0.50) type = "banana";
@@ -330,10 +371,11 @@ function spawnObstacle(){
     el.style.height = "46px";
     el.style.bottom = "30px";
   } else {
-    el.src = "madar.gif";              // ✅ a te GIF-ed
-    el.style.width = "60px";
-    el.style.height = "40px";
-    el.style.bottom = "140px";         // ✅ repülési magasság
+    el.src = "madar.gif";
+    el.style.width = "70px";
+    el.style.height = "46px";
+    // ✅ olyan magasan, hogy ÁLLVA ütközz, gugolva átférj
+    el.style.bottom = "96px";
   }
 
   el.style.left = game.clientWidth + "px";
@@ -342,13 +384,12 @@ function spawnObstacle(){
   const w = parseInt(el.style.width, 10);
   const h = parseInt(el.style.height, 10);
   const bottom = parseInt(el.style.bottom, 10);
-
   const mult = 0.92 + Math.random()*0.18;
 
   obstacles.push({ el, x: game.clientWidth, w, h, bottom, mult, type });
 
-  // gap: nem lehetetlen, de változó
-  const gapMin=460, gapMax=760;
+  // játszható spawn
+  const gapMin=480, gapMax=760;
   nextSpawnDist = dist + (gapMin + Math.random()*(gapMax-gapMin));
 }
 
@@ -383,35 +424,37 @@ function loop(){
 
   if (dist >= nextSpawnDist) spawnObstacle();
 
-  // player hitbox
+  // ✅ player hitbox állva / gugolva
   const baseY = (30 + y);
-  const playerBox = { x: 60 + 16, y: baseY + 14, w: 90 - 32, h: 66 };
+  const playerBox = crouch
+    ? { x: 60 + 16, y: baseY + 44, w: 90 - 32, h: 40 } // gugolva alacsony
+    : { x: 60 + 16, y: baseY + 14, w: 90 - 32, h: 66 }; // állva magasabb
 
   for (let i=obstacles.length-1;i>=0;i--){
     const o = obstacles[i];
     o.x -= speed * o.mult;
     o.el.style.left = o.x+"px";
 
-    if (o.x < -140){
+    if (o.x < -180){
       o.el.remove();
       obstacles.splice(i,1);
       continue;
     }
 
-    // hitbox shrink
-    let shrink = 14;
-    if (o.type==="stone") shrink = 22;
-    if (o.type==="bird")  shrink = 10;
+    // ✅ madár hitbox kisebb, hogy fair legyen (szárnyak ne ölnek)
+    let shrinkX = 14, shrinkY = 14;
+    if (o.type==="stone"){ shrinkX=22; shrinkY=22; }
+    if (o.type==="bird"){ shrinkX=26; shrinkY=18; } // ← EZ a kulcs
 
     const obsBox = {
-      x: o.x + shrink,
-      y: o.bottom + shrink,
-      w: o.w - shrink*2,
-      h: o.h - shrink*2
+      x: o.x + shrinkX,
+      y: o.bottom + shrinkY,
+      w: o.w - shrinkX*2,
+      h: o.h - shrinkY*2
     };
 
     if (rectsOverlap(playerBox, obsBox)){
-      // később ide jön a hang
+      // később itt jön a hang (madárra külön)
       gameOver();
       return;
     }
