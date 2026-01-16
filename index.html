@@ -2,143 +2,247 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
-<title>Flakon Ranglista</title>
+<title>Flakon Ranglista + Játék</title>
+
 <style>
-/* ===============================
-   BODY & HÁTTÉR
-   =============================== */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Comic Sans MS', cursive;
-  background: url('hatter.jpg') no-repeat center center fixed; /* ide írd a saját háttérfájlt */
-  background-size: cover;
-  color: #fff;
+/* ===== BODY ===== */
+body{
+  margin:0;
+  font-family:'Comic Sans MS', cursive;
+  background:url('hatter.jpg') no-repeat center center fixed;
+  background-size:cover;
+  color:#fff;
 }
 
-/* ===============================
-   LEADERBOARD KERET
-   =============================== */
-.leaderboard {
-  width: 600px;   /* nagyobb szélesség */
-  margin: 50px auto;
-  padding: 30px;
-  background: url('keret.png') no-repeat center center; /* ide a saját dzsungeles keret */
-  background-size: cover;
-  border-radius: 25px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.7);
-  position: relative;
+/* ===== OLDAL ELRENDEZÉS ===== */
+.page{
+  max-width:1200px;
+  margin:40px auto;
+  display:flex;
+  gap:40px;
+  align-items:flex-start;
 }
 
-/* ===============================
-   FEJLÉC
-   =============================== */
-.leaderboard h2 {
-  text-align: center;
-  font-size: 36px;
-  font-weight: bold;
-  text-shadow: 2px 2px 6px #000;
-  margin-bottom: 30px;
+/* ===== LEADERBOARD ===== */
+.leaderboard{
+  width:600px;
+  padding:30px;
+  background:url('keret.png') no-repeat center center;
+  background-size:cover;
+  border-radius:25px;
+  box-shadow:0 0 30px rgba(0,0,0,.7);
 }
 
-/* ===============================
-   LISTA SOROK
-   =============================== */
-.row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(0,0,0,0.4); /* félig átlátszó dzsungeles hatás */
-  margin: 12px 0;
-  padding: 14px 16px;
-  border-radius: 20px;
-  box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
-  border: 4px solid transparent; /* alap keret */
+.leaderboard h2{
+  text-align:center;
+  font-size:36px;
+  margin-bottom:30px;
+  text-shadow:2px 2px 6px #000;
 }
 
-/* ===============================
-   KÜLÖNLEGES KERET SZÍNEK
-   =============================== */
-.row:nth-child(2) { border-color: gold; }   /* 1. helyezett */
-.row:nth-child(3) { border-color: silver; } /* 2. helyezett */
-.row:nth-child(4) { border-color: #cd7f32; } /* 3. helyezett (bronz) */
-
-/* ===============================
-   GIF / AVATAR
-   =============================== */
-.avatar {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 16px;
-  border: 3px solid #fff;
-  box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:rgba(0,0,0,.4);
+  margin:12px 0;
+  padding:14px 16px;
+  border-radius:20px;
+  box-shadow:2px 2px 8px rgba(0,0,0,.5);
+  border:4px solid transparent;
 }
 
-/* ===============================
-   NÉV
-   =============================== */
-.name {
-  font-size: 24px;
-  font-weight: bold;
-  flex: 1;
-  text-shadow: 2px 2px 3px #000;
+.row:nth-child(2){border-color:gold;}
+.row:nth-child(3){border-color:silver;}
+.row:nth-child(4){border-color:#cd7f32;}
+
+.avatar{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid #fff;
 }
 
-/* ===============================
-   PONTSZÁM / FLAKON
-   =============================== */
-.count {
-  font-size: 22px;
-  font-weight: bold;
-  background: #f5f5f5;
-  color: #000;
-  padding: 8px 12px;
-  border-radius: 12px;
-  box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-  min-width: 60px;
-  text-align: center;
+.name{
+  flex:1;
+  font-size:24px;
+  font-weight:bold;
+  margin-left:15px;
+}
+
+.count{
+  font-size:22px;
+  font-weight:bold;
+  background:#f5f5f5;
+  color:#000;
+  padding:8px 12px;
+  border-radius:12px;
+}
+
+/* ===== JÁTÉK ===== */
+.game{
+  width:420px;
+  background:rgba(0,0,0,.45);
+  border-radius:20px;
+  padding:15px;
+  box-shadow:0 0 30px rgba(0,0,0,.6);
+}
+
+.gameTop{
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+  margin-bottom:8px;
+}
+
+#gameBox{
+  position:relative;
+  height:300px;
+  background:#111;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+#player{
+  position:absolute;
+  left:60px;
+  bottom:40px;
+  width:40px;
+  height:40px;
+  background:#f5a623;
+  border-radius:8px;
+}
+
+.ground{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  height:40px;
+  background:#333;
+}
+
+.obstacle{
+  position:absolute;
+  bottom:40px;
+  width:20px;
+  height:50px;
+  background:#4CAF50;
+}
+
+.overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.overlayBox{
+  background:#222;
+  padding:15px;
+  border-radius:12px;
+  text-align:center;
+}
+
+button,input{
+  font-family:inherit;
+  padding:8px;
+  border-radius:8px;
+  border:none;
+  margin-top:6px;
 }
 </style>
 </head>
+
 <body>
 
+<div class="page">
+
+<!-- LEADERBOARD -->
 <div class="leaderboard">
-  <h2>Flakon Ranglista</h2>
+<h2>Flakon Ranglista</h2>
 
-  <div class="row">
-    <img class="avatar" src="onedoor.png" alt="Avatar">
-    <div class="name">On3door</div>
-    <div class="count">65</div>
-  </div>
+<div class="row">
+  <img class="avatar" src="onedoor.png">
+  <div class="name">On3door</div>
+  <div class="count">65</div>
+</div>
 
-  <div class="row">
-    <img class="avatar" src="misztersiba.gif" alt="Avatar">
-    <div class="name">MiszterSusu</div>
-    <div class="count">60</div>
-  </div>
+<div class="row">
+  <img class="avatar" src="misztersiba.gif">
+  <div class="name">MiszterSusu</div>
+  <div class="count">60</div>
+</div>
 
-  <div class="row">
-    <img class="avatar" src="dinoori.gif" alt="Avatar">
-    <div class="name">SusuSzaurusz</div>
-    <div class="count">58</div>
-  </div>
+<div class="row">
+  <img class="avatar" src="dinoori.gif">
+  <div class="name">SusuSzaurusz</div>
+  <div class="count">58</div>
+</div>
 
-  <div class="row">
-    <img class="avatar" src="spudbaymaci.gif" alt="Avatar">
-    <div class="name">Spudbay</div>
-    <div class="count">55</div>
-  </div>
-
-  <div class="row">
-    <img class="avatar" src="Mrgrogu.gif" alt="Avatar">
-    <div class="name">MrSusu</div>
-    <div class="count">50</div>
-  </div>
+<div class="row">
+  <img class="avatar" src="spudbaymaci.gif">
+  <div class="name">Spudbay</div>
+  <div class="count">55</div>
+</div>
 
 </div>
 
+<!-- JÁTÉK -->
+<div class="game">
+<div class="gameTop">
+  <div>Játékos: <b id="pName">-</b></div>
+  <div>Pont: <b id="score">0</b></div>
+  <div>Rekord: <b id="best">0</b></div>
+</div>
+
+<div id="gameBox">
+  <div id="player"></div>
+  <div class="ground"></div>
+
+  <div class="overlay" id="start">
+    <div class="overlayBox">
+      <input id="nameInput" placeholder="Neved">
+      <button onclick="start()">Start</button>
+    </div>
+  </div>
+</div>
+</div>
+
+</div>
+
+<script>
+let y=0,vy=0,score=0,best=localStorage.best||0,run=false;
+const p=document.getElementById('player');
+const scoreEl=document.getElementById('score');
+const bestEl=document.getElementById('best');
+const nameEl=document.getElementById('pName');
+bestEl.textContent=best;
+
+function start(){
+  nameEl.textContent=document.getElementById('nameInput').value||'Névtelen';
+  document.getElementById('start').style.display='none';
+  run=true; score=0; y=0; vy=0;
+  loop();
+}
+
+function loop(){
+  if(!run) return;
+  vy-=0.8; y+=vy;
+  if(y<0){y=0;vy=0;}
+  p.style.transform=`translateY(${-y}px)`;
+  score++; scoreEl.textContent=score;
+  if(score>best){best=score;localStorage.best=best;bestEl.textContent=best;}
+  requestAnimationFrame(loop);
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space'&&run&&y===0) vy=15;
+});
+</script>
+
 </body>
 </html>
-
