@@ -7,47 +7,48 @@
 
 <style>
 /* ===============================
-   BODY & HÁTTÉR
+   BODY & HÁTTÉR (OLDAL)
    =============================== */
 body {
   margin: 0;
   padding: 0;
   font-family: 'Comic Sans MS', cursive;
-  background: url('hatter.png') no-repeat center center fixed; /* <-- háttér */
+  background: url('hatter.png') no-repeat center center fixed;
   background-size: cover;
   color: #fff;
 }
 
 /* ===============================
-   OLDAL ELRENDEZÉS
+   LAYOUT
    - leaderboard középen
    - játék jobbra, nem lóg bele
    =============================== */
 .page {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;  /* közép mindig közép */
-  align-items: start;
-  gap: 30px;
+  grid-template-columns: 1fr auto auto;
+  gap: 32px;
   padding: 30px 20px;
+  align-items: start;
+  justify-content: center;
 }
 
-.centerCol { grid-column: 2; }
-.rightCol  { grid-column: 3; justify-self: start; }
+.centerCol { justify-self: center; }
+.rightCol  { justify-self: start; }
 
 /* mobilon egymás alá */
 @media (max-width: 1100px) {
   .page { grid-template-columns: 1fr; }
-  .centerCol, .rightCol { grid-column: 1; justify-self: center; }
+  .centerCol, .rightCol { justify-self: center; }
 }
 
 /* ===============================
-   LEADERBOARD (a te stílusod, nem nyúltam hozzá)
+   LEADERBOARD (VÁLTOZATLAN)
    =============================== */
 .leaderboard {
   width: 600px;
   margin: 0 auto;
   padding: 30px;
-  background: url('keret.png') no-repeat center center; /* keret */
+  background: url('keret.png') no-repeat center center;
   background-size: cover;
   border-radius: 25px;
   box-shadow: 0 0 30px rgba(0,0,0,0.7);
@@ -109,7 +110,7 @@ body {
 }
 
 /* ===============================
-   JÁTÉK (külön nevek, hogy ne bántsa a ranglistát)
+   JÁTÉK (SAJÁT STÍLUS, NEM ÜTKÖZIK)
    =============================== */
 #gameWrap {
   width: 520px;
@@ -142,16 +143,12 @@ body {
   height: 300px;
   border-radius: 14px;
   overflow: hidden;
-  background: linear-gradient(#0b2b1a, #071a12);
-  border: 2px solid rgba(255,255,255,.15);
-}
 
-#gGame::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.10), transparent 40%);
-  pointer-events:none;
+  /* JÁTÉK SAJÁT HÁTTERE */
+  background: url('jatekhatter.jpg') no-repeat center bottom;
+  background-size: cover;
+
+  border: 2px solid rgba(255,255,255,.15);
 }
 
 .gGround{
@@ -160,7 +157,7 @@ body {
   left:0;
   right:0;
   height:52px;
-  background: rgba(255,255,255,.06);
+  background: rgba(0,0,0,.25);
   border-top: 2px solid rgba(255,255,255,.12);
 }
 
@@ -177,16 +174,17 @@ body {
   pointer-events: none;
 }
 
-/* akadály */
+/* akadályok */
 .gObstacle{
   position:absolute;
   bottom: 52px;
-  width: 60px;
-  height: 60px;
+  width: 64px;
+  height: 64px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   filter: drop-shadow(0 6px 0 rgba(0,0,0,.25));
+  pointer-events: none;
 }
 
 .gBanana{ background-image: url('banana.png'); }
@@ -195,7 +193,7 @@ body {
 .gOverlay{
   position:absolute;
   inset:0;
-  background: rgba(0,0,0,.60);
+  background: rgba(0,0,0,.55);
   display:grid;
   place-items:center;
   padding: 14px;
@@ -280,7 +278,6 @@ body {
         <div class="name">MrSusu</div>
         <div class="count">50</div>
       </div>
-
     </div>
   </div>
 
@@ -295,7 +292,6 @@ body {
 
       <div id="gGame">
         <img id="gPlayer" src="majomka.png" alt="Majom">
-
         <div class="gGround"></div>
 
         <div id="gStart" class="gOverlay">
@@ -328,7 +324,6 @@ body {
 
 <script>
 (() => {
-  // rekord: név + pont
   const BEST_KEY = "monkey_runner_best_v2";
 
   const uiPlayer = document.getElementById("gUiPlayer");
@@ -339,10 +334,10 @@ body {
   const overOverlay  = document.getElementById("gOver");
   const overText     = document.getElementById("gOverText");
 
-  const nameInput    = document.getElementById("gName");
-  const startBtn     = document.getElementById("gStartBtn");
-  const restartBtn   = document.getElementById("gRestartBtn");
-  const changeNameBtn= document.getElementById("gChangeNameBtn");
+  const nameInput     = document.getElementById("gName");
+  const startBtn      = document.getElementById("gStartBtn");
+  const restartBtn    = document.getElementById("gRestartBtn");
+  const changeNameBtn = document.getElementById("gChangeNameBtn");
 
   const game   = document.getElementById("gGame");
   const player = document.getElementById("gPlayer");
@@ -379,10 +374,13 @@ body {
   let score = 0;
   let tick = 0;
 
-  // akadályok
+  // akadályok + gyorsulás
   let obstacles = [];
   let spawnTimer = 0;
-  let speed = 6;
+
+  let speed = 3.5;      // lassú start
+  let spawnMin = 75;    // random spawn ablak
+  let spawnMax = 140;
 
   function setPlayerName(name){
     currentName = (name || "").trim() || "Névtelen";
@@ -400,7 +398,9 @@ body {
     uiScore.textContent = "0";
 
     spawnTimer = 0;
-    speed = 6;
+    speed = 3.5;
+    spawnMin = 75;
+    spawnMax = 140;
 
     overOverlay.style.display = "none";
   }
@@ -439,21 +439,17 @@ body {
 
   function addObstacle(){
     const el = document.createElement("div");
-
-    // 50-50 banán vagy kő
     const isBanana = Math.random() < 0.5;
     el.className = "gObstacle " + (isBanana ? "gBanana" : "gStone");
-
     game.appendChild(el);
 
-    // méret picit variálható
-    const size = isBanana ? 58 : 62;
+    // méret picit variálható, kő legyen kicsit nagyobb
+    const size = isBanana ? 56 : 66;
     el.style.width = size + "px";
     el.style.height = size + "px";
 
-    const x = game.clientWidth + 60;
+    const x = game.clientWidth + 80;
     obstacles.push({ el, x });
-
     el.style.left = x + "px";
   }
 
@@ -470,22 +466,28 @@ body {
     if (y < 0) { y = 0; vy = 0; }
     player.style.transform = `translateY(${-y}px)`;
 
-    // pont
+    // pont (idő alapú egyszerűség)
     tick++;
     if (tick % 6 === 0) {
       score++;
       uiScore.textContent = String(score);
-      if (score % 20 === 0) speed += 0.6;
+
+      // fokozatos gyorsulás
+      if (score % 15 === 0) speed += 0.15;
     }
 
-    // spawn
+    // random spawn
     spawnTimer++;
-    const minSpawn = 55;
-    const maxSpawn = 95;
-    const threshold = minSpawn + Math.floor(Math.random() * (maxSpawn - minSpawn));
+    const threshold = spawnMin + Math.floor(Math.random() * (spawnMax - spawnMin));
     if (spawnTimer > threshold) {
       addObstacle();
       spawnTimer = 0;
+
+      // ahogy haladsz, picit sűrűsödik (nem durván)
+      if (score % 30 === 0 && spawnMax > 110) {
+        spawnMin -= 2;
+        spawnMax -= 3;
+      }
     }
 
     // mozgatás + ütközés
@@ -496,7 +498,7 @@ body {
       o.x -= speed;
       o.el.style.left = o.x + "px";
 
-      if (o.x < -100) {
+      if (o.x < -120) {
         o.el.remove();
         obstacles.splice(i, 1);
         continue;
@@ -512,7 +514,7 @@ body {
     requestAnimationFrame(loop);
   }
 
-  // inputok
+  // input
   document.addEventListener("keydown", (e) => {
     if (e.code === "Space") {
       e.preventDefault();
@@ -549,7 +551,6 @@ body {
     nameInput.focus();
   });
 
-  // fókusz
   nameInput.focus();
 })();
 </script>
