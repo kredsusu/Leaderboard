@@ -54,6 +54,7 @@ body {
   border-radius: 20px;
   box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
   border: 4px solid transparent;
+  height: 90px;  /* fix magasság, így a sorok és keret nem húzódik össze */
 }
 
 /* ===============================
@@ -80,8 +81,10 @@ body {
    KÜLÖN MÉRET EGY KÉPNEK
    =============================== */
 .avatar.small {
-  width: 50px;   /* az egyedi, kisebb méret */
+  width: 50px;   /* kisebb méret */
   height: 50px;
+  margin-top: 10px;   /* extra tér, hogy ne húzza össze a keretet */
+  margin-bottom: 10px;
 }
 
 /* ===============================
