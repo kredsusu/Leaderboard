@@ -2,506 +2,130 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flakon Ranglista</title>
-
+<title>Majom Jump</title>
 <style>
-/* ===============================
-   BODY & HÁTTÉR  (EREDTI!)
-   =============================== */
 body {
   margin: 0;
-  padding: 0;
-  font-family: 'Comic Sans MS', cursive;
-  background: url('hatter.jpg') no-repeat center center fixed;
-  background-size: cover;
-  color: #fff;
-}
-
-/* ====== ÚJ: oldal layout (ranklista közép, játék jobbra) ====== */
-.page {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 30px;
-  padding: 30px 20px;
-  align-items: start;
+  font-family: Arial, sans-serif;
+  background: url("hatter.jpg") center/cover no-repeat fixed;
+  display: flex;
   justify-content: center;
-}
-.centerCol { justify-self: center; }
-.rightCol  { justify-self: start; margin-left: -30px; } /* kicsit balrább húzza a játékot */
-
-@media (max-width: 1100px) {
-  .page { grid-template-columns: 1fr; }
-  .centerCol, .rightCol { justify-self: center; margin-left: 0; }
+  align-items: flex-start;
+  gap: 40px;
+  padding-top: 40px;
 }
 
-/* ===============================
-   LEADERBOARD KERET  (EREDTI!)
-   =============================== */
+/* LEADERBOARD */
 .leaderboard {
   width: 600px;
-  margin: 50px auto;
   padding: 30px;
-  background: url('keret.png') no-repeat center center;
-  background-size: cover;
+  background: url("keret.png") center/cover no-repeat;
   border-radius: 25px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.7);
-  position: relative;
+  color: white;
 }
 
-/* ===============================
-   FEJLÉC  (EREDTI!)
-   =============================== */
-.leaderboard h2 {
-  text-align: center;
-  font-size: 36px;
-  font-weight: bold;
-  text-shadow: 2px 2px 6px #000;
-  margin-bottom: 30px;
-}
-
-/* ===============================
-   LISTA SOROK  (EREDTI!)
-   =============================== */
 .row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background: rgba(0,0,0,0.4);
-  margin: 12px 0;
-  padding: 14px 16px;
-  border-radius: 20px;
-  box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
-  border: 4px solid transparent;
+  gap: 15px;
+  background: rgba(0,0,0,.4);
+  padding: 12px;
+  border-radius: 16px;
+  margin-bottom: 10px;
 }
 
-/* ===============================
-   KÜLÖNLEGES KERET SZÍNEK  (EREDTI!)
-   =============================== */
-.row:nth-child(2) { border-color: gold; }
-.row:nth-child(3) { border-color: silver; }
-.row:nth-child(4) { border-color: #cd7f32; }
-
-/* ===============================
-   GIF / AVATAR  (EREDTI!)
-   =============================== */
 .avatar {
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  object-fit: cover;
-  margin-right: 16px;
-  border: 3px solid #fff;
-  box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-/* ===============================
-   NÉV  (EREDTI!)
-   =============================== */
 .name {
   font-size: 24px;
   font-weight: bold;
   flex: 1;
-  text-shadow: 2px 2px 3px #000;
 }
 
-/* ===============================
-   PONTSZÁM / FLAKON  (EREDTI!)
-   =============================== */
 .count {
-  font-size: 22px;
+  background: white;
+  color: black;
+  padding: 6px 12px;
+  border-radius: 10px;
   font-weight: bold;
-  background: #f5f5f5;
-  color: #000;
-  padding: 8px 12px;
-  border-radius: 12px;
-  box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-  min-width: 60px;
-  text-align: center;
 }
 
-/* ==========================================================
-   JÁTÉK (ÚJ, NEM ÜTKÖZIK A RANGLISTÁVAL)
-   ========================================================== */
-#gameWrap{
-  width: 520px;
-  background: rgba(0,0,0,0.45);
-  border-radius: 22px;
-  padding: 14px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.6);
-}
-
-.gTop{
-  display:flex;
-  gap:10px;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  font-size:14px;
-  margin-bottom:10px;
-}
-
-.gPill{
-  background: rgba(255,255,255,0.15);
-  padding: 6px 10px;
-  border-radius: 999px;
-}
-
-#gGame{
-  position: relative;
+/* JÁTÉK */
+#game {
+  width: 500px;
   height: 300px;
-  border-radius: 14px;
+  background: url("jatekhatter.jpg") center/cover no-repeat;
+  border-radius: 20px;
+  position: relative;
   overflow: hidden;
-  background: url('jatekhatter.jpg') no-repeat center bottom;
-  background-size: cover;
 }
 
-.gGround{
-  position:absolute;
-  bottom:0; left:0; right:0;
-  height:52px;
-  background: rgba(0,0,0,0.35);
-  border-top: 2px solid rgba(255,255,255,0.15);
+#player {
+  position: absolute;
+  bottom: 30px;
+  left: 40px;
+  width: 80px;
 }
 
-/* a karakter képe */
-#gPlayer{
-  position:absolute;
-  left: 70px;
-  bottom: 52px;
-  width: 90px;
-  height: 90px;
-  object-fit: contain;
-  pointer-events:none;
-  user-select:none;
-}
-
-/* a valódi ütköző doboz (kisebb!) */
-#gHit{
-  position:absolute;
-  left: 94px;      /* beljebb */
-  bottom: 62px;    /* feljebb */
-  width: 34px;
-  height: 46px;
-  /* DEBUG: background: rgba(255,0,0,0.25); */
-}
-
-.gObstacle{
-  position:absolute;
-  bottom: 52px;
-  width: 40px;
-  height: 40px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  pointer-events:none;
-}
-.gBanana{ background-image: url('banana.png'); }
-.gStone { background-image: url('stone.png'); }
-
-.gOverlay{
-  position:absolute;
-  inset:0;
-  background: rgba(0,0,0,0.55);
-  display:grid;
-  place-items:center;
-  padding: 10px;
-}
-.gModal{
-  background: rgba(0,0,0,0.80);
-  padding: 14px;
-  border-radius: 14px;
-  text-align:center;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.55);
-}
-#gName{
-  padding: 8px;
-  border-radius: 8px;
-  border: none;
-  font-family: inherit;
-}
-.gBtn{
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: none;
-  margin-left: 6px;
-  cursor:pointer;
+.obstacle {
+  position: absolute;
+  bottom: 30px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="page">
+<div class="leaderboard">
+  <h2>Flakon Ranglista</h2>
+  <div class="row"><img class="avatar" src="onedoor.png"><div class="name">On3door</div><div class="count">65</div></div>
+  <div class="row"><img class="avatar" src="misztersiba.gif"><div class="name">MiszterSusu</div><div class="count">60</div></div>
+  <div class="row"><img class="avatar" src="dinoori.gif"><div class="name">SusuSzaurusz</div><div class="count">58</div></div>
+</div>
 
-  <!-- KÖZÉP: LEADERBOARD (EREDTI ADATOK!) -->
-  <div class="centerCol">
-    <div class="leaderboard">
-      <h2>Flakon Ranglista</h2>
-
-      <div class="row">
-        <img class="avatar" src="onedoor.png" alt="Avatar">
-        <div class="name">On3door</div>
-        <div class="count">65</div>
-      </div>
-
-      <div class="row">
-        <img class="avatar" src="misztersiba.gif" alt="Avatar">
-        <div class="name">MiszterSusu</div>
-        <div class="count">60</div>
-      </div>
-
-      <div class="row">
-        <img class="avatar" src="dinoori.gif" alt="Avatar">
-        <div class="name">SusuSzaurusz</div>
-        <div class="count">58</div>
-      </div>
-
-      <div class="row">
-        <img class="avatar" src="spudbaymaci.gif" alt="Avatar">
-        <div class="name">Spudbay</div>
-        <div class="count">55</div>
-      </div>
-
-      <div class="row">
-        <img class="avatar" src="Mrgrogu.gif" alt="Avatar">
-        <div class="name">MrSusu</div>
-        <div class="count">50</div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- JOBB: JÁTÉK -->
-  <div class="rightCol">
-    <div id="gameWrap">
-      <div class="gTop">
-        <div class="gPill">Játékos: <b id="uiPlayer">-</b></div>
-        <div class="gPill">Pont: <b id="uiScore">0</b></div>
-        <div class="gPill">Rekord: <b id="uiBest">- - 0</b></div>
-      </div>
-
-      <div id="gGame">
-        <img id="gPlayer" src="majomka.png" alt="Majom">
-        <div id="gHit"></div>
-        <div class="gGround"></div>
-
-        <div id="start" class="gOverlay">
-          <div class="gModal">
-            <div style="font-weight:bold; margin-bottom:8px;">Majom ugrálós</div>
-            <input id="gName" maxlength="18" placeholder="Neved">
-            <button class="gBtn" id="startBtn">Start</button>
-            <div style="margin-top:8px; font-size:12px; opacity:.9;">Space vagy kattintás = ugrás</div>
-          </div>
-        </div>
-
-        <div id="over" class="gOverlay" style="display:none;">
-          <div class="gModal">
-            <div id="overText" style="margin-bottom:10px;"></div>
-            <button class="gBtn" id="restartBtn">Újra</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
+<div id="game">
+  <img id="player" src="majomka.png">
 </div>
 
 <script>
-(() => {
-  // ===== UI =====
-  const uiPlayer = document.getElementById("uiPlayer");
-  const uiScore  = document.getElementById("uiScore");
-  const uiBest   = document.getElementById("uiBest");
+const API_URL = "https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
 
-  const game     = document.getElementById("gGame");
-  const playerImg= document.getElementById("gPlayer");
-  const hit      = document.getElementById("gHit");
+let score = 0;
+let speed = 4;
+let obstacle;
 
-  const startOv  = document.getElementById("start");
-  const overOv   = document.getElementById("over");
-  const overText = document.getElementById("overText");
+function spawnObstacle() {
+  obstacle = document.createElement("img");
+  obstacle.src = Math.random() < 0.5 ? "banana.png" : "stone.png";
+  obstacle.className = "obstacle";
+  obstacle.style.width = obstacle.src.includes("banana") ? "52px" : "46px";
+  obstacle.style.left = "500px";
+  document.getElementById("game").appendChild(obstacle);
+}
 
-  const nameInput= document.getElementById("gName");
-  const startBtn = document.getElementById("startBtn");
-  const restartBtn = document.getElementById("restartBtn");
+function gameLoop() {
+  score++;
 
-  // ===== rekord név + pont =====
-  const BEST_KEY = "majom_best_v3";
+  if (score === 500) speed = 5;
+  if (score === 1500) speed = 6;
+  if (score === 2000) speed = 7;
 
-  function loadBest(){
-    try {
-      const raw = localStorage.getItem(BEST_KEY);
-      if (!raw) return { name: "-", score: 0 };
-      const obj = JSON.parse(raw);
-      const name = (obj && obj.name) ? String(obj.name) : "-";
-      const score = Number(obj && obj.score ? obj.score : 0);
-      return { name, score: isNaN(score) ? 0 : score };
-    } catch {
-      return { name: "-", score: 0 };
-    }
-  }
-  function saveBest(b){ localStorage.setItem(BEST_KEY, JSON.stringify(b)); }
-  function showBest(){
-    const b = loadBest();
-    uiBest.textContent = `${b.name} - ${b.score}`;
-  }
-  showBest();
+  if (!obstacle) spawnObstacle();
+  obstacle.style.left = (parseInt(obstacle.style.left) - speed) + "px";
 
-  // ===== játék state =====
-  let running = false;
-  let playerName = "";
-
-  // fizika
-  let y = 0, vy = 0;
-  const gravity = -0.9;
-  const jumpV = 21;
-
-  // pont
-  let score = 0, tick = 0;
-
-  // dinos-szerű gyorsulás
-  let speedBase = 4.0;
-  let speedMax  = 10.0;
-  let speed = speedBase;
-
-  // random spawn
-  let spawnMin = 85, spawnMax = 155;
-  let spawnTimer = 0;
-
-  let obstacles = [];
-
-  function reset(){
-    obstacles.forEach(o => o.el.remove());
-    obstacles = [];
-    y = 0; vy = 0;
-    score = 0; tick = 0;
-    speed = speedBase;
-    spawnMin = 85; spawnMax = 155;
-    spawnTimer = 0;
-    uiScore.textContent = "0";
-    overOv.style.display = "none";
+  if (parseInt(obstacle.style.left) < -60) {
+    obstacle.remove();
+    obstacle = null;
   }
 
-  function startGame(){
-    playerName = (nameInput.value || "").trim() || "Névtelen";
-    uiPlayer.textContent = playerName;
+  requestAnimationFrame(gameLoop);
+}
 
-    reset();
-    startOv.style.display = "none";
-    running = true;
-    requestAnimationFrame(loop);
-  }
-
-  function jump(){
-    if (!running) return;
-    if (y <= 0.5) vy = jumpV;
-  }
-
-  function addObstacle(){
-    const el = document.createElement("div");
-    const isBanana = Math.random() < 0.5;
-    el.className = "gObstacle " + (isBanana ? "gBanana" : "gStone");
-    game.appendChild(el);
-
-    // kő kicsit nagyobb, banán kisebb
-    const size = isBanana ? 36 : 44;
-    el.style.width = size + "px";
-    el.style.height = size + "px";
-
-    const x = game.clientWidth + 80;
-    obstacles.push({ el, x });
-    el.style.left = x + "px";
-  }
-
-  function rectsOverlap(a, b){
-    return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
-  }
-
-  function gameOver(){
-    running = false;
-
-    const best = loadBest();
-    if (score > best.score) {
-      saveBest({ name: playerName, score });
-    }
-    showBest();
-
-    overText.innerHTML = `Pontod: <b>${score}</b>`;
-    overOv.style.display = "grid";
-  }
-
-  function loop(){
-    if (!running) return;
-
-    // fizika
-    vy += gravity;
-    y += vy;
-    if (y < 0) { y = 0; vy = 0; }
-
-    playerImg.style.transform = `translateY(${-y}px)`;
-    hit.style.transform = `translateY(${-y}px)`;
-
-    // pont + dinos gyorsulás
-    tick++;
-    if (tick % 6 === 0) {
-      score++;
-      uiScore.textContent = String(score);
-      speed = Math.min(speedMax, speedBase + score * 0.003);
-    }
-
-    // random spawn
-    spawnTimer++;
-    const threshold = spawnMin + Math.random() * (spawnMax - spawnMin);
-    if (spawnTimer > threshold) {
-      addObstacle();
-      spawnTimer = 0;
-    }
-
-    // ütközés
-    const hRect = hit.getBoundingClientRect();
-
-    for (let i = obstacles.length - 1; i >= 0; i--) {
-      const o = obstacles[i];
-      o.x -= speed;
-      o.el.style.left = o.x + "px";
-
-      if (o.x < -120) {
-        o.el.remove();
-        obstacles.splice(i, 1);
-        continue;
-      }
-
-      const oRect = o.el.getBoundingClientRect();
-      if (rectsOverlap(hRect, oRect)) {
-        gameOver();
-        return;
-      }
-    }
-
-    requestAnimationFrame(loop);
-  }
-
-  // input
-  document.addEventListener("keydown", (e) => {
-    if (e.code === "Space") {
-      e.preventDefault();
-      if (startOv.style.display !== "none") return;
-      jump();
-    }
-  });
-  game.addEventListener("pointerdown", () => {
-    if (startOv.style.display !== "none") return;
-    jump();
-  });
-
-  startBtn.addEventListener("click", startGame);
-  nameInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") startGame();
-  });
-  restartBtn.addEventListener("click", startGame);
-
-})();
+gameLoop();
 </script>
 
 </body>
