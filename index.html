@@ -2,69 +2,52 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Flakon Ranglista + Játék</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flakon Ranglista + Majom Játék</title>
 
 <style>
 /* ===============================
-   BODY & HÁTTÉR (OLDAL)
+   OLDAL HÁTTÉR
    =============================== */
 body {
   margin: 0;
-  padding: 0;
   font-family: 'Comic Sans MS', cursive;
-  background: url('hatter.jpg') no-repeat center center fixed;
+  background: url('hatter.png') no-repeat center center fixed;
   background-size: cover;
   color: #fff;
 }
 
 /* ===============================
-   LAYOUT
-   - leaderboard középen
-   - játék jobbra, nem lóg bele
+   ELRENDEZÉS
    =============================== */
 .page {
   display: grid;
   grid-template-columns: 1fr auto auto;
-  gap: 32px;
-  padding: 30px 20px;
-  align-items: start;
+  gap: 30px;
+  padding: 30px;
   justify-content: center;
 }
 
 .centerCol { justify-self: center; }
-.rightCol  { 
-  justify-self: start;
-  margin-left: -30px;   /* EZ TOLJA BALRA */
-}
-
-
-/* mobilon egymás alá */
-@media (max-width: 1100px) {
-  .page { grid-template-columns: 1fr; }
-  .centerCol, .rightCol { justify-self: center; }
-}
+.rightCol  { justify-self: start; margin-left: -30px; }
 
 /* ===============================
    LEADERBOARD (VÁLTOZATLAN)
    =============================== */
 .leaderboard {
   width: 600px;
-  margin: 0 auto;
   padding: 30px;
   background: url('keret.png') no-repeat center center;
   background-size: cover;
   border-radius: 25px;
   box-shadow: 0 0 30px rgba(0,0,0,0.7);
-  position: relative;
 }
 
 .leaderboard h2 {
   text-align: center;
   font-size: 36px;
-  font-weight: bold;
-  text-shadow: 2px 2px 6px #000;
   margin-bottom: 30px;
+  text-shadow: 2px 2px 6px #000;
 }
 
 .row {
@@ -75,11 +58,9 @@ body {
   margin: 12px 0;
   padding: 14px 16px;
   border-radius: 20px;
-  box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
   border: 4px solid transparent;
 }
 
-/* 1-2-3 keret (a h2 miatt 2,3,4) */
 .row:nth-child(2) { border-color: gold; }
 .row:nth-child(3) { border-color: silver; }
 .row:nth-child(4) { border-color: #cd7f32; }
@@ -89,16 +70,14 @@ body {
   height: 70px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 16px;
   border: 3px solid #fff;
-  box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
 .name {
   font-size: 24px;
   font-weight: bold;
   flex: 1;
-  text-shadow: 2px 2px 3px #000;
+  margin-left: 15px;
 }
 
 .count {
@@ -108,139 +87,103 @@ body {
   color: #000;
   padding: 8px 12px;
   border-radius: 12px;
-  box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-  min-width: 60px;
-  text-align: center;
 }
 
 /* ===============================
-   JÁTÉK (SAJÁT STÍLUS, NEM ÜTKÖZIK)
+   JÁTÉK
    =============================== */
 #gameWrap {
   width: 520px;
   background: rgba(0,0,0,0.45);
   border-radius: 22px;
   padding: 14px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.6);
-  border: 1px solid rgba(255,255,255,0.18);
 }
 
 .gTop {
   display: flex;
   gap: 10px;
   justify-content: space-between;
-  flex-wrap: wrap;
   font-size: 14px;
   margin-bottom: 10px;
 }
 
-.gPill{
-  background: rgba(255,255,255,.10);
-  border: 1px solid rgba(255,255,255,.16);
+.gPill {
+  background: rgba(255,255,255,0.15);
+  padding: 6px 10px;
   border-radius: 999px;
-  padding: 7px 10px;
 }
-.gPill b{ font-weight: 900; }
 
 #gGame {
   position: relative;
   height: 300px;
   border-radius: 14px;
   overflow: hidden;
-
-  /* JÁTÉK SAJÁT HÁTTERE */
   background: url('jatekhatter.jpg') no-repeat center bottom;
   background-size: cover;
-
-  border: 2px solid rgba(255,255,255,.15);
 }
 
-.gGround{
-  position:absolute;
-  bottom:0;
-  left:0;
-  right:0;
-  height:52px;
-  background: rgba(0,0,0,.25);
-  border-top: 2px solid rgba(255,255,255,.12);
+.gGround {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  background: rgba(0,0,0,0.35);
 }
 
 /* karakter */
-#gPlayer{
-  position:absolute;
+#gPlayer {
+  position: absolute;
   left: 70px;
   bottom: 52px;
   width: 90px;
   height: 90px;
   object-fit: contain;
-  filter: drop-shadow(0 6px 0 rgba(0,0,0,.25));
-  user-select: none;
-  pointer-events: none;
 }
 
 /* akadályok */
-.gObstacle{
-  position:absolute;
+.gObstacle {
+  position: absolute;
   bottom: 52px;
-  width: 64px;
-  height: 64px;
+  width: 52px;
+  height: 52px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-position: center;
-  filter: drop-shadow(0 6px 0 rgba(0,0,0,.25));
-  pointer-events: none;
 }
 
-.gBanana{ background-image: url('banana.png'); }
-.gStone { background-image: url('stone.png'); }
+.gBanana { background-image: url('banana.png'); }
+.gStone  { background-image: url('stone.png'); }
 
-.gOverlay{
-  position:absolute;
-  inset:0;
-  background: rgba(0,0,0,.55);
-  display:grid;
-  place-items:center;
+/* overlayk */
+.gOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: grid;
+  place-items: center;
+}
+
+.gModal {
+  background: rgba(0,0,0,0.8);
   padding: 14px;
+  border-radius: 14px;
+  text-align: center;
 }
 
-.gModal{
-  width: min(420px, 92%);
-  background: rgba(20,20,20,.92);
-  border: 1px solid rgba(255,255,255,.14);
-  border-radius: 16px;
-  padding: 14px;
-  text-align:center;
-  box-shadow: 0 18px 60px rgba(0,0,0,.6);
-}
-.gModal h3{ margin: 0 0 10px; font-size: 18px; }
-
-.gLine{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-
-#gName{
-  min-width: 180px;
+#gName {
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
   font-family: inherit;
-  font-size: 15px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.20);
-  background: rgba(255,255,255,.06);
-  color: #fff;
-  outline: none;
 }
 
-.gBtn{
-  font-family: inherit;
-  font-size: 15px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.20);
-  background: rgba(255,255,255,.12);
-  color:#fff;
-  cursor:pointer;
+.gBtn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  margin-left: 6px;
+  cursor: pointer;
 }
-.gBtn:hover{ background: rgba(255,255,255,.18); }
-
-.gHint{ margin-top: 8px; opacity:.88; font-size: 13px; line-height:1.35; }
 </style>
 </head>
 
@@ -248,318 +191,168 @@ body {
 
 <div class="page">
 
-  <!-- KÖZÉP: LEADERBOARD -->
-  <div class="centerCol">
-    <div class="leaderboard">
-      <h2>Flakon Ranglista</h2>
+<!-- LEADERBOARD -->
+<div class="centerCol">
+<div class="leaderboard">
+<h2>Flakon Ranglista</h2>
 
-      <div class="row">
-        <img class="avatar" src="onedoor.png" alt="Avatar">
-        <div class="name">On3door</div>
-        <div class="count">65</div>
-      </div>
+<div class="row"><img class="avatar" src="onedoor.png"><div class="name">On3door</div><div class="count">65</div></div>
+<div class="row"><img class="avatar" src="misztersiba.gif"><div class="name">MiszterSusu</div><div class="count">60</div></div>
+<div class="row"><img class="avatar" src="dinoori.gif"><div class="name">SusuSzaurusz</div><div class="count">58</div></div>
+<div class="row"><img class="avatar" src="spudbaymaci.gif"><div class="name">Spudbay</div><div class="count">55</div></div>
 
-      <div class="row">
-        <img class="avatar" src="misztersiba.gif" alt="Avatar">
-        <div class="name">MiszterSusu</div>
-        <div class="count">60</div>
-      </div>
+</div>
+</div>
 
-      <div class="row">
-        <img class="avatar" src="dinoori.gif" alt="Avatar">
-        <div class="name">SusuSzaurusz</div>
-        <div class="count">58</div>
-      </div>
+<!-- JÁTÉK -->
+<div class="rightCol">
+<div id="gameWrap">
 
-      <div class="row">
-        <img class="avatar" src="spudbaymaci.gif" alt="Avatar">
-        <div class="name">Spudbay</div>
-        <div class="count">55</div>
-      </div>
+<div class="gTop">
+<div class="gPill">Játékos: <b id="uiPlayer">-</b></div>
+<div class="gPill">Pont: <b id="uiScore">0</b></div>
+<div class="gPill">Rekord: <b id="uiBest">-</b></div>
+</div>
 
-      <div class="row">
-        <img class="avatar" src="Mrgrogu.gif" alt="Avatar">
-        <div class="name">MrSusu</div>
-        <div class="count">50</div>
-      </div>
-    </div>
+<div id="gGame">
+<img id="gPlayer" src="majomka.png">
+<div class="gGround"></div>
+
+<div id="start" class="gOverlay">
+  <div class="gModal">
+    <input id="gName" placeholder="Neved">
+    <button class="gBtn" onclick="startGame()">Start</button>
   </div>
+</div>
 
-  <!-- JOBB: JÁTÉK -->
-  <div class="rightCol">
-    <div id="gameWrap">
-      <div class="gTop">
-        <div class="gPill">Játékos: <b id="gUiPlayer">-</b></div>
-        <div class="gPill">Pont: <b id="gUiScore">0</b></div>
-        <div class="gPill">Rekord: <b id="gUiBest">- - 0</b></div>
-      </div>
-
-      <div id="gGame">
-        <img id="gPlayer" src="majomka.png" alt="Majom">
-        <div class="gGround"></div>
-
-        <div id="gStart" class="gOverlay">
-          <div class="gModal">
-            <h3>Majom ugrálós</h3>
-            <div class="gLine">
-              <input id="gName" maxlength="18" placeholder="Neved">
-              <button class="gBtn" id="gStartBtn">Start</button>
-            </div>
-            <div class="gHint">Space vagy kattintás = ugrás</div>
-          </div>
-        </div>
-
-        <div id="gOver" class="gOverlay" style="display:none;">
-          <div class="gModal">
-            <h3>Game Over</h3>
-            <div class="gHint" id="gOverText"></div>
-            <div class="gLine" style="margin-top:10px;">
-              <button class="gBtn" id="gRestartBtn">Újra</button>
-              <button class="gBtn" id="gChangeNameBtn">Név csere</button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
+<div id="over" class="gOverlay" style="display:none;">
+  <div class="gModal">
+    <div id="overText"></div>
+    <button class="gBtn" onclick="startGame()">Újra</button>
   </div>
+</div>
 
+</div>
+</div>
 </div>
 
 <script>
-(() => {
-  const BEST_KEY = "monkey_runner_best_v2";
+/* ===============================
+   JÁTÉK LOGIKA – DINO STÍLUS
+   =============================== */
+let y=0, vy=0;
+const gravity = -0.9;
+const jumpV = 21;
 
-  const uiPlayer = document.getElementById("gUiPlayer");
-  const uiScore  = document.getElementById("gUiScore");
-  const uiBest   = document.getElementById("gUiBest");
+let score=0;
+let tick=0;
 
-  const startOverlay = document.getElementById("gStart");
-  const overOverlay  = document.getElementById("gOver");
-  const overText     = document.getElementById("gOverText");
+let speedBase = 4.0;
+let speedMax  = 10.0;
+let speed = speedBase;
 
-  const nameInput     = document.getElementById("gName");
-  const startBtn      = document.getElementById("gStartBtn");
-  const restartBtn    = document.getElementById("gRestartBtn");
-  const changeNameBtn = document.getElementById("gChangeNameBtn");
+let spawnMin = 85;
+let spawnMax = 155;
+let spawnTimer = 0;
 
-  const game   = document.getElementById("gGame");
-  const player = document.getElementById("gPlayer");
+let obstacles=[];
+let running=false;
+let playerName="";
 
-  function loadBest(){
-    try {
-      const raw = localStorage.getItem(BEST_KEY);
-      if (!raw) return { name: "-", score: 0 };
-      const obj = JSON.parse(raw);
-      return { name: obj.name || "-", score: Number(obj.score || 0) };
-    } catch {
-      return { name: "-", score: 0 };
-    }
-  }
-  function saveBest(best){
-    localStorage.setItem(BEST_KEY, JSON.stringify(best));
-  }
-  function renderBest(){
-    const b = loadBest();
-    uiBest.textContent = `${b.name} - ${b.score}`;
-  }
-  renderBest();
+const player=document.getElementById("gPlayer");
+const game=document.getElementById("gGame");
+const uiScore=document.getElementById("uiScore");
+const uiPlayer=document.getElementById("uiPlayer");
+const uiBest=document.getElementById("uiBest");
+const over=document.getElementById("over");
+const startO=document.getElementById("start");
+const overText=document.getElementById("overText");
 
-  let currentName = "";
-  let running = false;
+function loadBest(){
+  return JSON.parse(localStorage.getItem("best")) || {name:"-",score:0};
+}
+function saveBest(b){ localStorage.setItem("best",JSON.stringify(b)); }
+function renderBest(){
+  const b=loadBest();
+  uiBest.textContent=`${b.name} - ${b.score}`;
+}
+renderBest();
 
-  // fizika
-  let y = 0;
-  let vy = 0;
-  const gravity = -0.9;
-  const jumpV = 17;
+function startGame(){
+  playerName=document.getElementById("gName").value||"Névtelen";
+  uiPlayer.textContent=playerName;
+  y=0;vy=0;score=0;tick=0;
+  speed=speedBase;
+  spawnMin=85;spawnMax=155;
+  obstacles.forEach(o=>o.el.remove());
+  obstacles=[];
+  uiScore.textContent="0";
+  over.style.display="none";
+  startO.style.display="none";
+  running=true;
+  requestAnimationFrame(loop);
+}
 
-  // pont
-  let score = 0;
-  let tick = 0;
+function addObstacle(){
+  const el=document.createElement("div");
+  el.className="gObstacle "+(Math.random()<0.5?"gBanana":"gStone");
+  game.appendChild(el);
+  const x=game.clientWidth+80;
+  obstacles.push({el,x});
+  el.style.left=x+"px";
+}
 
-  // akadályok + gyorsulás
-  let obstacles = [];
-  let spawnTimer = 0;
+function loop(){
+  if(!running)return;
 
-  let speed = 3.5;      // lassú start
-  let spawnMin = 75;    // random spawn ablak
-  let spawnMax = 140;
+  vy+=gravity;
+  y+=vy;
+  if(y<0){y=0;vy=0;}
+  player.style.transform=`translateY(${-y}px)`;
 
-  function setPlayerName(name){
-    currentName = (name || "").trim() || "Névtelen";
-    uiPlayer.textContent = currentName;
-  }
-
-  function resetGame(){
-    obstacles.forEach(o => o.el.remove());
-    obstacles = [];
-
-    y = 0; vy = 0;
-    player.style.transform = `translateY(${-y}px)`;
-
-    score = 0; tick = 0;
-    uiScore.textContent = "0";
-
-    spawnTimer = 0;
-    speed = 3.5;
-    spawnMin = 75;
-    spawnMax = 140;
-
-    overOverlay.style.display = "none";
+  tick++;
+  if(tick%6===0){
+    score++;
+    uiScore.textContent=score;
+    speed=Math.min(speedMax,speedBase+score*0.003);
   }
 
-  function startGame(){
-    if (!currentName) setPlayerName(nameInput.value);
-    resetGame();
-    running = true;
-    startOverlay.style.display = "none";
-    requestAnimationFrame(loop);
+  spawnTimer++;
+  const threshold=spawnMin+Math.random()*(spawnMax-spawnMin);
+  if(spawnTimer>threshold){
+    addObstacle();
+    spawnTimer=0;
   }
 
-  function gameOver(){
-    running = false;
-
-    const best = loadBest();
-    let msg = `Pontod: <b>${score}</b><br>`;
-
-    if (score > best.score) {
-      const newBest = { name: currentName, score };
-      saveBest(newBest);
-      renderBest();
-      msg += `🎉 ÚJ REKORD! <b>${newBest.name}</b> - <b>${newBest.score}</b>`;
-    } else {
-      msg += `Rekord: <b>${best.name}</b> - <b>${best.score}</b>`;
-    }
-
-    overText.innerHTML = msg;
-    overOverlay.style.display = "grid";
-  }
-
-  function jump(){
-    if (!running) return;
-    if (y <= 0.5) vy = jumpV;
-  }
-
-  function addObstacle(){
-    const el = document.createElement("div");
-    const isBanana = Math.random() < 0.5;
-    el.className = "gObstacle " + (isBanana ? "gBanana" : "gStone");
-    game.appendChild(el);
-
-    // méret picit variálható, kő legyen kicsit nagyobb
-    const size = isBanana ? 56 : 66;
-    el.style.width = size + "px";
-    el.style.height = size + "px";
-
-    const x = game.clientWidth + 80;
-    obstacles.push({ el, x });
-    el.style.left = x + "px";
-  }
-
-  function rectsOverlap(a, b){
-    return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
-  }
-
-  function loop(){
-    if (!running) return;
-
-    // ugrás fizika
-    vy += gravity;
-    y += vy;
-    if (y < 0) { y = 0; vy = 0; }
-    player.style.transform = `translateY(${-y}px)`;
-
-    // pont (idő alapú egyszerűség)
-    tick++;
-    if (tick % 6 === 0) {
-      score++;
-      uiScore.textContent = String(score);
-
-      // fokozatos gyorsulás
-      if (score % 15 === 0) speed += 0.15;
-    }
-
-    // random spawn
-    spawnTimer++;
-    const threshold = spawnMin + Math.floor(Math.random() * (spawnMax - spawnMin));
-    if (spawnTimer > threshold) {
-      addObstacle();
-      spawnTimer = 0;
-
-      // ahogy haladsz, picit sűrűsödik (nem durván)
-      if (score % 30 === 0 && spawnMax > 110) {
-        spawnMin -= 2;
-        spawnMax -= 3;
+  const pRect=player.getBoundingClientRect();
+  for(let i=obstacles.length-1;i>=0;i--){
+    const o=obstacles[i];
+    o.x-=speed;
+    o.el.style.left=o.x+"px";
+    if(o.x<-80){o.el.remove();obstacles.splice(i,1);continue;}
+    if(pRect.left<o.el.getBoundingClientRect().right &&
+       pRect.right>o.el.getBoundingClientRect().left &&
+       pRect.bottom>o.el.getBoundingClientRect().top){
+      running=false;
+      const best=loadBest();
+      if(score>best.score){
+        saveBest({name:playerName,score});
+        renderBest();
       }
+      overText.innerHTML=`Pontod: ${score}`;
+      over.style.display="grid";
+      return;
     }
-
-    // mozgatás + ütközés
-    const pRect = player.getBoundingClientRect();
-
-    for (let i = obstacles.length - 1; i >= 0; i--) {
-      const o = obstacles[i];
-      o.x -= speed;
-      o.el.style.left = o.x + "px";
-
-      if (o.x < -120) {
-        o.el.remove();
-        obstacles.splice(i, 1);
-        continue;
-      }
-
-      const oRect = o.el.getBoundingClientRect();
-      if (rectsOverlap(pRect, oRect)) {
-        gameOver();
-        return;
-      }
-    }
-
-    requestAnimationFrame(loop);
   }
 
-  // input
-  document.addEventListener("keydown", (e) => {
-    if (e.code === "Space") {
-      e.preventDefault();
-      if (startOverlay.style.display !== "none") return;
-      jump();
-    }
-  });
+  requestAnimationFrame(loop);
+}
 
-  game.addEventListener("pointerdown", () => {
-    if (startOverlay.style.display !== "none") return;
-    jump();
-  });
-
-  startBtn.addEventListener("click", () => {
-    setPlayerName(nameInput.value);
-    startGame();
-  });
-
-  nameInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      setPlayerName(nameInput.value);
-      startGame();
-    }
-  });
-
-  restartBtn.addEventListener("click", () => {
-    startGame();
-  });
-
-  changeNameBtn.addEventListener("click", () => {
-    running = false;
-    overOverlay.style.display = "none";
-    startOverlay.style.display = "grid";
-    nameInput.focus();
-  });
-
-  nameInput.focus();
-})();
+document.addEventListener("keydown",e=>{
+  if(e.code==="Space"&&running&&y===0)vy=jumpV;
+});
+game.addEventListener("pointerdown",()=>{ if(running&&y===0)vy=jumpV; });
 </script>
 
 </body>
 </html>
-
-
