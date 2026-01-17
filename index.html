@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-<title>Flakon leaderboard </title>
+<title>Flakon leaderboard</title>
 <style>
 body{
   margin:0;
@@ -17,7 +17,7 @@ body{
   color:#fff;
 }
 
-/* ===== Leaderboard (5 sor, eredeti) ===== */
+/* ===== Leaderboard ===== */
 .leaderboard{
   width:600px;
   padding:30px;
@@ -92,7 +92,7 @@ body{
   transition: transform 60ms linear;
 }
 
-/* gugolás animáció (kicsit összenyom) */
+/* gugolás animáció */
 #player.crouch{
   transform: scaleY(0.72);
 }
@@ -154,7 +154,8 @@ body{
   </div>
 
   <div class="row">
-    <img class="avatar" src="ondedoor.png" alt="Avatar">
+    <!-- FIGYELEM: nálad "ondedoor.png" volt, ha a fájl valójában "onedoor.png", akkor írd át -->
+    <img class="avatar" src="onedoor.png" alt="Avatar">
     <div class="name">On3door</div>
     <div class="count">65</div>
   </div>
@@ -193,7 +194,8 @@ body{
       <div class="modal">
         <h3>Majom Jump</h3>
         <div>Írd be a neved:</div>
-        <input id="nameInput" maxlength="18" placeholder="Pl. On3door">
+        <!-- ✅ nincs példa név / placeholder -->
+        <input id="nameInput" maxlength="18" placeholder="">
         <br>
         <button id="startBtn">START</button>
         <div class="hint">Ugrás: Space / tap • Gugolás: S (tart)</div>
@@ -223,6 +225,10 @@ const JUMP_V  = 19;
 
 /* ===== API ===== */
 const API_URL = "https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
+
+/* ===== Hang (tedd a HTML mellé) ===== */
+const birdHitSound = new Audio("viiviiiviii.mp3");
+birdHitSound.volume = 1.0;
 
 const game = document.getElementById("game");
 const playerEl = document.getElementById("player");
@@ -269,7 +275,7 @@ let playerName="-";
 let score=0, speed=4;
 let y=0, vy=0;
 
-let crouch=false; // ✅ gugolás állapot
+let crouch=false;
 let obstacles=[];
 let dist=0, nextSpawnDist=0;
 let bgX=0;
@@ -293,6 +299,10 @@ function setCrouch(on){
 function startGame(){
   playerName = (nameInput.value || "").trim() || "Névtelen";
   hudPlayer.textContent = "Játékos: " + playerName;
+
+  // ✅ hang “feloldás” is user interaction után
+  birdHitSound.currentTime = 0;
+  birdHitSound.play().then(()=>{ birdHitSound.pause(); birdHitSound.currentTime=0; }).catch(()=>{});
 
   resetGame();
   alive=true; running=true;
@@ -333,14 +343,11 @@ let holdTimer = null;
 game.addEventListener("pointerdown",()=>{
   if (startOverlay.style.display !== "none") return;
   if (overOverlay.style.display !== "none") return;
-
-  // ha tartja 180ms-ig -> gugol
   holdTimer = setTimeout(()=>setCrouch(true), 180);
 });
 game.addEventListener("pointerup",()=>{
   if (holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
-  if (crouch){ setCrouch(false); return; } // ha gugolt, csak feláll
-  // ha nem gugolt: ugrás
+  if (crouch){ setCrouch(false); return; }
   if (startOverlay.style.display === "none" && overOverlay.style.display === "none") jump();
 });
 game.addEventListener("pointercancel",()=>{
@@ -353,7 +360,6 @@ function spawnObstacle(){
   const el = document.createElement("img");
   el.className="obstacle";
 
-  // 3 típus
   const r = Math.random();
   let type;
   if (r < 0.50) type = "banana";
@@ -374,8 +380,9 @@ function spawnObstacle(){
     el.src = "madar.gif";
     el.style.width = "70px";
     el.style.height = "46px";
-    // ✅ olyan magasan, hogy ÁLLVA ütközz, gugolva átférj
-    el.style.bottom = "96px";
+    /* ✅ A MADÁR LEJJEBB kerül, hogy ÁLLVA ütközz,
+       ✅ GUGOLVA pedig elférj alatta */
+    el.style.bottom = "72px";
   }
 
   el.style.left = game.clientWidth + "px";
@@ -388,7 +395,6 @@ function spawnObstacle(){
 
   obstacles.push({ el, x: game.clientWidth, w, h, bottom, mult, type });
 
-  // játszható spawn
   const gapMin=480, gapMax=760;
   nextSpawnDist = dist + (gapMin + Math.random()*(gapMax-gapMin));
 }
@@ -397,10 +403,18 @@ function rectsOverlap(a,b){
   return (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y);
 }
 
-function gameOver(){
+function gameOver(hitType){
   alive=false; running=false;
   overText.innerHTML = `Pont: <b>${score}</b>`;
   overOverlay.style.display="grid";
+
+  if (hitType === "bird"){
+    try{
+      birdHitSound.currentTime = 0;
+      birdHitSound.play().catch(()=>{});
+    } catch {}
+  }
+
   if (score > bestScore) trySaveBest(playerName, score);
   else loadBest();
 }
@@ -424,11 +438,13 @@ function loop(){
 
   if (dist >= nextSpawnDist) spawnObstacle();
 
-  // ✅ player hitbox állva / gugolva
+  /* ✅ JAVÍTOTT HITBOX:
+     - Gugolva NEM feljebb kerül a doboz, hanem ALACSONYABB és KISEBB lesz. */
   const baseY = (30 + y);
+
   const playerBox = crouch
-    ? { x: 60 + 16, y: baseY + 44, w: 90 - 32, h: 40 } // gugolva alacsony
-    : { x: 60 + 16, y: baseY + 14, w: 90 - 32, h: 66 }; // állva magasabb
+    ? { x: 60 + 18, y: baseY + 10, w: 90 - 36, h: 40 }  // gugolva alacsony és kisebb
+    : { x: 60 + 18, y: baseY + 16, w: 90 - 36, h: 64 }; // állva magasabb
 
   for (let i=obstacles.length-1;i>=0;i--){
     const o = obstacles[i];
@@ -441,10 +457,14 @@ function loop(){
       continue;
     }
 
-    // ✅ madár hitbox kisebb, hogy fair legyen (szárnyak ne ölnek)
     let shrinkX = 14, shrinkY = 14;
     if (o.type==="stone"){ shrinkX=22; shrinkY=22; }
-    if (o.type==="bird"){ shrinkX=26; shrinkY=18; } // ← EZ a kulcs
+    if (o.type==="bird"){
+      /* ✅ madár hitbox: szűkebb, de nem túl szűk
+         és lejjebb van, ezért állva ütközöl, gugolva nem */
+      shrinkX = 20;
+      shrinkY = 10;
+    }
 
     const obsBox = {
       x: o.x + shrinkX,
@@ -454,8 +474,7 @@ function loop(){
     };
 
     if (rectsOverlap(playerBox, obsBox)){
-      // később itt jön a hang (madárra külön)
-      gameOver();
+      gameOver(o.type);
       return;
     }
   }
@@ -470,4 +489,3 @@ overOverlay.style.display="none";
 
 </body>
 </html>
-
