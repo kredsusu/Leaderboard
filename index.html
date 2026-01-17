@@ -16,8 +16,6 @@ body{
   padding-top:40px;
   color:#fff;
 }
-
-/* ===== Leaderboard ===== */
 .leaderboard{
   width:600px;
   padding:30px;
@@ -47,7 +45,6 @@ body{
 .row:nth-child(2){border-color:gold;}
 .row:nth-child(3){border-color:silver;}
 .row:nth-child(4){border-color:#cd7f32;}
-
 .avatar{
   width:70px;height:70px;border-radius:50%;
   object-fit:cover;border:3px solid #fff;
@@ -61,26 +58,21 @@ body{
   min-width:60px;text-align:center;
   box-shadow:2px 2px 4px rgba(0,0,0,.4);
 }
-
-/* ===== Jobb oldal: HUD + Game ===== */
 .rightCol{display:flex;flex-direction:column;gap:10px;align-items:flex-start;}
 .hud{width:680px;display:flex;justify-content:space-between;gap:10px;font-weight:800;text-shadow:2px 2px 6px #000;flex-wrap:wrap;}
 .pill{background:rgba(0,0,0,.35);padding:8px 12px;border-radius:999px;white-space:nowrap;}
-
 #game{
   width:680px;height:380px;
-  background-image: url("jatekhatter.jpg");
-  background-size: cover;
-  background-repeat: repeat-x;
-  background-position: 0px 0px;
-
+  background-image:url("jatekhatter.jpg");
+  background-size:cover;
+  background-repeat:repeat-x;
+  background-position:0px 0px;
   border-radius:20px;
   position:relative;
   overflow:hidden;
   box-shadow:0 0 20px rgba(0,0,0,.6);
-  touch-action: manipulation;
+  touch-action:manipulation;
 }
-
 #player{
   position:absolute;
   left:60px;
@@ -89,21 +81,14 @@ body{
   user-select:none;
   -webkit-user-drag:none;
   transform-origin:bottom;
-  transition: transform 60ms linear;
+  transition:transform 60ms linear;
 }
-
-/* gugolás animáció */
-#player.crouch{
-  transform: scaleY(0.72);
-}
-
+#player.crouch{transform:scaleY(0.72);}
 .obstacle{
   position:absolute;
   user-select:none;
   -webkit-user-drag:none;
 }
-
-/* Start/GameOver overlay */
 .overlay{
   position:absolute;inset:0;
   background:rgba(0,0,0,.55);
@@ -131,8 +116,7 @@ body{
   cursor:pointer;font-weight:900;
 }
 .hint{margin-top:10px;font-size:12px;opacity:.9;}
-
-@media (max-width: 1100px) {
+@media (max-width:1100px){
   body{flex-direction:column;align-items:center;gap:20px;padding:20px 12px;}
   .leaderboard{width:min(600px,92vw);padding:22px;}
   .rightCol{width:min(680px,92vw);align-items:center;}
@@ -143,7 +127,6 @@ body{
 </head>
 
 <body>
-
 <div class="leaderboard">
   <h2>Flakon Ranglista</h2>
 
@@ -154,8 +137,7 @@ body{
   </div>
 
   <div class="row">
-    <!-- FIGYELEM: nálad "ondedoor.png" volt, ha a fájl valójában "onedoor.png", akkor írd át -->
-    <img class="avatar" src="onedoor.png" alt="Avatar">
+    <img class="avatar" src="ondedoor.png" alt="Avatar">
     <div class="name">On3door</div>
     <div class="count">65</div>
   </div>
@@ -194,7 +176,6 @@ body{
       <div class="modal">
         <h3>Majom Jump</h3>
         <div>Írd be a neved:</div>
-        <!-- ✅ nincs példa név / placeholder -->
         <input id="nameInput" maxlength="18" placeholder="">
         <br>
         <button id="startBtn">START</button>
@@ -209,72 +190,56 @@ body{
         <button id="restartBtn">Újra</button>
       </div>
     </div>
-
   </div>
 </div>
 
 <script>
-/* ===== Sebesség ===== */
-const BASE_SPEED = 3.0;
-const SPEED_DIV  = 1200;
-const MAX_SPEED  = 7.0;
+const BASE_SPEED=3.0, SPEED_DIV=1200, MAX_SPEED=7.0;
+const GRAVITY=0.9, JUMP_V=19;
+const API_URL="https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
+const birdHitSound=new Audio("viiviiiviii.mp3"); birdHitSound.volume=1.0;
 
-/* ===== Fizika ===== */
-const GRAVITY = 0.9;
-const JUMP_V  = 19;
+const game=document.getElementById("game");
+const playerEl=document.getElementById("player");
 
-/* ===== API ===== */
-const API_URL = "https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
+const hudPlayer=document.getElementById("hudPlayer");
+const hudScore=document.getElementById("hudScore");
+const hudBest=document.getElementById("hudBest");
 
-/* ===== Hang (tedd a HTML mellé) ===== */
-const birdHitSound = new Audio("viiviiiviii.mp3");
-birdHitSound.volume = 1.0;
+const startOverlay=document.getElementById("startOverlay");
+const overOverlay=document.getElementById("overOverlay");
+const overText=document.getElementById("overText");
+const nameInput=document.getElementById("nameInput");
+const startBtn=document.getElementById("startBtn");
+const restartBtn=document.getElementById("restartBtn");
 
-const game = document.getElementById("game");
-const playerEl = document.getElementById("player");
-
-const hudPlayer = document.getElementById("hudPlayer");
-const hudScore  = document.getElementById("hudScore");
-const hudBest   = document.getElementById("hudBest");
-
-const startOverlay = document.getElementById("startOverlay");
-const overOverlay  = document.getElementById("overOverlay");
-const overText     = document.getElementById("overText");
-const nameInput    = document.getElementById("nameInput");
-const startBtn     = document.getElementById("startBtn");
-const restartBtn   = document.getElementById("restartBtn");
-
-/* rekord */
-let bestName = "-";
-let bestScore = 0;
+let bestName="-", bestScore=0;
 async function loadBest(){
   try{
-    const r = await fetch(API_URL, { method:"GET" });
-    const j = await r.json();
-    bestName = (j && j.name) ? String(j.name) : "-";
-    bestScore = Number(j && j.score ? j.score : 0);
-    if (isNaN(bestScore)) bestScore = 0;
-  } catch {}
-  hudBest.textContent = `Rekord: ${bestName} - ${bestScore}`;
+    const r=await fetch(API_URL,{method:"GET"});
+    const j=await r.json();
+    bestName=(j&&j.name)?String(j.name):"-";
+    bestScore=Number(j&&j.score?j.score:0);
+    if(isNaN(bestScore)) bestScore=0;
+  }catch{}
+  hudBest.textContent=`Rekord: ${bestName} - ${bestScore}`;
 }
-async function trySaveBest(playerName, score){
+async function trySaveBest(playerName,score){
   try{
-    await fetch(API_URL, {
+    await fetch(API_URL,{
       method:"POST",
       headers:{ "Content-Type":"text/plain;charset=utf-8" },
       body: JSON.stringify({ name: playerName, score })
     });
-  } catch {}
+  }catch{}
   await loadBest();
 }
 loadBest();
 
-/* ===== játék állapot ===== */
 let running=false, alive=false;
 let playerName="-";
 let score=0, speed=4;
 let y=0, vy=0;
-
 let crouch=false;
 let obstacles=[];
 let dist=0, nextSpawnDist=0;
@@ -285,195 +250,167 @@ function resetGame(){
   game.style.backgroundPosition="0px 0px";
   obstacles.forEach(o=>o.el.remove());
   obstacles=[];
-  nextSpawnDist = 420 + Math.random()*260;
+  nextSpawnDist=420+Math.random()*260;
   hudScore.textContent="Pont: 0";
   playerEl.style.bottom="30px";
   setCrouch(false);
 }
-
 function setCrouch(on){
-  crouch = !!on;
-  playerEl.classList.toggle("crouch", crouch);
+  crouch=!!on;
+  playerEl.classList.toggle("crouch",crouch);
 }
-
 function startGame(){
-  playerName = (nameInput.value || "").trim() || "Névtelen";
-  hudPlayer.textContent = "Játékos: " + playerName;
-
-  // ✅ hang “feloldás” is user interaction után
-  birdHitSound.currentTime = 0;
+  playerName=(nameInput.value||"").trim()||"Névtelen";
+  hudPlayer.textContent="Játékos: "+playerName;
+  birdHitSound.currentTime=0;
   birdHitSound.play().then(()=>{ birdHitSound.pause(); birdHitSound.currentTime=0; }).catch(()=>{});
-
   resetGame();
   alive=true; running=true;
   startOverlay.style.display="none";
   overOverlay.style.display="none";
   requestAnimationFrame(loop);
 }
-
 function jump(){
-  if (!running || !alive) return;
-  if (y <= 0) vy = JUMP_V;
+  if(!running||!alive) return;
+  if(y<=0) vy=JUMP_V;
 }
 
-/* ===== input ===== */
-startBtn.addEventListener("click", startGame);
-restartBtn.addEventListener("click", startGame);
+startBtn.addEventListener("click",startGame);
+restartBtn.addEventListener("click",startGame);
 nameInput.addEventListener("keydown",(e)=>{ if(e.key==="Enter") startGame(); });
 
 document.addEventListener("keydown",(e)=>{
-  if (e.code === "Space" || e.code === "ArrowUp"){
-    e.preventDefault();
-    jump();
-  }
-  if (e.code === "KeyS" || e.code === "ArrowDown"){
-    e.preventDefault();
-    setCrouch(true);
-  }
+  if(e.code==="Space"||e.code==="ArrowUp"){ e.preventDefault(); jump(); }
+  if(e.code==="KeyS"||e.code==="ArrowDown"){ e.preventDefault(); setCrouch(true); }
 });
 document.addEventListener("keyup",(e)=>{
-  if (e.code === "KeyS" || e.code === "ArrowDown"){
-    e.preventDefault();
-    setCrouch(false);
-  }
+  if(e.code==="KeyS"||e.code==="ArrowDown"){ e.preventDefault(); setCrouch(false); }
 });
 
-/* mobil: tap = ugrás, hosszú érintés = gugolás */
-let holdTimer = null;
+let holdTimer=null;
 game.addEventListener("pointerdown",()=>{
-  if (startOverlay.style.display !== "none") return;
-  if (overOverlay.style.display !== "none") return;
-  holdTimer = setTimeout(()=>setCrouch(true), 180);
+  if(startOverlay.style.display!=="none") return;
+  if(overOverlay.style.display!=="none") return;
+  holdTimer=setTimeout(()=>setCrouch(true),180);
 });
 game.addEventListener("pointerup",()=>{
-  if (holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
-  if (crouch){ setCrouch(false); return; }
-  if (startOverlay.style.display === "none" && overOverlay.style.display === "none") jump();
+  if(holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
+  if(crouch){ setCrouch(false); return; }
+  if(startOverlay.style.display==="none"&&overOverlay.style.display==="none") jump();
 });
 game.addEventListener("pointercancel",()=>{
-  if (holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
+  if(holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
   setCrouch(false);
 });
 
-/* ===== akadály ===== */
 function spawnObstacle(){
-  const el = document.createElement("img");
+  const el=document.createElement("img");
   el.className="obstacle";
 
-  const r = Math.random();
+  const r=Math.random();
   let type;
-  if (r < 0.50) type = "banana";
-  else if (r < 0.80) type = "stone";
-  else type = "bird";
+  if(r<0.50) type="banana";
+  else if(r<0.80) type="stone";
+  else type="bird";
 
-  if (type === "banana"){
-    el.src = "banana.png";
-    el.style.width = "52px";
-    el.style.height = "52px";
-    el.style.bottom = "30px";
-  } else if (type === "stone"){
-    el.src = "stone.png";
-    el.style.width = "46px";
-    el.style.height = "46px";
-    el.style.bottom = "30px";
-  } else {
-    el.src = "madar.gif";
-    el.style.width = "70px";
-    el.style.height = "46px";
-    /* ✅ A MADÁR LEJJEBB kerül, hogy ÁLLVA ütközz,
-       ✅ GUGOLVA pedig elférj alatta */
-    el.style.bottom = "72px";
+  if(type==="banana"){
+    el.src="banana.png";
+    el.style.width="52px"; el.style.height="52px";
+    el.style.bottom="30px";
+    el.dataset.vy="0";
+  }else if(type==="stone"){
+    el.src="stone.png";
+    el.style.width="46px"; el.style.height="46px";
+    el.style.bottom="30px";
+    el.dataset.vy="0";
+  }else{
+    el.src="madar.gif";
+    el.style.width="70px"; el.style.height="46px";
+    el.style.bottom="72px";
+    el.dataset.vy="-8";
   }
 
-  el.style.left = game.clientWidth + "px";
+  el.style.left=game.clientWidth+"px";
   game.appendChild(el);
 
-  const w = parseInt(el.style.width, 10);
-  const h = parseInt(el.style.height, 10);
-  const bottom = parseInt(el.style.bottom, 10);
-  const mult = 0.92 + Math.random()*0.18;
+  const w=parseInt(el.style.width,10);
+  const h=parseInt(el.style.height,10);
+  const bottom=parseInt(el.style.bottom,10);
+  const mult=0.92+Math.random()*0.18;
 
-  obstacles.push({ el, x: game.clientWidth, w, h, bottom, mult, type });
+  obstacles.push({ el, x:game.clientWidth, w, h, bottom, mult, type });
 
   const gapMin=480, gapMax=760;
-  nextSpawnDist = dist + (gapMin + Math.random()*(gapMax-gapMin));
+  nextSpawnDist=dist+(gapMin+Math.random()*(gapMax-gapMin));
 }
 
 function rectsOverlap(a,b){
-  return (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y);
+  return (a.x<b.x+b.w && a.x+a.w>b.x && a.y<b.y+b.h && a.y+a.h>b.y);
 }
 
 function gameOver(hitType){
   alive=false; running=false;
-  overText.innerHTML = `Pont: <b>${score}</b>`;
+  overText.innerHTML=`Pont: <b>${score}</b>`;
   overOverlay.style.display="grid";
-
-  if (hitType === "bird"){
-    try{
-      birdHitSound.currentTime = 0;
-      birdHitSound.play().catch(()=>{});
-    } catch {}
+  if(hitType==="bird"){
+    try{ birdHitSound.currentTime=0; birdHitSound.play().catch(()=>{}); }catch{}
   }
-
-  if (score > bestScore) trySaveBest(playerName, score);
+  if(score>bestScore) trySaveBest(playerName,score);
   else loadBest();
 }
 
 function loop(){
-  if (!running || !alive) return;
+  if(!running||!alive) return;
 
   score++;
   hudScore.textContent="Pont: "+score;
 
-  speed = Math.min(MAX_SPEED, BASE_SPEED + score / SPEED_DIV);
+  speed=Math.min(MAX_SPEED, BASE_SPEED + score/SPEED_DIV);
 
-  dist += speed;
-  bgX -= speed;
-  game.style.backgroundPosition = `${bgX}px 0px`;
+  dist+=speed;
+  bgX-=speed;
+  game.style.backgroundPosition=`${bgX}px 0px`;
 
-  vy -= GRAVITY;
-  y += vy;
-  if (y < 0){ y=0; vy=0; }
-  playerEl.style.bottom = (30 + y) + "px";
+  vy-=GRAVITY;
+  y+=vy;
+  if(y<0){ y=0; vy=0; }
+  playerEl.style.bottom=(30+y)+"px";
 
-  if (dist >= nextSpawnDist) spawnObstacle();
+  if(dist>=nextSpawnDist) spawnObstacle();
 
-  /* ✅ JAVÍTOTT HITBOX:
-     - Gugolva NEM feljebb kerül a doboz, hanem ALACSONYABB és KISEBB lesz. */
-  const baseY = (30 + y);
+  const baseY=(30+y);
+  const playerBox=crouch
+    ? { x:60+18, y:baseY+10, w:90-36, h:40 }
+    : { x:60+18, y:baseY+16, w:90-36, h:64 };
 
-  const playerBox = crouch
-    ? { x: 60 + 18, y: baseY + 10, w: 90 - 36, h: 40 }  // gugolva alacsony és kisebb
-    : { x: 60 + 18, y: baseY + 16, w: 90 - 36, h: 64 }; // állva magasabb
+  for(let i=obstacles.length-1;i>=0;i--){
+    const o=obstacles[i];
+    o.x-=speed*o.mult;
+    o.el.style.left=o.x+"px";
 
-  for (let i=obstacles.length-1;i>=0;i--){
-    const o = obstacles[i];
-    o.x -= speed * o.mult;
-    o.el.style.left = o.x+"px";
+    const vyo=parseInt(o.el.dataset.vy||"0",10);
+    if(vyo){
+      o.el.style.transform=`translateY(${vyo}px)`;
+    }
 
-    if (o.x < -180){
+    if(o.x<-180){
       o.el.remove();
       obstacles.splice(i,1);
       continue;
     }
 
-    let shrinkX = 14, shrinkY = 14;
-    if (o.type==="stone"){ shrinkX=22; shrinkY=22; }
-    if (o.type==="bird"){
-      /* ✅ madár hitbox: szűkebb, de nem túl szűk
-         és lejjebb van, ezért állva ütközöl, gugolva nem */
-      shrinkX = 20;
-      shrinkY = 10;
-    }
+    let shrinkX=14, shrinkY=14;
+    if(o.type==="stone"){ shrinkX=22; shrinkY=22; }
+    if(o.type==="bird"){ shrinkX=20; shrinkY=10; }
 
-    const obsBox = {
-      x: o.x + shrinkX,
-      y: o.bottom + shrinkY,
-      w: o.w - shrinkX*2,
-      h: o.h - shrinkY*2
+    const obsBox={
+      x:o.x+shrinkX,
+      y:o.bottom+shrinkY,
+      w:o.w-shrinkX*2,
+      h:o.h-shrinkY*2
     };
 
-    if (rectsOverlap(playerBox, obsBox)){
+    if(rectsOverlap(playerBox,obsBox)){
       gameOver(o.type);
       return;
     }
@@ -482,10 +419,8 @@ function loop(){
   requestAnimationFrame(loop);
 }
 
-/* nincs auto-start */
 startOverlay.style.display="grid";
 overOverlay.style.display="none";
 </script>
-
 </body>
 </html>
