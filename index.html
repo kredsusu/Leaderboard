@@ -68,7 +68,7 @@ body{
   background-repeat:repeat-x;
   background-position:0px 0px;
   border-radius:20px;
-  position:rative;
+  position:relative;
   overflow:hidden;
   box-shadow:0 0 20px rgba(0,0,0,.6);
   touch-action:manipulation;
@@ -78,7 +78,7 @@ body{
   left:60px;
   width:90px;
   bottom:30px;
-  user-sect:none;
+  user-select:none;
   -webkit-user-drag:none;
   transform-origin:bottom;
   transition:transform 60ms linear;
@@ -86,7 +86,7 @@ body{
 #player.crouch{transform:scaleY(0.72);}
 .obstacle{
   position:absolute;
-  user-sect:none;
+  user-select:none;
   -webkit-user-drag:none;
 }
 .overlay{
@@ -327,7 +327,7 @@ function spawnObstacle(){
     el.src="madar.gif";
     el.style.width="70px"; el.style.height="46px";
     el.style.bottom="72px";
-    el.dataset.vy="-14";
+    el.dataset.vy="-8";
   }
 
   el.style.left=game.clientWidth+"px";
@@ -424,5 +424,3 @@ overOverlay.style.display="none";
 </script>
 </body>
 </html>
-
-
