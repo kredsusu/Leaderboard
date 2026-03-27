@@ -6,148 +6,63 @@
 <title>Flakon leaderboard</title>
 <style>
 body{
-  margin:0;
-  font-family:Arial,sans-serif;
+  margin:0; font-family:Arial,sans-serif;
   background:url("hatter.jpg") center/cover no-repeat fixed;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  gap:60px;
-  padding-top:40px;
-  color:#fff;
+  display:flex; justify-content:center; align-items:flex-start;
+  gap:60px; padding-top:40px; color:#fff;
 }
 .leaderboard{
-  width:650px;
-  padding:30px;
-  background:url("keret.png") center/cover no-repeat;
-  border-radius:25px;
-  box-shadow:0 0 30px rgba(0,0,0,.7);
+  width:650px; padding:30px; background:url("keret.png") center/cover no-repeat;
+  border-radius:25px; box-shadow:0 0 30px rgba(0,0,0,.7);
 }
-.leaderboard h2{
-  text-align:center;
-  font-size:36px;
-  font-weight:800;
-  text-shadow:2px 2px 6px #000;
-  margin:0 0 10px 0;
-}
-.score-header {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding-right: 15px;
-  margin-bottom: 5px;
-  font-size: 12px;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.7);
-}
+.leaderboard h2{ text-align:center; font-size:36px; font-weight:800; text-shadow:2px 2px 6px #000; margin:0 0 10px 0; }
+.score-header { display: flex; justify-content: flex-end; gap: 12px; padding-right: 15px; margin-bottom: 5px; font-size: 12px; font-weight: bold; text-transform: uppercase; color: rgba(255,255,255,0.7); }
 .header-item { width: 50px; text-align: center; }
-#leaderboard-content {
-  display: flex;
-  flex-direction: column;
-}
+#leaderboard-content { display: flex; flex-direction: column; }
 .row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-  background:rgba(0,0,0,.4);
-  padding:12px 16px;
-  border-radius:20px;
-  margin:10px 0;
-  box-shadow:2px 2px 8px rgba(0,0,0,.5);
-  border:4px solid transparent;
-  transition: all 0.3s ease;
+  display:flex; align-items:center; justify-content:space-between; gap:15px;
+  background:rgba(0,0,0,.4); padding:12px 16px; border-radius:20px; margin:10px 0;
+  box-shadow:2px 2px 8px rgba(0,0,0,.5); border:4px solid transparent; transition: all 0.4s ease;
 }
-.row.top1 { border-color: gold; }
+.row.top1 { border-color: gold; transform: scale(1.02); background: rgba(212, 175, 55, 0.2); }
 .row.top2 { border-color: silver; }
 .row.top3 { border-color: #cd7f32; }
-
-.avatar{
-  width:60px;height:60px;border-radius:50%;
-  object-fit:cover;border:3px solid #fff;
-  box-shadow:2px 2px 4px rgba(0,0,0,.5);
+.avatar{ width:60px; height:60px; border-radius:50%; object-fit:cover; border:3px solid #fff; box-shadow:2px 2px 4px rgba(0,0,0,.5); }
+.name-container { flex: 1; display: flex; align-items: center; gap: 8px; overflow: hidden; }
+.name{ font-size:20px; font-weight:800; text-shadow:2px 2px 3px #000; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cups-wrapper { display: flex; gap: 4px; flex-wrap: wrap; }
+.cup-badge {
+  display: flex; align-items: center; justify-content: center; gap: 3px;
+  color: #000; padding: 2px 6px; border-radius: 6px; font-weight: 900; font-size: 11px;
+  position: relative; overflow: hidden; box-shadow: 0 0 5px rgba(0,0,0,0.5);
 }
-.name{font-size:20px;font-weight:800;flex:1;text-shadow:2px 2px 3px #000; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
-.score-group {
-  display: flex;
-  gap: 10px;
-  align-items: center;
+.gold { background: linear-gradient(135deg, #ffd700, #ffae00); }
+.silver { background: linear-gradient(135deg, #e0e0e0, #a0a0a0); }
+.bronze { background: linear-gradient(135deg, #cd7f32, #8b4513); }
+.cup-badge::after {
+  content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0) 100%);
+  transform: rotate(30deg); animation: shimmer 2.5s infinite;
 }
-.count{
-  font-size:18px;font-weight:800;
-  background:#f5f5f5;color:#000;
-  padding:8px 5px;border-radius:10px;
-  min-width:50px;text-align:center;
-  box-shadow:2px 2px 4px rgba(0,0,0,.4);
-}
+@keyframes shimmer { 0% { transform: translateX(-100%) rotate(30deg); } 100% { transform: translateX(100%) rotate(30deg); } }
+.score-group { display: flex; gap: 10px; align-items: center; }
+.count{ font-size:18px; font-weight:800; background:#f5f5f5; color:#000; padding:8px 5px; border-radius:10px; min-width:50px; text-align:center; box-shadow:2px 2px 4px rgba(0,0,0,.4); }
 .old { background: rgba(255,255,255,0.3); color: #fff; font-size: 16px; }
 .total { background: #4CAF50; color: #fff; }
-.rightCol{display:flex;flex-direction:column;gap:10px;align-items:flex-start;}
-.hud{width:680px;display:flex;justify-content:space-between;gap:10px;font-weight:800;text-shadow:2px 2px 6px #000;flex-wrap:wrap;}
-.pill{background:rgba(0,0,0,.35);padding:8px 12px;border-radius:999px;white-space:nowrap;}
-#game{
-  width:680px;height:380px;
-  background-image:url("jatekhatter.jpg");
-  background-size:cover;
-  background-repeat:repeat-x;
-  background-position:0px 0px;
-  border-radius:20px;
-  position:relative;
-  overflow:hidden;
-  box-shadow:0 0 20px rgba(0,0,0,.6);
-  touch-action:manipulation;
-}
-#player{
-  position:absolute;
-  left:60px;
-  width:90px;
-  bottom:30px;
-  user-select:none;
-  -webkit-user-drag:none;
-  transform-origin:bottom;
-  transition:transform 60ms linear;
-}
-#player.crouch{transform:scaleY(0.72);}
-.obstacle{
-  position:absolute;
-  user-select:none;
-  -webkit-user-drag:none;
-}
-.overlay{
-  position:absolute;inset:0;
-  background:rgba(0,0,0,.55);
-  display:grid;place-items:center;
-  padding:14px;
-}
-.modal{
-  background:rgba(0,0,0,.82);
-  padding:16px 18px;
-  border-radius:14px;
-  width:min(440px,92%);
-  box-shadow:0 12px 40px rgba(0,0,0,.55);
-  text-align:center;
-}
-.modal h3{margin:0 0 10px 0;font-size:22px;}
-.modal input{
-  width:90%;max-width:280px;
-  padding:10px;border-radius:10px;border:none;
-  outline:none;font-size:16px;
-}
-.modal button{
-  margin-top:10px;
-  padding:10px 14px;
-  border-radius:10px;border:none;
-  cursor:pointer;font-weight:900;
-}
-.hint{margin-top:10px;font-size:12px;opacity:.9;}
-@media (max-width:1100px){
-  body{flex-direction:column;align-items:center;gap:20px;padding:20px 12px;}
-  .leaderboard{width:min(600px,92vw);padding:22px;}
-  .rightCol{width:min(680px,92vw);align-items:center;}
-  .hud{width:100%;justify-content:center;}
-  #game{width:100%;height:52vw;max-height:420px;min-height:300px;}
-}
+.rightCol{ display:flex; flex-direction:column; gap:10px; align-items:flex-start; }
+.hud{ width:680px; display:flex; justify-content:space-between; gap:10px; font-weight:800; text-shadow:2px 2px 6px #000; flex-wrap:wrap; }
+.pill{ background:rgba(0,0,0,.35); padding:8px 12px; border-radius:999px; white-space:nowrap; }
+#game{ width:680px; height:380px; background-image:url("jatekhatter.jpg"); background-size:cover; background-repeat:repeat-x; border-radius:20px; position:relative; overflow:hidden; box-shadow:0 0 20px rgba(0,0,0,.6); }
+#player{ position:absolute; left:60px; width:90px; bottom:30px; user-select:none; -webkit-user-drag:none; transform-origin:bottom; transition:transform 60ms linear; }
+#player.crouch{ transform:scaleY(0.72); }
+.obstacle{ position:absolute; user-select:none; -webkit-user-drag:none; }
+.overlay{ position:absolute; inset:0; background:rgba(0,0,0,.55); display:grid; place-items:center; padding:14px; }
+.modal{ background:rgba(0,0,0,.82); padding:16px 18px; border-radius:14px; width:min(440px,92%); box-shadow:0 12px 40px rgba(0,0,0,.55); text-align:center; }
+.modal h3{ margin:0 0 10px 0; font-size:22px; }
+.modal input{ width:90%; max-width:280px; padding:10px; border-radius:10px; border:none; outline:none; font-size:16px; }
+.modal button{ margin-top:10px; padding:10px 14px; border-radius:10px; border:none; cursor:pointer; font-weight:900; }
+.hint{ margin-top:10px; font-size:12px; opacity:.9; }
+@media (max-width:1100px){ body{flex-direction:column; align-items:center; gap:20px; padding:20px 12px;} .leaderboard{width:min(600px,92vw); padding:22px;} .rightCol{width:min(680px,92vw); align-items:center;} .hud{width:100%; justify-content:center;} #game{width:100%; height:52vw; max-height:420px; min-height:300px;} }
 </style>
 </head>
 <body>
@@ -158,9 +73,7 @@ body{
     <div class="header-item">Új</div>
     <div class="header-item" style="color:#4CAF50;">Össz</div>
   </div>
-  <div id="leaderboard-content">
-    <!-- Ide generálja a JS a sorokat -->
-  </div>
+  <div id="leaderboard-content"></div>
 </div>
 <div class="rightCol">
   <div class="hud">
@@ -191,33 +104,33 @@ body{
   </div>
 </div>
 <script>
-// --- LEADERBOARD ADATOK ÉS RENDEZÉS ---
 const players = [
-  { name: "On3door", avatar: "onedoor.png", oldScore: 134, newScore: 0 },
-  { name: "MiszterSusu", avatar: "misztersiba.gif", oldScore: 118, newScore: 52 },
-  { name: "SusuSzaurusz", avatar: "dinoori.gif", oldScore: 84, newScore: 75 },
-  { name: "Spudbay", avatar: "spudbaymaci.gif", oldScore: 69, newScore: 42 },
-  { name: "MrSusu", avatar: "Mrgrogu.gif", oldScore: 50, newScore: 0 }
+  { name: "On3door", avatar: "onedoor.png", oldScore: 134, newScore: 0, cups: [{type: "gold", count: 1}, 
+  { name: "MiszterSusu", avatar: "misztersiba.gif", oldScore: 118, newScore: 52, cups: [{type: "gold", count: 1}] },
+  { name: "SusuSzaurusz", avatar: "dinoori.gif", oldScore: 84, newScore: 75, cups: [{type: "silver", count: 1}] },
+  { name: "Spudbay", avatar: "spudbaymaci.gif", oldScore: 69, newScore: 42, cups: [{type: "bronz", count: 1}] },
+  { name: "MrSusu", avatar: "Mrgrogu.gif", oldScore: 50, newScore: 0, cups: [] }
 ];
-
 function updateLeaderboard() {
   const container = document.getElementById("leaderboard-content");
-  
-  // Rendezés az új pontszám alapján (csökkenő)
   players.sort((a, b) => b.newScore - a.newScore);
-  
   container.innerHTML = "";
   players.forEach((p, index) => {
     const total = p.oldScore + p.newScore;
-    let topClass = "";
-    if (index === 0) topClass = "top1";
-    if (index === 1) topClass = "top2";
-    if (index === 2) topClass = "top3";
-
+    let topClass = (index === 0) ? "top1" : (index === 1) ? "top2" : (index === 2) ? "top3" : "";
+    let cupsHTML = '<div class="cups-wrapper">';
+    p.cups.forEach(c => {
+      let icon = (c.type === "gold") ? "🏆" : (c.type === "silver") ? "🥈" : "🥉";
+      cupsHTML += `<div class="cup-badge ${c.type}">${icon} x${c.count}</div>`;
+    });
+    cupsHTML += '</div>';
     container.innerHTML += `
       <div class="row ${topClass}">
         <img class="avatar" src="${p.avatar}" alt="Avatar">
-        <div class="name">${p.name}</div>
+        <div class="name-container">
+          <div class="name">${p.name}</div>
+          ${cupsHTML}
+        </div>
         <div class="score-group">
             <div class="count old">${p.oldScore}</div>
             <div class="count">${p.newScore}</div>
@@ -227,15 +140,10 @@ function updateLeaderboard() {
     `;
   });
 }
-
-// Kezdeti feltöltés
 updateLeaderboard();
-
-// --- JÁTÉK LOGIKA ---
 const BASE_SPEED=3.0, SPEED_DIV=1200, MAX_SPEED=7.0;
 const GRAVITY=0.9, JUMP_V=19;
 const API_URL="https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
-const birdHitSound=new Audio("viiviiiviii.mp3"); birdHitSound.volume=1.0;
 const game=document.getElementById("game");
 const playerEl=document.getElementById("player");
 const hudPlayer=document.getElementById("hudPlayer");
@@ -249,191 +157,65 @@ const startBtn=document.getElementById("startBtn");
 const restartBtn=document.getElementById("restartBtn");
 let bestName="-", bestScore=0;
 async function loadBest(){
-  try{
-    const r=await fetch(API_URL,{method:"GET"});
-    const j=await r.json();
-    bestName=(j&&j.name)?String(j.name):"-";
-    bestScore=Number(j&&j.score?j.score:0);
-    if(isNaN(bestScore)) bestScore=0;
-  }catch{}
+  try{ const r=await fetch(API_URL,{method:"GET"}); const j=await r.json(); bestName=(j&&j.name)?String(j.name):"-"; bestScore=Number(j&&j.score?j.score:0); }catch{}
   hudBest.textContent=`Rekord: ${bestName} - ${bestScore}`;
 }
 async function trySaveBest(playerName,score){
-  try{
-    await fetch(API_URL,{
-      method:"POST",
-      headers:{ "Content-Type":"text/plain;charset=utf-8" },
-      body: JSON.stringify({ name: playerName, score })
-    });
-  }catch{}
+  try{ await fetch(API_URL,{ method:"POST", headers:{ "Content-Type":"text/plain;charset=utf-8" }, body: JSON.stringify({ name: playerName, score }) }); }catch{}
   await loadBest();
 }
 loadBest();
-let running=false, alive=false;
-let playerName="-";
-let score=0, speed=4;
-let y=0, vy=0;
-let crouch=false;
-let obstacles=[];
-let dist=0, nextSpawnDist=0;
-let bgX=0;
+let running=false, alive=false, playerName="-", score=0, speed=4, y=0, vy=0, crouch=false, obstacles=[], dist=0, nextSpawnDist=0, bgX=0;
 function resetGame(){
-  score=0; y=0; vy=0; dist=0; bgX=0;
-  game.style.backgroundPosition="0px 0px";
-  obstacles.forEach(o=>o.el.remove());
-  obstacles=[];
-  nextSpawnDist=420+Math.random()*260;
-  hudScore.textContent="Pont: 0";
-  playerEl.style.bottom="30px";
-  setCrouch(false);
+  score=0; y=0; vy=0; dist=0; bgX=0; game.style.backgroundPosition="0px 0px";
+  obstacles.forEach(o=>o.el.remove()); obstacles=[];
+  nextSpawnDist=420+Math.random()*260; hudScore.textContent="Pont: 0";
+  playerEl.style.bottom="30px"; setCrouch(false);
 }
-function setCrouch(on){
-  crouch=!!on;
-  playerEl.classList.toggle("crouch",crouch);
-}
+function setCrouch(on){ crouch=!!on; playerEl.classList.toggle("crouch",crouch); }
 function startGame(){
-  playerName=(nameInput.value||"").trim()||"Névtelen";
-  hudPlayer.textContent="Játékos: "+playerName;
-  birdHitSound.currentTime=0;
-  birdHitSound.play().then(()=>{ birdHitSound.pause(); birdHitSound.currentTime=0; }).catch(()=>{});
-  resetGame();
-  alive=true; running=true;
-  startOverlay.style.display="none";
-  overOverlay.style.display="none";
+  playerName=(nameInput.value||"").trim()||"Névtelen"; hudPlayer.textContent="Játékos: "+playerName;
+  resetGame(); alive=true; running=true; startOverlay.style.display="none"; overOverlay.style.display="none";
   requestAnimationFrame(loop);
 }
-function jump(){
-  if(!running||!alive) return;
-  if(y<=0) vy=JUMP_V;
-}
-startBtn.addEventListener("click",startGame);
-restartBtn.addEventListener("click",startGame);
+function jump(){ if(running&&alive&&y<=0) vy=JUMP_V; }
+startBtn.addEventListener("click",startGame); restartBtn.addEventListener("click",startGame);
 nameInput.addEventListener("keydown",(e)=>{ if(e.key==="Enter") startGame(); });
-document.addEventListener("keydown",(e)=>{
-  if(e.code==="Space"||e.code==="ArrowUp"){ e.preventDefault(); jump(); }
-  if(e.code==="KeyS"||e.code==="ArrowDown"){ e.preventDefault(); setCrouch(true); }
-});
-document.addEventListener("keyup",(e)=>{
-  if(e.code==="KeyS"||e.code==="ArrowDown"){ e.preventDefault(); setCrouch(false); }
-});
-let holdTimer=null;
-game.addEventListener("pointerdown",()=>{
-  if(startOverlay.style.display!=="none") return;
-  if(overOverlay.style.display!=="none") return;
-  holdTimer=setTimeout(()=>setCrouch(true),180);
-});
-game.addEventListener("pointerup",()=>{
-  if(holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
-  if(crouch){ setCrouch(false); return; }
-  if(startOverlay.style.display==="none"&&overOverlay.style.display==="none") jump();
-});
-game.addEventListener("pointercancel",()=>{
-  if(holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
-  setCrouch(false);
-});
+document.addEventListener("keydown",(e)=>{ if(e.code==="Space"||e.code==="ArrowUp"){ e.preventDefault(); jump(); } if(e.code==="KeyS"||e.code==="ArrowDown"){ e.preventDefault(); setCrouch(true); } });
+document.addEventListener("keyup",(e)=>{ if(e.code==="KeyS"||e.code==="ArrowDown"){ e.preventDefault(); setCrouch(false); } });
 function spawnObstacle(){
-  const el=document.createElement("img");
-  el.className="obstacle";
-  const r=Math.random();
-  let type;
-  if(r<0.50) type="banana";
-  else if(r<0.80) type="stone";
-  else type="bird";
-  if(type==="banana"){
-    el.src="banana.png";
-    el.style.width="52px"; el.style.height="52px";
-    el.style.bottom="30px";
-    el.dataset.vy="0";
-  }else if(type==="stone"){
-    el.src="stone.png";
-    el.style.width="46px"; el.style.height="46px";
-    el.style.bottom="30px";
-    el.dataset.vy="0";
-  }else{
-    el.src="madar.gif";
-    el.style.width="70px"; el.style.height="46px";
-    el.style.bottom="72px";
-    el.dataset.vy="-18";
-  }
-  el.style.left=game.clientWidth+"px";
-  game.appendChild(el);
-  const w=parseInt(el.style.width,10);
-  const h=parseInt(el.style.height,10);
-  const bottom=parseInt(el.style.bottom,10);
-  const mult=0.92+Math.random()*0.18;
-  obstacles.push({ el, x:game.clientWidth, w, h, bottom, mult, type });
-  const gapMin=480, gapMax=760;
-  nextSpawnDist=dist+(gapMin+Math.random()*(gapMax-gapMin));
+  const el=document.createElement("img"); el.className="obstacle";
+  const r=Math.random(); let type = (r<0.50) ? "banana" : (r<0.80) ? "stone" : "bird";
+  if(type==="banana"){ el.src="banana.png"; el.style.width="52px"; el.style.height="52px"; el.style.bottom="30px"; }
+  else if(type==="stone"){ el.src="stone.png"; el.style.width="46px"; el.style.height="46px"; el.style.bottom="30px"; }
+  else{ el.src="madar.gif"; el.style.width="70px"; el.style.height="46px"; el.style.bottom="72px"; el.dataset.vy="-18"; }
+  el.style.left=game.clientWidth+"px"; game.appendChild(el);
+  obstacles.push({ el, x:game.clientWidth, w:parseInt(el.style.width), h:parseInt(el.style.height), bottom:parseInt(el.style.bottom), mult:0.92+Math.random()*0.18, type });
+  nextSpawnDist=dist+(480+Math.random()*280);
 }
-function rectsOverlap(a,b){
-  return (a.x<b.x+b.w && a.x+a.w>b.x && a.y<b.y+b.h && a.y+a.h>b.y);
-}
+function rectsOverlap(a,b){ return (a.x<b.x+b.w && a.x+a.w>b.x && a.y<b.y+b.h && a.y+a.h>b.y); }
 function gameOver(hitType){
-  alive=false; running=false;
-  overText.innerHTML=`Pont: <b>${score}</b>`;
-  overOverlay.style.display="grid";
-  if(hitType==="bird"){
-    try{ birdHitSound.currentTime=0; birdHitSound.play().catch(()=>{}); }catch{}
-  }
-  
-  // Automatikus frissítés a listában, ha szerepel benne a név
+  alive=false; running=false; overText.innerHTML=`Pont: <b>${score}</b>`; overOverlay.style.display="grid";
   const p = players.find(x => x.name.toLowerCase() === playerName.toLowerCase());
-  if(p && score > p.newScore) {
-    p.newScore = score;
-    updateLeaderboard();
-  }
-
-  if(score>bestScore) trySaveBest(playerName,score);
-  else loadBest();
+  if(p && score > p.newScore) { p.newScore = score; updateLeaderboard(); }
+  if(score>bestScore) trySaveBest(playerName,score); else loadBest();
 }
 function loop(){
   if(!running||!alive) return;
-  score++;
-  hudScore.textContent="Pont: "+score;
-  speed=Math.min(MAX_SPEED, BASE_SPEED + score/SPEED_DIV);
-  dist+=speed;
-  bgX-=speed;
-  game.style.backgroundPosition=`${bgX}px 0px`;
-  vy-=GRAVITY;
-  y+=vy;
-  if(y<0){ y=0; vy=0; }
-  playerEl.style.bottom=(30+y)+"px";
+  score++; hudScore.textContent="Pont: "+score;
+  speed=Math.min(MAX_SPEED, BASE_SPEED + score/SPEED_DIV); dist+=speed; bgX-=speed; game.style.backgroundPosition=`${bgX}px 0px`;
+  vy-=0.9; y+=vy; if(y<0){ y=0; vy=0; } playerEl.style.bottom=(30+y)+"px";
   if(dist>=nextSpawnDist) spawnObstacle();
-  const baseY=(30+y);
-  const playerBox=crouch
-    ? { x:60+18, y:baseY+10, w:90-36, h:40 }
-    : { x:60+18, y:baseY+16, w:90-36, h:64 };
+  const playerBox=crouch ? { x:78, y:30+y+10, w:54, h:40 } : { x:78, y:30+y+16, w:54, h:64 };
   for(let i=obstacles.length-1;i>=0;i--){
-    const o=obstacles[i];
-    o.x-=speed*o.mult;
-    o.el.style.left=o.x+"px";
-    const vyo=parseInt(o.el.dataset.vy||"0",10);
-    if(vyo){
-      o.el.style.transform=`translateY(${vyo}px)`;
-    }
-    if(o.x<-180){
-      o.el.remove();
-      obstacles.splice(i,1);
-      continue;
-    }
-    let shrinkX=14, shrinkY=14;
-    if(o.type==="stone"){ shrinkX=22; shrinkY=22; }
-    if(o.type==="bird"){ shrinkX=20; shrinkY=10; }
-    const obsBox={
-      x:o.x+shrinkX,
-      y:o.bottom+shrinkY,
-      w:o.w-shrinkX*2,
-      h:o.h-shrinkY*2
-    };
-    if(rectsOverlap(playerBox,obsBox)){
-      gameOver(o.type);
-      return;
-    }
+    const o=obstacles[i]; o.x-=speed*o.mult; o.el.style.left=o.x+"px";
+    if(o.x<-180){ o.el.remove(); obstacles.splice(i,1); continue; }
+    const obsBox={ x:o.x+15, y:o.bottom+15, w:o.w-30, h:o.h-30 };
+    if(rectsOverlap(playerBox,obsBox)){ gameOver(o.type); return; }
   }
   requestAnimationFrame(loop);
 }
 startOverlay.style.display="grid";
-overOverlay.style.display="none";
 </script>
 </body>
 </html>
