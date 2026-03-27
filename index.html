@@ -17,7 +17,7 @@ body{
   color:#fff;
 }
 .leaderboard{
-  width:650px; /* Kicsit szélesebb, hogy a 3 szám kényelmesen elférjen */
+  width:650px;
   padding:30px;
   background:url("keret.png") center/cover no-repeat;
   border-radius:25px;
@@ -30,8 +30,6 @@ body{
   text-shadow:2px 2px 6px #000;
   margin:0 0 10px 0;
 }
-
-/* FEJLÉC A SZÁMOK FÖLÉ */
 .score-header {
   display: flex;
   justify-content: flex-end;
@@ -44,7 +42,6 @@ body{
   color: rgba(255,255,255,0.7);
 }
 .header-item { width: 50px; text-align: center; }
-
 .row{
   display:flex;
   align-items:center;
@@ -57,18 +54,15 @@ body{
   box-shadow:2px 2px 8px rgba(0,0,0,.5);
   border:4px solid transparent;
 }
-.row:nth-child(3){border-color:gold;} /* A header miatt eltolódott a sorrend (3., 4., 5. a top3) */
+.row:nth-child(3){border-color:gold;}
 .row:nth-child(4){border-color:silver;}
 .row:nth-child(5){border-color:#cd7f32;}
-
 .avatar{
   width:60px;height:60px;border-radius:50%;
   object-fit:cover;border:3px solid #fff;
   box-shadow:2px 2px 4px rgba(0,0,0,.5);
 }
 .name{font-size:20px;font-weight:800;flex:1;text-shadow:2px 2px 3px #000; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
-
-/* PONTSZÁM CSOPORT */
 .score-group {
   display: flex;
   gap: 10px;
@@ -81,9 +75,8 @@ body{
   min-width:50px;text-align:center;
   box-shadow:2px 2px 4px rgba(0,0,0,.4);
 }
-.old { background: rgba(255,255,255,0.3); color: #fff; font-size: 16px; } /* Régi pontszám */
-.total { background: #4CAF50; color: #fff; } /* Összesített pontszám */
-
+.old { background: rgba(255,255,255,0.3); color: #fff; font-size: 16px; }
+.total { background: #4CAF50; color: #fff; }
 .rightCol{display:flex;flex-direction:column;gap:10px;align-items:flex-start;}
 .hud{width:680px;display:flex;justify-content:space-between;gap:10px;font-weight:800;text-shadow:2px 2px 6px #000;flex-wrap:wrap;}
 .pill{background:rgba(0,0,0,.35);padding:8px 12px;border-radius:999px;white-space:nowrap;}
@@ -151,19 +144,14 @@ body{
 }
 </style>
 </head>
-
 <body>
 <div class="leaderboard">
   <h2>Flakon Ranglista</h2>
-
-  <!-- Fejléc -->
   <div class="score-header">
     <div class="header-item">Régi</div>
     <div class="header-item">Új</div>
     <div class="header-item" style="color:#4CAF50;">Össz</div>
   </div>
-
-  <!-- On3door -->
   <div class="row">
     <img class="avatar" src="onedoor.png" alt="Avatar">
     <div class="name">On3door</div>
@@ -173,8 +161,6 @@ body{
         <div class="count total">134</div>
     </div>
   </div>
-
-  <!-- MiszterSusu -->
   <div class="row">
     <img class="avatar" src="misztersiba.gif" alt="Avatar">
     <div class="name">MiszterSusu</div>
@@ -184,8 +170,6 @@ body{
         <div class="count total">118</div>
     </div>
   </div>
-
-  <!-- SusuSzaurusz -->
   <div class="row">
     <img class="avatar" src="dinoori.gif" alt="Avatar">
     <div class="name">SusuSzaurusz</div>
@@ -195,8 +179,6 @@ body{
         <div class="count total">84</div>
     </div>
   </div>
-
-  <!-- Spudbay -->
   <div class="row">
     <img class="avatar" src="spudbaymaci.gif" alt="Avatar">
     <div class="name">Spudbay</div>
@@ -206,8 +188,6 @@ body{
         <div class="count total">69</div>
     </div>
   </div>
-
-  <!-- MrSusu -->
   <div class="row">
     <img class="avatar" src="Mrgrogu.gif" alt="Avatar">
     <div class="name">MrSusu</div>
@@ -218,7 +198,6 @@ body{
     </div>
   </div>
 </div>
-
 <div class="rightCol">
   <div class="hud">
     <div class="pill" id="hudPlayer">Játékos: -</div>
@@ -226,10 +205,8 @@ body{
     <div class="pill" id="hudBest">Rekord: - - 0</div>
     <div class="pill">Ugrás: Space/tap | Gugolás: S (tart)</div>
   </div>
-
   <div id="game">
     <img id="player" src="majomka.png" alt="player">
-
     <div id="startOverlay" class="overlay">
       <div class="modal">
         <h3>Majom Jump</h3>
@@ -240,7 +217,6 @@ body{
         <div class="hint">Ugrás: Space / tap • Gugolás: S (tart)</div>
       </div>
     </div>
-
     <div id="overOverlay" class="overlay" style="display:none;">
       <div class="modal">
         <h3>Game Over</h3>
@@ -250,28 +226,22 @@ body{
     </div>
   </div>
 </div>
-
 <script>
-// A teljes JavaScript változatlan maradt, hogy minden funkció ugyanúgy működjön.
 const BASE_SPEED=3.0, SPEED_DIV=1200, MAX_SPEED=7.0;
 const GRAVITY=0.9, JUMP_V=19;
 const API_URL="https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
 const birdHitSound=new Audio("viiviiiviii.mp3"); birdHitSound.volume=1.0;
-
 const game=document.getElementById("game");
 const playerEl=document.getElementById("player");
-
 const hudPlayer=document.getElementById("hudPlayer");
 const hudScore=document.getElementById("hudScore");
 const hudBest=document.getElementById("hudBest");
-
 const startOverlay=document.getElementById("startOverlay");
 const overOverlay=document.getElementById("overOverlay");
 const overText=document.getElementById("overText");
 const nameInput=document.getElementById("nameInput");
 const startBtn=document.getElementById("startBtn");
 const restartBtn=document.getElementById("restartBtn");
-
 let bestName="-", bestScore=0;
 async function loadBest(){
   try{
@@ -294,7 +264,6 @@ async function trySaveBest(playerName,score){
   await loadBest();
 }
 loadBest();
-
 let running=false, alive=false;
 let playerName="-";
 let score=0, speed=4;
@@ -303,7 +272,6 @@ let crouch=false;
 let obstacles=[];
 let dist=0, nextSpawnDist=0;
 let bgX=0;
-
 function resetGame(){
   score=0; y=0; vy=0; dist=0; bgX=0;
   game.style.backgroundPosition="0px 0px";
@@ -333,11 +301,9 @@ function jump(){
   if(!running||!alive) return;
   if(y<=0) vy=JUMP_V;
 }
-
 startBtn.addEventListener("click",startGame);
 restartBtn.addEventListener("click",startGame);
 nameInput.addEventListener("keydown",(e)=>{ if(e.key==="Enter") startGame(); });
-
 document.addEventListener("keydown",(e)=>{
   if(e.code==="Space"||e.code==="ArrowUp"){ e.preventDefault(); jump(); }
   if(e.code==="KeyS"||e.code==="ArrowDown"){ e.preventDefault(); setCrouch(true); }
@@ -345,7 +311,6 @@ document.addEventListener("keydown",(e)=>{
 document.addEventListener("keyup",(e)=>{
   if(e.code==="KeyS"||e.code==="ArrowDown"){ e.preventDefault(); setCrouch(false); }
 });
-
 let holdTimer=null;
 game.addEventListener("pointerdown",()=>{
   if(startOverlay.style.display!=="none") return;
@@ -361,17 +326,14 @@ game.addEventListener("pointercancel",()=>{
   if(holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
   setCrouch(false);
 });
-
 function spawnObstacle(){
   const el=document.createElement("img");
   el.className="obstacle";
-
   const r=Math.random();
   let type;
   if(r<0.50) type="banana";
   else if(r<0.80) type="stone";
   else type="bird";
-
   if(type==="banana"){
     el.src="banana.png";
     el.style.width="52px"; el.style.height="52px";
@@ -388,5 +350,77 @@ function spawnObstacle(){
     el.style.bottom="72px";
     el.dataset.vy="-18";
   }
-
-  el.style.
+  el.style.left=game.clientWidth+"px";
+  game.appendChild(el);
+  const w=parseInt(el.style.width,10);
+  const h=parseInt(el.style.height,10);
+  const bottom=parseInt(el.style.bottom,10);
+  const mult=0.92+Math.random()*0.18;
+  obstacles.push({ el, x:game.clientWidth, w, h, bottom, mult, type });
+  const gapMin=480, gapMax=760;
+  nextSpawnDist=dist+(gapMin+Math.random()*(gapMax-gapMin));
+}
+function rectsOverlap(a,b){
+  return (a.x<b.x+b.w && a.x+a.w>b.x && a.y<b.y+b.h && a.y+a.h>b.y);
+}
+function gameOver(hitType){
+  alive=false; running=false;
+  overText.innerHTML=`Pont: <b>${score}</b>`;
+  overOverlay.style.display="grid";
+  if(hitType==="bird"){
+    try{ birdHitSound.currentTime=0; birdHitSound.play().catch(()=>{}); }catch{}
+  }
+  if(score>bestScore) trySaveBest(playerName,score);
+  else loadBest();
+}
+function loop(){
+  if(!running||!alive) return;
+  score++;
+  hudScore.textContent="Pont: "+score;
+  speed=Math.min(MAX_SPEED, BASE_SPEED + score/SPEED_DIV);
+  dist+=speed;
+  bgX-=speed;
+  game.style.backgroundPosition=`${bgX}px 0px`;
+  vy-=GRAVITY;
+  y+=vy;
+  if(y<0){ y=0; vy=0; }
+  playerEl.style.bottom=(30+y)+"px";
+  if(dist>=nextSpawnDist) spawnObstacle();
+  const baseY=(30+y);
+  const playerBox=crouch
+    ? { x:60+18, y:baseY+10, w:90-36, h:40 }
+    : { x:60+18, y:baseY+16, w:90-36, h:64 };
+  for(let i=obstacles.length-1;i>=0;i--){
+    const o=obstacles[i];
+    o.x-=speed*o.mult;
+    o.el.style.left=o.x+"px";
+    const vyo=parseInt(o.el.dataset.vy||"0",10);
+    if(vyo){
+      o.el.style.transform=`translateY(${vyo}px)`;
+    }
+    if(o.x<-180){
+      o.el.remove();
+      obstacles.splice(i,1);
+      continue;
+    }
+    let shrinkX=14, shrinkY=14;
+    if(o.type==="stone"){ shrinkX=22; shrinkY=22; }
+    if(o.type==="bird"){ shrinkX=20; shrinkY=10; }
+    const obsBox={
+      x:o.x+shrinkX,
+      y:o.bottom+shrinkY,
+      w:o.w-shrinkX*2,
+      h:o.h-shrinkY*2
+    };
+    if(rectsOverlap(playerBox,obsBox)){
+      gameOver(o.type);
+      return;
+    }
+  }
+  requestAnimationFrame(loop);
+}
+startOverlay.style.display="grid";
+overOverlay.style.display="none";
+</script>
+</body>
+</html>
