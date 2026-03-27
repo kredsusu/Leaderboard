@@ -28,45 +28,25 @@ body{
 .row.top2 { border-color: #e0e0e0; }
 .row.top3 { border-color: #cd7f32; }
 .avatar{ width:60px; height:60px; border-radius:50%; object-fit:cover; border:3px solid #fff; box-shadow:2px 2px 4px rgba(0,0,0,.5); }
-.name-container { flex: 1; display: flex; align-items: center; gap: 8px; overflow: hidden; }
+.name-container { flex: 1; display: flex; align-items: center; gap: 12px; overflow: hidden; }
 .name{ font-size:20px; font-weight:800; text-shadow:2px 2px 3px #000; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-/* KUPA BADGE STÍLUS AZ ÚJ KÉP ALAPJÁN */
-.cups-wrapper { display: flex; gap: 6px; flex-wrap: wrap; }
+.cups-wrapper { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .cup-badge {
-  display: flex; align-items: center; justify-content: center; gap: 4px;
-  color: #fff; padding: 3px 8px; border-radius: 8px; font-weight: 900; font-size: 12px;
-  position: relative; overflow: hidden; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-  border: 1px solid rgba(255,255,255,0.3);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  color: #fff; padding: 5px 12px; border-radius: 10px; font-weight: 900; font-size: 15px;
+  position: relative; overflow: hidden; text-shadow: 1px 2px 3px rgba(0,0,0,0.9);
+  border: 2px solid rgba(255,255,255,0.5); box-shadow: 0 4px 12px rgba(0,0,0,0.6); min-width: 65px;
 }
-/* Arany - szárnyas sárga stílus */
-.gold { 
-    background: linear-gradient(180deg, #ffeb3b 0%, #fbc02d 50%, #f57f17 100%); 
-    border-color: #fff176;
-}
-/* Ezüst - fémes szürke stílus */
-.silver { 
-    background: linear-gradient(180deg, #f5f5f5 0%, #bdbdbd 50%, #757575 100%); 
-    border-color: #eeeeee;
-}
-/* Bronz - sötétebb rezes stílus */
-.bronze { 
-    background: linear-gradient(180deg, #a1887f 0%, #795548 50%, #4e342e 100%); 
-    border-color: #8d6e63;
-}
-/* Csillogás effekt */
-.cup-badge::before {
-  content: ""; position: absolute; top: -10%; left: 10%; width: 25%; height: 50%;
-  background: rgba(255,255,255,0.6); filter: blur(4px); transform: rotate(-45deg);
-}
+.cup-badge span { font-size: 20px; }
+.gold { background: linear-gradient(180deg, #ffeb3b 0%, #fbc02d 50%, #f57f17 100%); border-color: #fff176; }
+.silver { background: linear-gradient(180deg, #f5f5f5 0%, #bdbdbd 50%, #757575 100%); border-color: #eeeeee; }
+.bronze { background: linear-gradient(180deg, #a1887f 0%, #795548 50%, #4e342e 100%); border-color: #8d6e63; }
 .cup-badge::after {
   content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
   background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
   transform: rotate(30deg); animation: shimmer 3s infinite;
 }
 @keyframes shimmer { 0% { transform: translateX(-100%) rotate(30deg); } 100% { transform: translateX(100%) rotate(30deg); } }
-
 .score-group { display: flex; gap: 10px; align-items: center; }
 .count{ font-size:18px; font-weight:800; background:#f5f5f5; color:#000; padding:8px 5px; border-radius:10px; min-width:50px; text-align:center; box-shadow:2px 2px 4px rgba(0,0,0,.4); }
 .old { background: rgba(255,255,255,0.3); color: #fff; font-size: 16px; }
@@ -133,7 +113,6 @@ const players = [
   { name: "Spudbay", avatar: "spudbaymaci.gif", oldScore: 69, newScore: 42, cups: [{type: "bronze", count: 1}] },
   { name: "MrSusu", avatar: "Mrgrogu.gif", oldScore: 50, newScore: 0, cups: [] }
 ];
-
 function updateLeaderboard() {
   const container = document.getElementById("leaderboard-content");
   players.sort((a, b) => (b.oldScore + b.newScore) - (a.oldScore + a.newScore));
@@ -144,107 +123,47 @@ function updateLeaderboard() {
     let cupsHTML = '<div class="cups-wrapper">';
     p.cups.forEach(c => {
       let icon = (c.type === "gold") ? "🏆" : (c.type === "silver") ? "🥈" : "🥉";
-      cupsHTML += `<div class="cup-badge ${c.type}">${icon} x${c.count}</div>`;
+      cupsHTML += `<div class="cup-badge ${c.type}"><span>${icon}</span> x${c.count}</div>`;
     });
     cupsHTML += '</div>';
-    container.innerHTML += `
-      <div class="row ${topClass}">
-        <img class="avatar" src="${p.avatar}" alt="Avatar">
-        <div class="name-container">
-          <div class="name">${p.name}</div>
-          ${cupsHTML}
-        </div>
-        <div class="score-group">
-            <div class="count old">${p.oldScore}</div>
-            <div class="count">${p.newScore}</div>
-            <div class="count total">${total}</div>
-        </div>
-      </div>
-    `;
+    container.innerHTML += `<div class="row ${topClass}"><img class="avatar" src="${p.avatar}"><div class="name-container"><div class="name">${p.name}</div>${cupsHTML}</div><div class="score-group"><div class="count old">${p.oldScore}</div><div class="count">${p.newScore}</div><div class="count total">${total}</div></div></div>`;
   });
 }
 updateLeaderboard();
-
-const BASE_SPEED=3.0, SPEED_DIV=1200, MAX_SPEED=7.0;
-const GRAVITY=0.9, JUMP_V=19;
-const API_URL="https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
-const game=document.getElementById("game");
-const playerEl=document.getElementById("player");
-const hudPlayer=document.getElementById("hudPlayer");
-const hudScore=document.getElementById("hudScore");
-const hudBest=document.getElementById("hudBest");
-const startOverlay=document.getElementById("startOverlay");
-const overOverlay=document.getElementById("overOverlay");
-const overText=document.getElementById("overText");
-const nameInput=document.getElementById("nameInput");
-const startBtn=document.getElementById("startBtn");
-const restartBtn=document.getElementById("restartBtn");
-let bestName="-", bestScore=0;
-
-async function loadBest(){
-  try{ const r=await fetch(API_URL,{method:"GET"}); const j=await r.json(); bestName=(j&&j.name)?String(j.name):"-"; bestScore=Number(j&&j.score?j.score:0); }catch{}
-  hudBest.textContent=`Rekord: ${bestName} - ${bestScore}`;
-}
-async function trySaveBest(playerName,score){
-  try{ await fetch(API_URL,{ method:"POST", headers:{ "Content-Type":"text/plain;charset=utf-8" }, body: JSON.stringify({ name: playerName, score }) }); }catch{}
-  await loadBest();
-}
+const BASE_SPEED=3.0, SPEED_DIV=1200, MAX_SPEED=7.0, GRAVITY=0.9, JUMP_V=19, API_URL="https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
+const game=document.getElementById("game"), playerEl=document.getElementById("player"), hudPlayer=document.getElementById("hudPlayer"), hudScore=document.getElementById("hudScore"), hudBest=document.getElementById("hudBest"), startOverlay=document.getElementById("startOverlay"), overOverlay=document.getElementById("overOverlay"), overText=document.getElementById("overText"), nameInput=document.getElementById("nameInput"), startBtn=document.getElementById("startBtn"), restartBtn=document.getElementById("restartBtn");
+let bestName="-", bestScore=0, running=false, alive=false, playerName="-", score=0, speed=4, y=0, vy=0, crouch=false, obstacles=[], dist=0, nextSpawnDist=0, bgX=0;
+async function loadBest(){ try{const r=await fetch(API_URL);const j=await r.json();bestName=j.name||"-";bestScore=j.score||0;}catch{} hudBest.textContent=`Rekord: ${bestName} - ${bestScore}`;}
+async function trySaveBest(n,s){ try{await fetch(API_URL,{method:"POST",body:JSON.stringify({name:n,score:s})});}catch{} loadBest();}
 loadBest();
-
-let running=false, alive=false, playerName="-", score=0, speed=4, y=0, vy=0, crouch=false, obstacles=[], dist=0, nextSpawnDist=0, bgX=0;
-
-function resetGame(){
-  score=0; y=0; vy=0; dist=0; bgX=0; game.style.backgroundPosition="0px 0px";
-  obstacles.forEach(o=>o.el.remove()); obstacles=[];
-  nextSpawnDist=420+Math.random()*260; hudScore.textContent="Pont: 0";
-  playerEl.style.bottom="30px"; setCrouch(false);
-}
-function setCrouch(on){ crouch=!!on; playerEl.classList.toggle("crouch",crouch); }
-function startGame(){
-  playerName=(nameInput.value||"").trim()||"Névtelen"; hudPlayer.textContent="Játékos: "+playerName;
-  resetGame(); alive=true; running=true; startOverlay.style.display="none"; overOverlay.style.display="none";
-  requestAnimationFrame(loop);
-}
-function jump(){ if(running&&alive&&y<=0) vy=JUMP_V; }
-
-startBtn.addEventListener("click",startGame); restartBtn.addEventListener("click",startGame);
-nameInput.addEventListener("keydown",(e)=>{ if(e.key==="Enter") startGame(); });
-document.addEventListener("keydown",(e)=>{ if(e.code==="Space"||e.code==="ArrowUp"){ e.preventDefault(); jump(); } if(e.code==="KeyS"||e.code==="ArrowDown"){ e.preventDefault(); setCrouch(true); } });
-document.addEventListener("keyup",(e)=>{ if(e.code==="KeyS"||e.code==="ArrowDown"){ e.preventDefault(); setCrouch(false); } });
-
+function resetGame(){ score=0; y=0; vy=0; dist=0; bgX=0; game.style.backgroundPosition="0px 0px"; obstacles.forEach(o=>o.el.remove()); obstacles=[]; nextSpawnDist=420; hudScore.textContent="Pont: 0"; playerEl.style.bottom="30px"; setCrouch(false); }
+function setCrouch(v){ crouch=v; playerEl.classList.toggle("crouch",v); }
+function startGame(){ playerName=nameInput.value.trim()||"Névtelen"; hudPlayer.textContent="Játékos: "+playerName; resetGame(); alive=true; running=true; startOverlay.style.display="none"; overOverlay.style.display="none"; requestAnimationFrame(loop); }
+startBtn.onclick=startGame; restartBtn.onclick=startGame;
+document.onkeydown=(e)=>{ if(e.code==="Space") { e.preventDefault(); if(y<=0) vy=JUMP_V; } if(e.code==="KeyS") setCrouch(true); };
+document.onkeyup=(e)=>{ if(e.code==="KeyS") setCrouch(false); };
 function spawnObstacle(){
-  const el=document.createElement("img"); el.className="obstacle";
-  const r=Math.random(); let type = (r<0.50) ? "banana" : (r<0.80) ? "stone" : "bird";
-  if(type==="banana"){ el.src="banana.png"; el.style.width="52px"; el.style.height="52px"; el.style.bottom="30px"; }
-  else if(type==="stone"){ el.src="stone.png"; el.style.width="46px"; el.style.height="46px"; el.style.bottom="30px"; }
-  else{ el.src="madar.gif"; el.style.width="70px"; el.style.height="46px"; el.style.bottom="72px"; el.dataset.vy="-18"; }
+  const el=document.createElement("img"); el.className="obstacle"; const r=Math.random(); let type=(r<0.5)?"banana":(r<0.8)?"stone":"bird";
+  if(type==="banana"){el.src="banana.png";el.style.width="52px";el.style.bottom="30px";}
+  else if(type==="stone"){el.src="stone.png";el.style.width="46px";el.style.bottom="30px";}
+  else{el.src="madar.gif";el.style.width="70px";el.style.bottom="72px";}
   el.style.left=game.clientWidth+"px"; game.appendChild(el);
-  obstacles.push({ el, x:game.clientWidth, w:parseInt(el.style.width), h:parseInt(el.style.height), bottom:parseInt(el.style.bottom), mult:0.92+Math.random()*0.18, type });
-  nextSpawnDist=dist+(480+Math.random()*280);
-}
-function rectsOverlap(a,b){ return (a.x<b.x+b.w && a.x+a.w>b.x && a.y<b.y+b.h && a.y+a.h>b.y); }
-function gameOver(hitType){
-  alive=false; running=false; overText.innerHTML=`Pont: <b>${score}</b>`; overOverlay.style.display="grid";
-  const p = players.find(x => x.name.toLowerCase() === playerName.toLowerCase());
-  if(p && score > p.newScore) { p.newScore = score; updateLeaderboard(); }
-  if(score>bestScore) trySaveBest(playerName,score); else loadBest();
+  obstacles.push({el,x:game.clientWidth,w:parseInt(el.style.width),h:40,bottom:parseInt(el.style.bottom),mult:1,type});
+  nextSpawnDist=dist+500+Math.random()*300;
 }
 function loop(){
-  if(!running||!alive) return;
-  score++; hudScore.textContent="Pont: "+score;
-  speed=Math.min(MAX_SPEED, BASE_SPEED + score/SPEED_DIV); dist+=speed; bgX-=speed; game.style.backgroundPosition=`${bgX}px 0px`;
-  vy-=0.9; y+=vy; if(y<0){ y=0; vy=0; } playerEl.style.bottom=(30+y)+"px";
-  if(dist>=nextSpawnDist) spawnObstacle();
-  const playerBox=crouch ? { x:78, y:30+y+10, w:54, h:40 } : { x:78, y:30+y+16, w:54, h:64 };
+  if(!running||!alive)return; score++; hudScore.textContent="Pont: "+score; speed=Math.min(MAX_SPEED,BASE_SPEED+score/SPEED_DIV); dist+=speed; bgX-=speed; game.style.backgroundPosition=bgX+"px 0px";
+  vy-=GRAVITY; y+=vy; if(y<0){y=0;vy=0;} playerEl.style.bottom=(30+y)+"px"; if(dist>=nextSpawnDist)spawnObstacle();
+  let pb=crouch?{x:78,y:30+y,w:50,h:40}:{x:78,y:30+y,w:50,h:60};
   for(let i=obstacles.length-1;i>=0;i--){
-    const o=obstacles[i]; o.x-=speed*o.mult; o.el.style.left=o.x+"px";
-    if(o.x<-180){ o.el.remove(); obstacles.splice(i,1); continue; }
-    const obsBox={ x:o.x+15, y:o.bottom+15, w:o.w-30, h:o.h-30 };
-    if(rectsOverlap(playerBox,obsBox)){ gameOver(o.type); return; }
-  }
-  requestAnimationFrame(loop);
+    let o=obstacles[i]; o.x-=speed; o.el.style.left=o.x+"px"; if(o.x<-100){o.el.remove();obstacles.splice(i,1);continue;}
+    if(pb.x<o.x+o.w && pb.x+pb.w>o.x && pb.y<o.bottom+o.h && pb.y+pb.h>o.bottom){
+      alive=false; running=false; overText.innerHTML=`Pont: <b>${score}</b>`; overOverlay.style.display="grid";
+      let p=players.find(x=>x.name.toLowerCase()===playerName.toLowerCase()); if(p&&score>p.newScore){p.newScore=score;updateLeaderboard();}
+      if(score>bestScore) trySaveBest(playerName,score);
+    }
+  } requestAnimationFrame(loop);
 }
-startOverlay.style.display="grid";
 </script>
 </body>
 </html>
