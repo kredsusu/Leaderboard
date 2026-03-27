@@ -15,9 +15,23 @@ body{
   width:650px; padding:25px; background:url("keret.png") center/cover no-repeat;
   border-radius:25px; box-shadow:0 0 30px rgba(0,0,0,.7);
 }
-.leaderboard h2{ text-align:center; font-size:32px; font-weight:800; text-shadow:2px 2px 6px #000; margin:0 0 10px 0; }
-.score-header { display: flex; justify-content: flex-end; gap: 12px; padding-right: 15px; margin-bottom: 5px; font-size: 11px; font-weight: bold; text-transform: uppercase; color: rgba(255,255,255,0.7); }
-.header-item { width: 45px; text-align: center; }
+.leaderboard h2{ text-align:center; font-size:32px; font-weight:800; text-shadow:2px 2px 6px #000; margin:0 0 15px 0; }
+.score-header { 
+  display: flex; 
+  justify-content: flex-end; 
+  gap: 10px; 
+  padding-right: 14px; 
+  margin-bottom: 8px; 
+}
+.header-item { 
+  width: 80px; 
+  text-align: center; 
+  font-size: 10px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  color: rgba(255,255,255,0.7);
+  line-height: 1.2;
+}
 #leaderboard-content { display: flex; flex-direction: column; }
 .row{
   display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -41,14 +55,17 @@ body{
 .gold { background: linear-gradient(180deg, #ffeb3b 0%, #fbc02d 50%, #f57f17 100%); }
 .silver { background: linear-gradient(180deg, #f5f5f5 0%, #bdbdbd 50%, #757575 100%); }
 .bronze { background: linear-gradient(180deg, #a1887f 0%, #795548 50%, #4e342e 100%); }
-.cup-badge::after {
-  content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
-  transform: rotate(30deg); animation: shimmer 3s infinite;
+.score-group { display: flex; gap: 10px; align-items: center; }
+.count { 
+  font-size: 16px; 
+  font-weight: 800; 
+  background: #f5f5f5; 
+  color: #000; 
+  padding: 6px 0; 
+  border-radius: 8px; 
+  width: 80px; 
+  text-align: center; 
 }
-@keyframes shimmer { 0% { transform: translateX(-100%) rotate(30deg); } 100% { transform: translateX(100%) rotate(30deg); } }
-.score-group { display: flex; gap: 8px; align-items: center; }
-.count{ font-size:16px; font-weight:800; background:#f5f5f5; color:#000; padding:6px 4px; border-radius:8px; min-width:45px; text-align:center; }
 .old { background: rgba(255,255,255,0.25); color: #fff; }
 .total { background: #4CAF50; color: #fff; }
 .rightCol{ display:flex; flex-direction:column; gap:10px; }
@@ -57,7 +74,6 @@ body{
 #game{ width:680px; height:380px; background:url("jatekhatter.jpg") repeat-x; border-radius:20px; position:relative; overflow:hidden; box-shadow:0 0 20px #000; }
 #player{ position:absolute; left:60px; width:90px; bottom:30px; transform-origin:bottom; }
 #player.crouch{ transform:scaleY(0.7); }
-.obstacle{ position:absolute; }
 .overlay{ position:absolute; inset:0; background:rgba(0,0,0,.6); display:grid; place-items:center; }
 .modal{ background:rgba(0,0,0,.85); padding:20px; border-radius:15px; width:350px; text-align:center; }
 .modal input{ width:80%; padding:10px; border-radius:10px; border:none; margin:10px 0; }
@@ -69,9 +85,9 @@ body{
 <div class="leaderboard">
   <h2>Flakon Ranglista</h2>
   <div class="score-header">
-    <div class="header-item">Első forduló</div>
-    <div class="header-item">Második forduló</div>
-    <div class="header-item" style="color:#4CAF50;">Összesen</div>
+    <div class="header-item">Első<br>forduló</div>
+    <div class="header-item">Második<br>forduló</div>
+    <div class="header-item" style="color:#4CAF50;">Összes<br>pont</div>
   </div>
   <div id="leaderboard-content"></div>
 </div>
@@ -133,9 +149,9 @@ document.onkeydown=(e)=>{ if(e.code==="Space" && y<=0){ e.preventDefault(); vy=J
 document.onkeyup=(e)=>{ if(e.code==="KeyS") setCrouch(false); };
 function spawnObstacle(){
   const el=document.createElement("img"); el.className="obstacle"; const r=Math.random(); let type=(r<0.5)?"banana":(r<0.8)?"stone":"bird";
-  if(type==="banana"){el.src="banana.png";el.style.width="52px";el.style.bottom="30px";}
-  else if(type==="stone"){el.src="stone.png";el.style.width="46px";el.style.bottom="30px";}
-  else{el.src="madar.gif";el.style.width="70px";el.style.bottom="72px";}
+  if(type==="banana"){el.src="banana.png";el.style.width="52px";el.style.bottom="30px";el.style.position="absolute";}
+  else if(type==="stone"){el.src="stone.png";el.style.width="46px";el.style.bottom="30px";el.style.position="absolute";}
+  else{el.src="madar.gif";el.style.width="70px";el.style.bottom="72px";el.style.position="absolute";}
   el.style.left=game.clientWidth+"px"; game.appendChild(el);
   obstacles.push({el,x:game.clientWidth,w:40,h:40,bottom:parseInt(el.style.bottom)});
   nextSpawnDist=dist+500+Math.random()*300;
