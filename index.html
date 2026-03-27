@@ -105,15 +105,16 @@ body{
 </div>
 <script>
 const players = [
-  { name: "On3door", avatar: "onedoor.png", oldScore: 134, newScore: 0, cups: [{type: "gold", count: 1}, 
+  { name: "On3door", avatar: "onedoor.png", oldScore: 134, newScore: 0, cups: [{type: "gold", count: 1}] },
   { name: "MiszterSusu", avatar: "misztersiba.gif", oldScore: 118, newScore: 52, cups: [{type: "gold", count: 1}] },
   { name: "SusuSzaurusz", avatar: "dinoori.gif", oldScore: 84, newScore: 75, cups: [{type: "silver", count: 1}] },
-  { name: "Spudbay", avatar: "spudbaymaci.gif", oldScore: 69, newScore: 42, cups: [{type: "bronz", count: 1}] },
+  { name: "Spudbay", avatar: "spudbaymaci.gif", oldScore: 69, newScore: 42, cups: [{type: "bronze", count: 1}] },
   { name: "MrSusu", avatar: "Mrgrogu.gif", oldScore: 50, newScore: 0, cups: [] }
 ];
+
 function updateLeaderboard() {
   const container = document.getElementById("leaderboard-content");
-  players.sort((a, b) => b.newScore - a.newScore);
+  players.sort((a, b) => (b.oldScore + b.newScore) - (a.oldScore + a.newScore));
   container.innerHTML = "";
   players.forEach((p, index) => {
     const total = p.oldScore + p.newScore;
@@ -141,6 +142,7 @@ function updateLeaderboard() {
   });
 }
 updateLeaderboard();
+
 const BASE_SPEED=3.0, SPEED_DIV=1200, MAX_SPEED=7.0;
 const GRAVITY=0.9, JUMP_V=19;
 const API_URL="https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
@@ -156,6 +158,7 @@ const nameInput=document.getElementById("nameInput");
 const startBtn=document.getElementById("startBtn");
 const restartBtn=document.getElementById("restartBtn");
 let bestName="-", bestScore=0;
+
 async function loadBest(){
   try{ const r=await fetch(API_URL,{method:"GET"}); const j=await r.json(); bestName=(j&&j.name)?String(j.name):"-"; bestScore=Number(j&&j.score?j.score:0); }catch{}
   hudBest.textContent=`Rekord: ${bestName} - ${bestScore}`;
@@ -165,7 +168,9 @@ async function trySaveBest(playerName,score){
   await loadBest();
 }
 loadBest();
+
 let running=false, alive=false, playerName="-", score=0, speed=4, y=0, vy=0, crouch=false, obstacles=[], dist=0, nextSpawnDist=0, bgX=0;
+
 function resetGame(){
   score=0; y=0; vy=0; dist=0; bgX=0; game.style.backgroundPosition="0px 0px";
   obstacles.forEach(o=>o.el.remove()); obstacles=[];
@@ -179,10 +184,12 @@ function startGame(){
   requestAnimationFrame(loop);
 }
 function jump(){ if(running&&alive&&y<=0) vy=JUMP_V; }
+
 startBtn.addEventListener("click",startGame); restartBtn.addEventListener("click",startGame);
 nameInput.addEventListener("keydown",(e)=>{ if(e.key==="Enter") startGame(); });
 document.addEventListener("keydown",(e)=>{ if(e.code==="Space"||e.code==="ArrowUp"){ e.preventDefault(); jump(); } if(e.code==="KeyS"||e.code==="ArrowDown"){ e.preventDefault(); setCrouch(true); } });
 document.addEventListener("keyup",(e)=>{ if(e.code==="KeyS"||e.code==="ArrowDown"){ e.preventDefault(); setCrouch(false); } });
+
 function spawnObstacle(){
   const el=document.createElement("img"); el.className="obstacle";
   const r=Math.random(); let type = (r<0.50) ? "banana" : (r<0.80) ? "stone" : "bird";
