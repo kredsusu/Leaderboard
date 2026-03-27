@@ -12,59 +12,57 @@ body{
   gap:60px; padding-top:40px; color:#fff;
 }
 .leaderboard{
-  width:650px; padding:30px; background:url("keret.png") center/cover no-repeat;
+  width:650px; padding:25px; background:url("keret.png") center/cover no-repeat;
   border-radius:25px; box-shadow:0 0 30px rgba(0,0,0,.7);
 }
-.leaderboard h2{ text-align:center; font-size:36px; font-weight:800; text-shadow:2px 2px 6px #000; margin:0 0 10px 0; }
-.score-header { display: flex; justify-content: flex-end; gap: 12px; padding-right: 15px; margin-bottom: 5px; font-size: 12px; font-weight: bold; text-transform: uppercase; color: rgba(255,255,255,0.7); }
-.header-item { width: 50px; text-align: center; }
+.leaderboard h2{ text-align:center; font-size:32px; font-weight:800; text-shadow:2px 2px 6px #000; margin:0 0 10px 0; }
+.score-header { display: flex; justify-content: flex-end; gap: 12px; padding-right: 15px; margin-bottom: 5px; font-size: 11px; font-weight: bold; text-transform: uppercase; color: rgba(255,255,255,0.7); }
+.header-item { width: 45px; text-align: center; }
 #leaderboard-content { display: flex; flex-direction: column; }
 .row{
-  display:flex; align-items:center; justify-content:space-between; gap:15px;
-  background:rgba(0,0,0,.4); padding:12px 16px; border-radius:20px; margin:10px 0;
-  box-shadow:2px 2px 8px rgba(0,0,0,.5); border:4px solid transparent; transition: all 0.4s ease;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  background:rgba(0,0,0,.4); padding:10px 14px; border-radius:18px; margin:6px 0;
+  box-shadow:2px 2px 8px rgba(0,0,0,.5); border:3px solid transparent; transition: all 0.3s ease;
 }
-.row.top1 { border-color: #ffd700; transform: scale(1.02); background: rgba(255, 215, 0, 0.15); }
+.row.top1 { border-color: #ffd700; background: rgba(255, 215, 0, 0.1); }
 .row.top2 { border-color: #e0e0e0; }
 .row.top3 { border-color: #cd7f32; }
-.avatar{ width:60px; height:60px; border-radius:50%; object-fit:cover; border:3px solid #fff; box-shadow:2px 2px 4px rgba(0,0,0,.5); }
-.name-container { flex: 1; display: flex; align-items: center; gap: 12px; overflow: hidden; }
-.name{ font-size:20px; font-weight:800; text-shadow:2px 2px 3px #000; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cups-wrapper { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.avatar{ width:50px; height:50px; border-radius:50%; object-fit:cover; border:2px solid #fff; }
+.name-container { flex: 1; display: flex; align-items: center; gap: 10px; overflow: hidden; }
+.name{ font-size:18px; font-weight:800; text-shadow:2px 2px 3px #000; white-space: nowrap; }
+.cups-wrapper { display: flex; gap: 6px; align-items: center; }
 .cup-badge {
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  color: #fff; padding: 5px 12px; border-radius: 10px; font-weight: 900; font-size: 15px;
-  position: relative; overflow: hidden; text-shadow: 1px 2px 3px rgba(0,0,0,0.9);
-  border: 2px solid rgba(255,255,255,0.5); box-shadow: 0 4px 12px rgba(0,0,0,0.6); min-width: 65px;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  color: #fff; padding: 4px 10px; border-radius: 8px; font-weight: 900; font-size: 14px;
+  position: relative; overflow: hidden; text-shadow: 1px 1px 2px #000;
+  border: 2px solid rgba(255,255,255,0.4); box-shadow: 0 3px 8px rgba(0,0,0,0.5);
 }
-.cup-badge span { font-size: 20px; }
-.gold { background: linear-gradient(180deg, #ffeb3b 0%, #fbc02d 50%, #f57f17 100%); border-color: #fff176; }
-.silver { background: linear-gradient(180deg, #f5f5f5 0%, #bdbdbd 50%, #757575 100%); border-color: #eeeeee; }
-.bronze { background: linear-gradient(180deg, #a1887f 0%, #795548 50%, #4e342e 100%); border-color: #8d6e63; }
+.cup-badge span { font-size: 18px; }
+.gold { background: linear-gradient(180deg, #ffeb3b 0%, #fbc02d 50%, #f57f17 100%); }
+.silver { background: linear-gradient(180deg, #f5f5f5 0%, #bdbdbd 50%, #757575 100%); }
+.bronze { background: linear-gradient(180deg, #a1887f 0%, #795548 50%, #4e342e 100%); }
 .cup-badge::after {
   content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
   transform: rotate(30deg); animation: shimmer 3s infinite;
 }
 @keyframes shimmer { 0% { transform: translateX(-100%) rotate(30deg); } 100% { transform: translateX(100%) rotate(30deg); } }
-.score-group { display: flex; gap: 10px; align-items: center; }
-.count{ font-size:18px; font-weight:800; background:#f5f5f5; color:#000; padding:8px 5px; border-radius:10px; min-width:50px; text-align:center; box-shadow:2px 2px 4px rgba(0,0,0,.4); }
-.old { background: rgba(255,255,255,0.3); color: #fff; font-size: 16px; }
+.score-group { display: flex; gap: 8px; align-items: center; }
+.count{ font-size:16px; font-weight:800; background:#f5f5f5; color:#000; padding:6px 4px; border-radius:8px; min-width:45px; text-align:center; }
+.old { background: rgba(255,255,255,0.25); color: #fff; }
 .total { background: #4CAF50; color: #fff; }
-.rightCol{ display:flex; flex-direction:column; gap:10px; align-items:flex-start; }
-.hud{ width:680px; display:flex; justify-content:space-between; gap:10px; font-weight:800; text-shadow:2px 2px 6px #000; flex-wrap:wrap; }
-.pill{ background:rgba(0,0,0,.35); padding:8px 12px; border-radius:999px; white-space:nowrap; }
-#game{ width:680px; height:380px; background-image:url("jatekhatter.jpg"); background-size:cover; background-repeat:repeat-x; border-radius:20px; position:relative; overflow:hidden; box-shadow:0 0 20px rgba(0,0,0,.6); }
-#player{ position:absolute; left:60px; width:90px; bottom:30px; user-select:none; -webkit-user-drag:none; transform-origin:bottom; transition:transform 60ms linear; }
-#player.crouch{ transform:scaleY(0.72); }
-.obstacle{ position:absolute; user-select:none; -webkit-user-drag:none; }
-.overlay{ position:absolute; inset:0; background:rgba(0,0,0,.55); display:grid; place-items:center; padding:14px; }
-.modal{ background:rgba(0,0,0,.82); padding:16px 18px; border-radius:14px; width:min(440px,92%); box-shadow:0 12px 40px rgba(0,0,0,.55); text-align:center; }
-.modal h3{ margin:0 0 10px 0; font-size:22px; }
-.modal input{ width:90%; max-width:280px; padding:10px; border-radius:10px; border:none; outline:none; font-size:16px; }
-.modal button{ margin-top:10px; padding:10px 14px; border-radius:10px; border:none; cursor:pointer; font-weight:900; }
-.hint{ margin-top:10px; font-size:12px; opacity:.9; }
-@media (max-width:1100px){ body{flex-direction:column; align-items:center; gap:20px; padding:20px 12px;} .leaderboard{width:min(600px,92vw); padding:22px;} .rightCol{width:min(680px,92vw); align-items:center;} .hud{width:100%; justify-content:center;} #game{width:100%; height:52vw; max-height:420px; min-height:300px;} }
+.rightCol{ display:flex; flex-direction:column; gap:10px; }
+.hud{ width:680px; display:flex; justify-content:space-between; font-weight:800; text-shadow:2px 2px 6px #000; }
+.pill{ background:rgba(0,0,0,.35); padding:8px 12px; border-radius:999px; }
+#game{ width:680px; height:380px; background:url("jatekhatter.jpg") repeat-x; border-radius:20px; position:relative; overflow:hidden; box-shadow:0 0 20px #000; }
+#player{ position:absolute; left:60px; width:90px; bottom:30px; transform-origin:bottom; }
+#player.crouch{ transform:scaleY(0.7); }
+.obstacle{ position:absolute; }
+.overlay{ position:absolute; inset:0; background:rgba(0,0,0,.6); display:grid; place-items:center; }
+.modal{ background:rgba(0,0,0,.85); padding:20px; border-radius:15px; width:350px; text-align:center; }
+.modal input{ width:80%; padding:10px; border-radius:10px; border:none; margin:10px 0; }
+.modal button{ padding:10px 20px; border-radius:10px; border:none; cursor:pointer; font-weight:900; }
+@media (max-width:1100px){ body{flex-direction:column; align-items:center;} .leaderboard, .rightCol, #game{width:95vw;} }
 </style>
 </head>
 <body>
@@ -82,24 +80,21 @@ body{
     <div class="pill" id="hudPlayer">Játékos: -</div>
     <div class="pill" id="hudScore">Pont: 0</div>
     <div class="pill" id="hudBest">Rekord: - - 0</div>
-    <div class="pill">Ugrás: Space/tap | Gugolás: S (tart)</div>
   </div>
   <div id="game">
-    <img id="player" src="majomka.png" alt="player">
+    <img id="player" src="majomka.png">
     <div id="startOverlay" class="overlay">
       <div class="modal">
         <h3>Majom Jump</h3>
-        <div>Írd be a neved:</div>
-        <input id="nameInput" maxlength="18" placeholder="">
+        <input id="nameInput" maxlength="15" placeholder="Neved...">
         <br>
         <button id="startBtn">START</button>
-        <div class="hint">Ugrás: Space / tap • Gugolás: S (tart)</div>
       </div>
     </div>
     <div id="overOverlay" class="overlay" style="display:none;">
       <div class="modal">
         <h3>Game Over</h3>
-        <div id="overText">Pont: 0</div>
+        <div id="overText"></div>
         <button id="restartBtn">Újra</button>
       </div>
     </div>
@@ -115,18 +110,12 @@ const players = [
 ];
 function updateLeaderboard() {
   const container = document.getElementById("leaderboard-content");
-  players.sort((a, b) => (b.oldScore + b.newScore) - (a.oldScore + a.newScore));
+  players.sort((a,b) => (b.oldScore+b.newScore)-(a.oldScore+a.newScore));
   container.innerHTML = "";
-  players.forEach((p, index) => {
-    const total = p.oldScore + p.newScore;
-    let topClass = (index === 0) ? "top1" : (index === 1) ? "top2" : (index === 2) ? "top3" : "";
-    let cupsHTML = '<div class="cups-wrapper">';
-    p.cups.forEach(c => {
-      let icon = (c.type === "gold") ? "🏆" : (c.type === "silver") ? "🥈" : "🥉";
-      cupsHTML += `<div class="cup-badge ${c.type}"><span>${icon}</span> x${c.count}</div>`;
-    });
-    cupsHTML += '</div>';
-    container.innerHTML += `<div class="row ${topClass}"><img class="avatar" src="${p.avatar}"><div class="name-container"><div class="name">${p.name}</div>${cupsHTML}</div><div class="score-group"><div class="count old">${p.oldScore}</div><div class="count">${p.newScore}</div><div class="count total">${total}</div></div></div>`;
+  players.forEach((p, i) => {
+    let top = (i===0)?"top1":(i===1)?"top2":(i===2)?"top3":"";
+    let cups = p.cups.map(c => `<div class="cup-badge ${c.type}"><span>${c.type==="gold"?"🏆":c.type==="silver"?"🥈":"🥉"}</span> x${c.count}</div>`).join("");
+    container.innerHTML += `<div class="row ${top}"><img class="avatar" src="${p.avatar}"><div class="name-container"><div class="name">${p.name}</div><div class="cups-wrapper">${cups}</div></div><div class="score-group"><div class="count old">${p.oldScore}</div><div class="count">${p.newScore}</div><div class="count total">${p.oldScore+p.newScore}</div></div></div>`;
   });
 }
 updateLeaderboard();
@@ -140,7 +129,7 @@ function resetGame(){ score=0; y=0; vy=0; dist=0; bgX=0; game.style.backgroundPo
 function setCrouch(v){ crouch=v; playerEl.classList.toggle("crouch",v); }
 function startGame(){ playerName=nameInput.value.trim()||"Névtelen"; hudPlayer.textContent="Játékos: "+playerName; resetGame(); alive=true; running=true; startOverlay.style.display="none"; overOverlay.style.display="none"; requestAnimationFrame(loop); }
 startBtn.onclick=startGame; restartBtn.onclick=startGame;
-document.onkeydown=(e)=>{ if(e.code==="Space") { e.preventDefault(); if(y<=0) vy=JUMP_V; } if(e.code==="KeyS") setCrouch(true); };
+document.onkeydown=(e)=>{ if(e.code==="Space" && y<=0){ e.preventDefault(); vy=JUMP_V; } if(e.code==="KeyS") setCrouch(true); };
 document.onkeyup=(e)=>{ if(e.code==="KeyS") setCrouch(false); };
 function spawnObstacle(){
   const el=document.createElement("img"); el.className="obstacle"; const r=Math.random(); let type=(r<0.5)?"banana":(r<0.8)?"stone":"bird";
@@ -148,7 +137,7 @@ function spawnObstacle(){
   else if(type==="stone"){el.src="stone.png";el.style.width="46px";el.style.bottom="30px";}
   else{el.src="madar.gif";el.style.width="70px";el.style.bottom="72px";}
   el.style.left=game.clientWidth+"px"; game.appendChild(el);
-  obstacles.push({el,x:game.clientWidth,w:parseInt(el.style.width),h:40,bottom:parseInt(el.style.bottom),mult:1,type});
+  obstacles.push({el,x:game.clientWidth,w:40,h:40,bottom:parseInt(el.style.bottom)});
   nextSpawnDist=dist+500+Math.random()*300;
 }
 function loop(){
