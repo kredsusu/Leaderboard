@@ -42,6 +42,10 @@ body{
   color: rgba(255,255,255,0.7);
 }
 .header-item { width: 50px; text-align: center; }
+#leaderboard-content {
+  display: flex;
+  flex-direction: column;
+}
 .row{
   display:flex;
   align-items:center;
@@ -53,10 +57,12 @@ body{
   margin:10px 0;
   box-shadow:2px 2px 8px rgba(0,0,0,.5);
   border:4px solid transparent;
+  transition: all 0.3s ease;
 }
-.row:nth-child(3){border-color:gold;}
-.row:nth-child(4){border-color:silver;}
-.row:nth-child(5){border-color:#cd7f32;}
+.row.top1 { border-color: gold; }
+.row.top2 { border-color: silver; }
+.row.top3 { border-color: #cd7f32; }
+
 .avatar{
   width:60px;height:60px;border-radius:50%;
   object-fit:cover;border:3px solid #fff;
@@ -148,54 +154,12 @@ body{
 <div class="leaderboard">
   <h2>Flakon Ranglista</h2>
   <div class="score-header">
-    <div class="header-item">Első forduló</div>
-    <div class="header-item">Második forduló</div>
+    <div class="header-item">Régi</div>
+    <div class="header-item">Új</div>
     <div class="header-item" style="color:#4CAF50;">Össz</div>
   </div>
-  <div class="row">
-    <img class="avatar" src="onedoor.png" alt="Avatar">
-    <div class="name">On3door</div>
-    <div class="score-group">
-        <div class="count old">134</div>
-        <div class="count">0</div>
-        <div class="count total">134</div>
-    </div>
-  </div>
-  <div class="row">
-    <img class="avatar" src="misztersiba.gif" alt="Avatar">
-    <div class="name">MiszterSusu</div>
-    <div class="score-group">
-        <div class="count old">134</div>
-        <div class="count">52</div>
-        <div class="count total">186</div>
-    </div>
-  </div>
-  <div class="row">
-    <img class="avatar" src="dinoori.gif" alt="Avatar">
-    <div class="name">SusuSzaurusz</div>
-    <div class="score-group">
-        <div class="count old">84</div>
-        <div class="count">75</div>
-        <div class="count total">159</div>
-    </div>
-  </div>
-  <div class="row">
-    <img class="avatar" src="spudbaymaci.gif" alt="Avatar">
-    <div class="name">Spudbay</div>
-    <div class="score-group">
-        <div class="count old">98</div>
-        <div class="count">42</div>
-        <div class="count total">140</div>
-    </div>
-  </div>
-  <div class="row">
-    <img class="avatar" src="Mrgrogu.gif" alt="Avatar">
-    <div class="name">MrSusu</div>
-    <div class="score-group">
-        <div class="count old">50</div>
-        <div class="count">0</div>
-        <div class="count total">50</div>
-    </div>
+  <div id="leaderboard-content">
+    <!-- Ide generálja a JS a sorokat -->
   </div>
 </div>
 <div class="rightCol">
@@ -227,6 +191,47 @@ body{
   </div>
 </div>
 <script>
+// --- LEADERBOARD ADATOK ÉS RENDEZÉS ---
+const players = [
+  { name: "On3door", avatar: "onedoor.png", oldScore: 134, newScore: 0 },
+  { name: "MiszterSusu", avatar: "misztersiba.gif", oldScore: 118, newScore: 0 },
+  { name: "SusuSzaurusz", avatar: "dinoori.gif", oldScore: 84, newScore: 0 },
+  { name: "Spudbay", avatar: "spudbaymaci.gif", oldScore: 69, newScore: 0 },
+  { name: "MrSusu", avatar: "Mrgrogu.gif", oldScore: 50, newScore: 0 }
+];
+
+function updateLeaderboard() {
+  const container = document.getElementById("leaderboard-content");
+  
+  // Rendezés az új pontszám alapján (csökkenő)
+  players.sort((a, b) => b.newScore - a.newScore);
+  
+  container.innerHTML = "";
+  players.forEach((p, index) => {
+    const total = p.oldScore + p.newScore;
+    let topClass = "";
+    if (index === 0) topClass = "top1";
+    if (index === 1) topClass = "top2";
+    if (index === 2) topClass = "top3";
+
+    container.innerHTML += `
+      <div class="row ${topClass}">
+        <img class="avatar" src="${p.avatar}" alt="Avatar">
+        <div class="name">${p.name}</div>
+        <div class="score-group">
+            <div class="count old">${p.oldScore}</div>
+            <div class="count">${p.newScore}</div>
+            <div class="count total">${total}</div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+// Kezdeti feltöltés
+updateLeaderboard();
+
+// --- JÁTÉK LOGIKA ---
 const BASE_SPEED=3.0, SPEED_DIV=1200, MAX_SPEED=7.0;
 const GRAVITY=0.9, JUMP_V=19;
 const API_URL="https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
@@ -370,6 +375,14 @@ function gameOver(hitType){
   if(hitType==="bird"){
     try{ birdHitSound.currentTime=0; birdHitSound.play().catch(()=>{}); }catch{}
   }
+  
+  // Automatikus frissítés a listában, ha szerepel benne a név
+  const p = players.find(x => x.name.toLowerCase() === playerName.toLowerCase());
+  if(p && score > p.newScore) {
+    p.newScore = score;
+    updateLeaderboard();
+  }
+
   if(score>bestScore) trySaveBest(playerName,score);
   else loadBest();
 }
