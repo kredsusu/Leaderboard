@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Leaderboard</title>
+<title>Flakon leaderboard</title>
 
 <style>
 body{
@@ -16,37 +16,35 @@ body{
   color:#fff;
 }
 
-/* LEADERBOARD */
 .leaderboard{
-  width:750px;
+  width:800px;
   background:#222;
   padding:20px;
   border-radius:16px;
 }
 
-h2{
-  text-align:center;
+h2{text-align:center}
+
+/* HEADER */
+.header, .row{
+  display:grid;
+  grid-template-columns: 60px 1fr 80px 80px 80px 160px;
+  gap:10px;
+  align-items:center;
 }
 
 /* HEADER */
 .header{
-  display:grid;
-  grid-template-columns: 60px 1fr 80px 80px 80px 120px;
-  gap:10px;
   font-size:12px;
-  opacity:0.7;
+  opacity:0.6;
   margin-bottom:10px;
 }
 
 /* ROW */
 .row{
-  display:grid;
-  grid-template-columns: 60px 1fr 80px 80px 80px 120px;
-  gap:10px;
-  align-items:center;
+  background:#333;
   padding:10px;
   margin:6px 0;
-  background:#333;
   border-radius:10px;
 }
 
@@ -72,11 +70,10 @@ h2{
   border-radius:6px;
   font-size:12px;
   font-weight:bold;
-  opacity:1;
 }
 
 .inactive{
-  opacity:0.25;
+  opacity:0.2;
   filter:grayscale(1);
 }
 
@@ -89,14 +86,14 @@ h2{
   position:fixed;
   top:20px;
   right:20px;
-  width:60px;
-  height:60px;
+  width:55px;
+  height:55px;
   border-radius:50%;
-  border:none;
   background:red;
   color:#fff;
-  font-size:20px;
+  border:none;
   cursor:pointer;
+  font-size:18px;
 }
 
 #panel{
@@ -117,10 +114,9 @@ h2{
 
 .box button{
   width:100%;
-  padding:10px;
   margin:5px 0;
+  padding:10px;
   font-weight:bold;
-  cursor:pointer;
 }
 </style>
 </head>
@@ -130,7 +126,7 @@ h2{
 <button id="adminBtn">⚙️</button>
 
 <div class="leaderboard">
-  <h2>Leaderboard</h2>
+  <h2>Flakon Ranglista</h2>
 
   <div class="header">
     <div></div>
@@ -156,7 +152,7 @@ h2{
 </div>
 
 <!-- VIDEO -->
-<div id="videoBox" style="display:none;position:fixed;inset:0;background:black;justify-content:center;align-items:center;">
+<div id="videoBox" style="display:none;position:fixed;inset:0;background:#000;justify-content:center;align-items:center;">
   <video width="600" controls autoplay>
     <source src="video.mp4" type="video/mp4">
   </video>
@@ -164,15 +160,19 @@ h2{
 
 <script>
 
+/* 🔥 EZ A TE EREDETI LISTÁD */
 const players = [
-  {name:"Spudbay", avatar:"a.png", r1:10, r2:50, r3:0, cups:[]},
-  {name:"SusuSzaurusz", avatar:"b.png", r1:20, r2:30, r3:0, cups:[]},
-  {name:"Kata", avatar:"c.png", r1:40, r2:10, r3:0, cups:[]}
+  { name: "On3door", avatar: "onedoor.png", round1: 134, round2: 0, round3: 0, cups: [] },
+  { name: "MiszterSusu", avatar: "misztersiba.gif", round1: 134, round2: 52, round3: 0, cups: [] },
+  { name: "SusuSzaurusz", avatar: "dinoori.gif", round1: 84, round2: 75, round3: 0, cups: [] },
+  { name: "Spudbay", avatar: "spudbaymaci.gif", round1: 98, round2: 42, round3: 0, cups: [] },
+  { name: "MrSusu", avatar: "Mrgrogu.gif", round1: 50, round2: 0, round3: 0, cups: [] }
 ];
 
-/* KUPA */
+/* 🏆 KUPA RENDSZER (2. forduló) */
 function recalc(){
-  const sorted=[...players].sort((a,b)=>b.r2-a.r2);
+  const sorted=[...players].sort((a,b)=>b.round2-a.round2);
+
   players.forEach(p=>p.cups=[]);
 
   if(sorted[0]) sorted[0].cups.push({type:"gold"});
@@ -181,18 +181,17 @@ function recalc(){
   render();
 }
 
-/* SOUND */
+/* 🔊 hang */
 function playSound(){
-  const a=new Audio("sound.mp3");
-  a.play();
+  new Audio("sound.mp3").play();
 }
 
-/* VIDEO */
+/* 🎬 videó */
 function playVideo(){
   document.getElementById("videoBox").style.display="flex";
 }
 
-/* ADMIN */
+/* admin panel */
 const panel=document.getElementById("panel");
 
 document.getElementById("adminBtn").onclick=()=>{
@@ -208,7 +207,7 @@ function closePanel(){
   panel.style.display="none";
 }
 
-/* RENDER */
+/* 📊 RENDER */
 function getCup(p,type){
   return p.cups.find(c=>c.type===type);
 }
@@ -217,7 +216,9 @@ function render(){
   const board=document.getElementById("board");
   board.innerHTML="";
 
-  players.sort((a,b)=>(b.r1+b.r2+b.r3)-(a.r1+a.r2+a.r3));
+  players.sort((a,b)=>
+    (b.round1+b.round2+b.round3)-(a.round1+a.round2+a.round3)
+  );
 
   players.forEach(p=>{
     board.innerHTML+=`
@@ -225,9 +226,9 @@ function render(){
         <img class="avatar" src="${p.avatar}">
         <div class="name">${p.name}</div>
 
-        <div>${p.r1}</div>
-        <div>${p.r2}</div>
-        <div>${p.r3}</div>
+        <div>${p.round1}</div>
+        <div>${p.round2}</div>
+        <div>${p.round3}</div>
 
         <div class="cups">
           <div class="cup gold ${getCup(p,'gold')?'':'inactive'}">🥇</div>
