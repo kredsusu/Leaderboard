@@ -18,7 +18,6 @@ body{
   color:#fff;
 }
 
-/* WRAPPER */
 .wrapper{
   display:flex;
   flex-direction:column;
@@ -28,7 +27,7 @@ body{
 
 /* LEADERBOARD */
 .leaderboard{
-  width:950px;
+  width:900px;
   max-width:95vw;
   padding:25px;
   background:url("keret.png") center/cover no-repeat;
@@ -41,27 +40,15 @@ h2{
   font-size:34px;
   font-weight:900;
   margin:0 0 15px 0;
-  text-shadow:2px 2px 6px #000;
 }
 
-/* 🔥 FIX GRID (HEADER + ROW UGYANAZ) */
+/* GRID */
 .grid{
   display:grid;
-  grid-template-columns: 70px 1.5fr 90px 90px 90px 110px 160px;
+  grid-template-columns: 80px 90px 1fr 90px 90px 90px 110px;
   gap:10px;
   align-items:center;
-}
-
-/* HEADER */
-.score-header{
-  margin-bottom:10px;
-}
-
-.header-item{
-  text-align:center;
-  font-size:11px;
-  font-weight:bold;
-  color:rgba(255,255,255,0.7);
+  justify-items:center; /* <-- FONTOS KÖZÉPRE */
 }
 
 /* ROW */
@@ -86,22 +73,36 @@ h2{
 .name{
   font-size:18px;
   font-weight:900;
-  white-space:nowrap;
+  text-align:left;
+  justify-self:start; /* <-- NE legyen középen, csak a név */
 }
 
-/* 🏆 KUPA OSZLOP (VERTIKÁLIS) */
+/* COUNT */
+.count{
+  font-size:16px;
+  font-weight:900;
+  padding:6px;
+  border-radius:8px;
+  text-align:center;
+  width:100%;
+}
+
+.old{ background:rgba(255,255,255,0.25); }
+.total{ background:#4CAF50; }
+
+/* 🏆 KUPA OSZLOP */
 .cup-column{
   display:flex;
-  flex-direction:column;   /* <-- EZ A LÉNYEG */
+  flex-direction:column;
   gap:6px;
-  align-items:flex-start;
+  align-items:center;   /* <-- EZ FIXÁLJA HOGY ALÁRENDEZVE LÁTSZÓDJON JÓL */
+  justify-content:center;
 }
 
-/* KUPA BADGE */
+/* KUPA */
 .cup-badge{
   display:flex;
   align-items:center;
-  justify-content:flex-start;
   gap:5px;
 
   padding:3px 8px;
@@ -109,7 +110,6 @@ h2{
   font-weight:900;
   font-size:12px;
 
-  border:2px solid rgba(255,255,255,0.4);
   white-space:nowrap;
   width:fit-content;
 }
@@ -122,18 +122,6 @@ h2{
 .gold{ background:linear-gradient(180deg,#ffeb3b,#fbc02d,#f57f17); }
 .silver{ background:linear-gradient(180deg,#f5f5f5,#bdbdbd,#757575); }
 .bronze{ background:linear-gradient(180deg,#a1887f,#795548,#4e342e); }
-
-/* SCORE */
-.count{
-  text-align:center;
-  font-size:16px;
-  font-weight:900;
-  padding:6px;
-  border-radius:8px;
-}
-
-.old{ background:rgba(255,255,255,0.25); }
-.total{ background:#4CAF50; }
 
 /* GOMB */
 #dontPressBtn{
@@ -148,8 +136,6 @@ h2{
   cursor:pointer;
   box-shadow:0 0 25px rgba(255,0,0,0.8);
 }
-
-#dontPressBtn:hover{ transform:scale(1.05); }
 </style>
 </head>
 
@@ -159,17 +145,6 @@ h2{
 
 <div class="leaderboard">
   <h2>Flakon Ranglista</h2>
-
-  <!-- HEADER -->
-  <div class="grid score-header">
-    <div class="header-item">Avatar</div>
-    <div class="header-item">Név</div>
-    <div class="header-item">1. forduló</div>
-    <div class="header-item">2. forduló</div>
-    <div class="header-item">3. forduló</div>
-    <div class="header-item">Összes</div>
-    <div class="header-item">Kupák</div>
-  </div>
 
   <div id="leaderboard-content"></div>
 </div>
