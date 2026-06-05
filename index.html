@@ -2,246 +2,189 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 <title>Flakon leaderboard</title>
 
 <style>
 body{
-  margin:0;
-  font-family:Arial;
-  background:#111;
-  display:flex;
-  justify-content:center;
-  padding:40px;
-  color:#fff;
+  margin:0; font-family:Arial,sans-serif;
+  background:url("hatter.jpg") center/cover no-repeat fixed;
+  display:flex; justify-content:center; align-items:flex-start;
+  gap:60px; padding-top:40px; color:#fff;
 }
 
 .leaderboard{
-  width:800px;
-  background:#222;
-  padding:20px;
-  border-radius:16px;
+  width:650px;
+  padding:25px;
+  background:url("keret.png") center/cover no-repeat;
+  border-radius:25px;
+  box-shadow:0 0 30px rgba(0,0,0,.7);
 }
 
-h2{text-align:center}
+.leaderboard h2{
+  text-align:center;
+  font-size:32px;
+  font-weight:800;
+  text-shadow:2px 2px 6px #000;
+  margin:0 0 15px 0;
+}
 
-/* HEADER */
-.header, .row{
+.score-header{
   display:grid;
-  grid-template-columns: 60px 1fr 80px 80px 80px 160px;
+  grid-template-columns: 60px 1fr 80px 80px 80px;
   gap:10px;
-  align-items:center;
+  padding-right:14px;
+  margin-bottom:8px;
 }
 
-/* HEADER */
-.header{
-  font-size:12px;
-  opacity:0.6;
-  margin-bottom:10px;
+.header-item{
+  text-align:center;
+  font-size:10px;
+  font-weight:bold;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.7);
 }
 
-/* ROW */
+#leaderboard-content{
+  display:flex;
+  flex-direction:column;
+}
+
+/* 🔥 FIXED ROW (NEM CSÚSZIK SZÉT) */
 .row{
-  background:#333;
-  padding:10px;
+  display:grid;
+  grid-template-columns: 60px 1fr 80px 80px 80px;
+  align-items:center;
+
+  background:rgba(0,0,0,.4);
+  padding:10px 14px;
+  border-radius:18px;
   margin:6px 0;
-  border-radius:10px;
+  box-shadow:2px 2px 8px rgba(0,0,0,.5);
 }
 
 .avatar{
-  width:45px;
-  height:45px;
+  width:50px;
+  height:50px;
   border-radius:50%;
+  object-fit:cover;
+  border:2px solid #fff;
 }
 
-/* NAME */
-.name{
-  font-weight:bold;
-}
-
-/* CUPS */
-.cups{
+.name-container{
   display:flex;
-  gap:6px;
-}
-
-.cup{
-  padding:3px 6px;
-  border-radius:6px;
-  font-size:12px;
-  font-weight:bold;
-}
-
-.inactive{
-  opacity:0.2;
-  filter:grayscale(1);
-}
-
-.gold{background:gold;color:#000;}
-.silver{background:silver;color:#000;}
-.bronze{background:#cd7f32;color:#000;}
-
-/* ADMIN */
-#adminBtn{
-  position:fixed;
-  top:20px;
-  right:20px;
-  width:55px;
-  height:55px;
-  border-radius:50%;
-  background:red;
-  color:#fff;
-  border:none;
-  cursor:pointer;
-  font-size:18px;
-}
-
-#panel{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.7);
-  justify-content:center;
   align-items:center;
+  gap:10px;
 }
 
-.box{
-  background:#222;
-  padding:20px;
-  border-radius:10px;
-  width:300px;
+.name{
+  font-size:18px;
+  font-weight:800;
 }
 
-.box button{
-  width:100%;
-  margin:5px 0;
-  padding:10px;
-  font-weight:bold;
+/* 🏆 kupák */
+.cup-badge{
+  font-size:12px;
+  padding:3px 8px;
+  border-radius:8px;
+  border:2px solid rgba(255,255,255,0.4);
+  opacity:1;
+  transition:0.2s;
 }
+
+/* ha nincs kupa */
+.cup-badge.inactive{
+  opacity:0.25;
+  filter: grayscale(1);
+}
+
+.gold{ background:linear-gradient(180deg,#ffeb3b,#fbc02d,#f57f17); }
+.silver{ background:linear-gradient(180deg,#f5f5f5,#bdbdbd,#757575); }
+.bronze{ background:linear-gradient(180deg,#a1887f,#795548,#4e342e); }
+
+.count{
+  text-align:center;
+  font-weight:800;
+  padding:6px 0;
+  border-radius:8px;
+}
+
+.old{ background:rgba(255,255,255,0.25); }
+.total{ background:#4CAF50; }
+
 </style>
 </head>
 
 <body>
 
-<button id="adminBtn">⚙️</button>
-
 <div class="leaderboard">
   <h2>Flakon Ranglista</h2>
 
-  <div class="header">
-    <div></div>
-    <div>Név</div>
-    <div>R1</div>
-    <div>R2</div>
-    <div>R3</div>
-    <div>Kupák</div>
+  <div class="score-header">
+    <div class="header-item">1. forduló</div>
+    <div class="header-item">2. forduló</div>
+    <div class="header-item">Összes</div>
   </div>
 
-  <div id="board"></div>
-</div>
-
-<!-- ADMIN -->
-<div id="panel">
-  <div class="box">
-    <h3>ADMIN PANEL</h3>
-    <button onclick="playSound()">🔊 Hang</button>
-    <button onclick="playVideo()">🎬 Videó</button>
-    <button onclick="recalc()">🏆 Kupák újraszámolása</button>
-    <button onclick="closePanel()">Bezár</button>
-  </div>
-</div>
-
-<!-- VIDEO -->
-<div id="videoBox" style="display:none;position:fixed;inset:0;background:#000;justify-content:center;align-items:center;">
-  <video width="600" controls autoplay>
-    <source src="video.mp4" type="video/mp4">
-  </video>
+  <div id="leaderboard-content"></div>
 </div>
 
 <script>
-
-/* 🔥 EZ A TE EREDETI LISTÁD */
 const players = [
-  { name: "On3door", avatar: "onedoor.png", round1: 134, round2: 0, round3: 0, cups: [] },
-  { name: "MiszterSusu", avatar: "misztersiba.gif", round1: 134, round2: 52, round3: 0, cups: [] },
-  { name: "SusuSzaurusz", avatar: "dinoori.gif", round1: 84, round2: 75, round3: 0, cups: [] },
-  { name: "Spudbay", avatar: "spudbaymaci.gif", round1: 98, round2: 42, round3: 0, cups: [] },
-  { name: "MrSusu", avatar: "Mrgrogu.gif", round1: 50, round2: 0, round3: 0, cups: [] }
+  { name: "On3door", avatar: "onedoor.png", oldScore: 134, newScore: 0, cups: [{type:"gold",count:1}] },
+  { name: "MiszterSusu", avatar: "misztersiba.gif", oldScore: 134, newScore: 52, cups: [{type:"gold",count:1}] },
+  { name: "SusuSzaurusz", avatar: "dinoori.gif", oldScore: 84, newScore: 75, cups: [{type:"bronze",count:1}] },
+  { name: "Spudbay", avatar: "spudbaymaci.gif", oldScore: 98, newScore: 42, cups: [{type:"silver",count:1}] },
+  { name: "MrSusu", avatar: "Mrgrogu.gif", oldScore: 50, newScore: 0, cups: [] }
 ];
 
-/* 🏆 KUPA RENDSZER (2. forduló) */
-function recalc(){
-  const sorted=[...players].sort((a,b)=>b.round2-a.round2);
-
-  players.forEach(p=>p.cups=[]);
-
-  if(sorted[0]) sorted[0].cups.push({type:"gold"});
-  if(sorted[1]) sorted[1].cups.push({type:"silver"});
-
-  render();
-}
-
-/* 🔊 hang */
-function playSound(){
-  new Audio("sound.mp3").play();
-}
-
-/* 🎬 videó */
-function playVideo(){
-  document.getElementById("videoBox").style.display="flex";
-}
-
-/* admin panel */
-const panel=document.getElementById("panel");
-
-document.getElementById("adminBtn").onclick=()=>{
-  const pass=prompt("Jelszó:");
-  if(pass==="1234"){
-    panel.style.display="flex";
-  }else{
-    alert("Hibás jelszó!");
-  }
-};
-
-function closePanel(){
-  panel.style.display="none";
-}
-
-/* 📊 RENDER */
 function getCup(p,type){
-  return p.cups.find(c=>c.type===type);
+  const c = p.cups.find(x => x.type === type);
+  return c ? c.count : 0;
 }
 
-function render(){
-  const board=document.getElementById("board");
-  board.innerHTML="";
+function updateLeaderboard(){
+  const container = document.getElementById("leaderboard-content");
 
   players.sort((a,b)=>
-    (b.round1+b.round2+b.round3)-(a.round1+a.round2+a.round3)
+    (b.oldScore + b.newScore) - (a.oldScore + a.newScore)
   );
 
-  players.forEach(p=>{
-    board.innerHTML+=`
+  container.innerHTML = "";
+
+  players.forEach(p => {
+
+    container.innerHTML += `
       <div class="row">
+
         <img class="avatar" src="${p.avatar}">
-        <div class="name">${p.name}</div>
 
-        <div>${p.round1}</div>
-        <div>${p.round2}</div>
-        <div>${p.round3}</div>
+        <div class="name-container">
+          <div class="name">${p.name}</div>
 
-        <div class="cups">
-          <div class="cup gold ${getCup(p,'gold')?'':'inactive'}">🥇</div>
-          <div class="cup silver ${getCup(p,'silver')?'':'inactive'}">🥈</div>
-          <div class="cup bronze inactive">🥉</div>
+          <div class="cup-badge gold ${getCup(p,"gold")?"" : "inactive"}">
+            🏆 ${getCup(p,"gold")}
+          </div>
+
+          <div class="cup-badge silver ${getCup(p,"silver")?"" : "inactive"}">
+            🥈 ${getCup(p,"silver")}
+          </div>
+
+          <div class="cup-badge bronze ${getCup(p,"bronze")?"" : "inactive"}">
+            🥉 ${getCup(p,"bronze")}
+          </div>
         </div>
+
+        <div class="count old">${p.oldScore}</div>
+        <div class="count old">${p.newScore}</div>
+        <div class="count total">${p.oldScore + p.newScore}</div>
+
       </div>
     `;
   });
 }
 
-render();
-
+updateLeaderboard();
 </script>
 
 </body>
