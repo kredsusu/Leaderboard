@@ -2,7 +2,7 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Flakon leaderboard</title>
 
 <style>
@@ -11,28 +11,24 @@ body{
   font-family:Arial,sans-serif;
   background:url("hatter.jpg") center/cover no-repeat fixed;
 
-  min-height:100vh;
-
   display:flex;
-  flex-direction:column;
-  align-items:center;   /* <-- KÖZÉPRE */
-  justify-content:flex-start;
-
-  padding:40px;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
   color:#fff;
 }
 
-/* WRAPPER (EZ OLDJA MEG A KÖZÉP PROBLÉMÁT) */
+/* WRAPPER */
 .wrapper{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:25px;
+  gap:20px;
 }
 
 /* LEADERBOARD */
 .leaderboard{
-  width:900px;   /* <-- MEGNÖVELVE */
+  width:950px;
   max-width:95vw;
   padding:25px;
   background:url("keret.png") center/cover no-repeat;
@@ -48,15 +44,15 @@ h2{
   text-shadow:2px 2px 6px #000;
 }
 
-/* HEADER + ROW */
-.score-header,
-.row{
+/* 🔥 FIX GRID (HEADER + ROW UGYANAZ) */
+.grid{
   display:grid;
-  grid-template-columns: 70px 1.6fr 90px 90px 90px 110px;
+  grid-template-columns: 70px 1.5fr 90px 90px 90px 110px 160px;
   gap:10px;
-  padding:0 12px;
+  align-items:center;
 }
 
+/* HEADER */
 .score-header{
   margin-bottom:10px;
 }
@@ -70,7 +66,6 @@ h2{
 
 /* ROW */
 .row{
-  align-items:center;
   background:rgba(0,0,0,.4);
   padding:12px;
   border-radius:18px;
@@ -87,26 +82,27 @@ h2{
   border:2px solid #fff;
 }
 
-/* NAME + KUPÁK */
-.name-container{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:nowrap;   /* <-- FONTOS: EGYSOROS */
-  overflow:hidden;
-}
-
+/* NAME */
 .name{
   font-size:18px;
   font-weight:900;
   white-space:nowrap;
 }
 
-/* 🏆 KUPÁK (FIX EGYSOROS) */
+/* 🏆 KUPA OSZLOP (VERTIKÁLIS) */
+.cup-column{
+  display:flex;
+  flex-direction:column;   /* <-- EZ A LÉNYEG */
+  gap:6px;
+  align-items:flex-start;
+}
+
+/* KUPA BADGE */
 .cup-badge{
-  display:inline-flex;
+  display:flex;
   align-items:center;
-  gap:4px;
+  justify-content:flex-start;
+  gap:5px;
 
   padding:3px 8px;
   border-radius:8px;
@@ -115,13 +111,12 @@ h2{
 
   border:2px solid rgba(255,255,255,0.4);
   white-space:nowrap;
-
-  flex-shrink:0;   /* <-- NE ESSEEN ÖSSZE */
+  width:fit-content;
 }
 
 .cup-badge.inactive{
   opacity:0.25;
-  filter: grayscale(1);
+  filter:grayscale(1);
 }
 
 .gold{ background:linear-gradient(180deg,#ffeb3b,#fbc02d,#f57f17); }
@@ -133,17 +128,17 @@ h2{
   text-align:center;
   font-size:16px;
   font-weight:900;
-  padding:6px 0;
+  padding:6px;
   border-radius:8px;
 }
 
 .old{ background:rgba(255,255,255,0.25); }
 .total{ background:#4CAF50; }
 
-/* 🔴 GOMB (ALUL) */
+/* GOMB */
 #dontPressBtn{
-  width:260px;
-  height:90px;
+  width:240px;
+  height:85px;
   background:red;
   color:white;
   font-size:22px;
@@ -152,16 +147,9 @@ h2{
   border-radius:18px;
   cursor:pointer;
   box-shadow:0 0 25px rgba(255,0,0,0.8);
-  transition:0.2s;
 }
 
-#dontPressBtn:hover{
-  transform:scale(1.05);
-}
-
-#dontPressBtn:active{
-  transform:scale(0.98);
-}
+#dontPressBtn:hover{ transform:scale(1.05); }
 </style>
 </head>
 
@@ -169,22 +157,24 @@ h2{
 
 <div class="wrapper">
 
-  <!-- LEADERBOARD -->
-  <div class="leaderboard">
-    <h2>Flakon Ranglista</h2>
+<div class="leaderboard">
+  <h2>Flakon Ranglista</h2>
 
-    <div class="score-header">
-      <div class="header-item">1. forduló</div>
-      <div class="header-item">2. forduló</div>
-      <div class="header-item">3. forduló</div>
-      <div class="header-item">Összes</div>
-    </div>
-
-    <div id="leaderboard-content"></div>
+  <!-- HEADER -->
+  <div class="grid score-header">
+    <div class="header-item">Avatar</div>
+    <div class="header-item">Név</div>
+    <div class="header-item">1. forduló</div>
+    <div class="header-item">2. forduló</div>
+    <div class="header-item">3. forduló</div>
+    <div class="header-item">Összes</div>
+    <div class="header-item">Kupák</div>
   </div>
 
-  <!-- GOMB (ALUL KÖZÉPEN) -->
-  <button id="dontPressBtn">NE NYOMD MEG</button>
+  <div id="leaderboard-content"></div>
+</div>
+
+<button id="dontPressBtn">NE NYOMD MEG</button>
 
 </div>
 
@@ -211,6 +201,15 @@ function getCupCount(player,type){
   return c ? c.count : 0;
 }
 
+function cupBadge(p,type,icon){
+  const count = getCupCount(p,type);
+  return `
+    <div class="cup-badge ${type} ${count ? "" : "inactive"}">
+      ${icon} x${count}
+    </div>
+  `;
+}
+
 function updateLeaderboard(){
   const container = document.getElementById("leaderboard-content");
 
@@ -222,22 +221,24 @@ function updateLeaderboard(){
 
   players.forEach(p=>{
     container.innerHTML += `
-      <div class="row">
+      <div class="grid row">
+
         <img class="avatar" src="${p.avatar}">
 
-        <div class="name-container">
-          <div class="name">${p.name}</div>
-
-          <div class="cup-badge gold ${getCupCount(p,"gold")?"":"inactive"}">🏆 x${getCupCount(p,"gold")}</div>
-          <div class="cup-badge silver ${getCupCount(p,"silver")?"":"inactive"}">🥈 x${getCupCount(p,"silver")}</div>
-          <div class="cup-badge bronze ${getCupCount(p,"bronze")?"":"inactive"}">🥉 x${getCupCount(p,"bronze")}</div>
-        </div>
+        <div class="name">${p.name}</div>
 
         <div class="count old">${p.round1}</div>
         <div class="count old">${p.round2}</div>
         <div class="count old">${p.round3}</div>
 
         <div class="count total">${p.round1+p.round2+p.round3}</div>
+
+        <div class="cup-column">
+          ${cupBadge(p,"gold","🏆")}
+          ${cupBadge(p,"silver","🥈")}
+          ${cupBadge(p,"bronze","🥉")}
+        </div>
+
       </div>
     `;
   });
