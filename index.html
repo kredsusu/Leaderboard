@@ -2,7 +2,7 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 <title>Flakon leaderboard</title>
 
 <style>
@@ -10,25 +10,17 @@ body{
   margin:0;
   font-family:Arial,sans-serif;
   background:url("hatter.jpg") center/cover no-repeat fixed;
-
   display:flex;
   justify-content:center;
-  align-items:center;
-  min-height:100vh;
+  align-items:flex-start;
+  gap:40px;
+  padding:40px;
   color:#fff;
 }
 
-.wrapper{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:20px;
-}
-
-/* LEADERBOARD */
+/* LEADERBOARD (EREDETI) */
 .leaderboard{
-  width:900px;
-  max-width:95vw;
+  width:700px;
   padding:25px;
   background:url("keret.png") center/cover no-repeat;
   border-radius:25px;
@@ -37,36 +29,45 @@ body{
 
 h2{
   text-align:center;
-  font-size:34px;
-  font-weight:900;
+  font-size:32px;
+  font-weight:800;
+  text-shadow:2px 2px 6px #000;
   margin:0 0 15px 0;
 }
 
-.grid{
-  display:grid;
-  grid-template-columns: 70px 1fr 90px 90px 90px 110px 140px;
-  gap:10px;
-  align-items:center;
-}
-
+/* HEADER */
 .score-header{
+  display:grid;
+  grid-template-columns: 60px 1fr 80px 80px 80px 90px;
+  gap:10px;
+  padding:0 14px;
   margin-bottom:10px;
-  font-size:11px;
-  font-weight:bold;
-  color:rgba(255,255,255,0.7);
-  text-align:center;
 }
 
+.header-item{
+  text-align:center;
+  font-size:10px;
+  font-weight:bold;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.7);
+}
+
+/* ROW */
 .row{
+  display:grid;
+  grid-template-columns: 60px 1fr 80px 80px 80px 90px;
+  align-items:center;
+  gap:10px;
   background:rgba(0,0,0,.4);
-  padding:12px;
+  padding:10px 14px;
   border-radius:18px;
-  margin:8px 0;
+  margin:6px 0;
+  box-shadow:2px 2px 8px rgba(0,0,0,.5);
 }
 
 .avatar{
-  width:55px;
-  height:55px;
+  width:50px;
+  height:50px;
   border-radius:50%;
   object-fit:cover;
   border:2px solid #fff;
@@ -74,70 +75,65 @@ h2{
 
 .name{
   font-size:18px;
-  font-weight:900;
+  font-weight:800;
+  text-shadow:2px 2px 3px #000;
 }
 
 .count{
-  text-align:center;
   font-size:16px;
-  font-weight:900;
-  padding:6px;
+  font-weight:800;
+  text-align:center;
+  padding:6px 0;
   border-radius:8px;
 }
 
 .old{ background:rgba(255,255,255,0.25); }
 .total{ background:#4CAF50; }
 
-.cup-column{
+/* RIGHT BUTTON */
+.rightCol{
   display:flex;
   flex-direction:column;
-  gap:6px;
-  align-items:center;
+  gap:20px;
 }
 
-.cup-badge{
-  padding:3px 8px;
-  border-radius:8px;
-  font-size:12px;
-  font-weight:900;
-}
-
-.gold{ background:#fbc02d; }
-.silver{ background:#bdbdbd; }
-.bronze{ background:#a1887f; }
-
-/* BUTTON */
 #dontPressBtn{
-  width:260px;
-  height:90px;
+  width:300px;
+  height:120px;
   background:red;
   color:white;
-  font-size:22px;
+  font-size:28px;
   font-weight:900;
   border:none;
-  border-radius:18px;
+  border-radius:20px;
   cursor:pointer;
   box-shadow:0 0 25px rgba(255,0,0,0.8);
+  transition:0.2s;
 }
 
-/* VIDEO */
-.overlay{
+#dontPressBtn:hover{
+  transform:scale(1.05);
+}
+
+#dontPressBtn:active{
+  transform:scale(0.98);
+}
+
+/* VIDEO OVERLAY */
+#videoOverlay{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,0.9);
-  display:flex;
+  display:none;
   justify-content:center;
   align-items:center;
   z-index:9999;
 }
 
-.hidden{
-  display:none;
-}
-
 .videoBox{
   width:80%;
   max-width:900px;
+  position:relative;
 }
 
 video{
@@ -147,8 +143,8 @@ video{
 
 .closeBtn{
   position:absolute;
-  top:20px;
-  right:20px;
+  top:-40px;
+  right:0;
   background:red;
   color:white;
   border:none;
@@ -162,53 +158,49 @@ video{
 
 <body>
 
-<div class="wrapper">
+<!-- LEADERBOARD -->
+<div class="leaderboard">
+  <h2>Flakon Ranglista</h2>
 
-  <div class="leaderboard">
-    <h2>Flakon Ranglista</h2>
-
-    <div id="leaderboard-content"></div>
+  <div class="score-header">
+    <div>1. forduló</div>
+    <div>2. forduló</div>
+    <div>3. forduló</div>
+    <div>Összes</div>
   </div>
 
-  <button id="dontPressBtn">NE NYOMD MEG</button>
-
+  <div id="leaderboard-content"></div>
 </div>
 
-<!-- VIDEO OVERLAY -->
-<div id="videoOverlay" class="overlay hidden">
+<!-- GOMB -->
+<div class="rightCol">
+  <button id="dontPressBtn">NE NYOMD MEG</button>
+</div>
+
+<!-- VIDEO -->
+<div id="videoOverlay">
   <div class="videoBox">
     <button class="closeBtn" onclick="closeVideo()">X</button>
 
-    <video id="prankVideo" controls autoplay></video>
+    <video id="prankVideo" controls autoplay>
+      <!-- 🔥 IDE JÖN A VIDEÓ -->
+      <source id="videoSource" src="" type="video/mp4">
+    </video>
   </div>
 </div>
 
 <script>
 
-/* 🔥 CSAK EZT ÁTÍROD */
+/* 🔥 CSAK EZT ÍRD ÁT */
 const VIDEO_FILE = "video.mp4";
 
 const players = [
-  { name:"On3door", avatar:"onedoor.png", round1:134, round2:0, round3:0, cups:[] },
-  { name:"MiszterSusu", avatar:"misztersiba.gif", round1:134, round2:52, round3:0, cups:[] },
-  { name:"SusuSzaurusz", avatar:"dinoori.gif", round1:84, round2:75, round3:0, cups:[] },
-  { name:"Spudbay", avatar:"spudbaymaci.gif", round1:98, round2:42, round3:0, cups:[] },
-  { name:"MrSusu", avatar:"Mrgrogu.gif", round1:50, round2:0, round3:0, cups:[] }
+  { name:"On3door", avatar:"onedoor.png", round1:134, round2:0, round3:0 },
+  { name:"MiszterSusu", avatar:"misztersiba.gif", round1:134, round2:52, round3:0 },
+  { name:"SusuSzaurusz", avatar:"dinoori.gif", round1:84, round2:75, round3:0 },
+  { name:"Spudbay", avatar:"spudbaymaci.gif", round1:98, round2:42, round3:0 },
+  { name:"MrSusu", avatar:"Mrgrogu.gif", round1:50, round2:0, round3:0 }
 ];
-
-function assignRound2Cups(){
-  const sorted = [...players].sort((a,b)=>b.round2-a.round2);
-  players.forEach(p=>p.cups=[]);
-
-  if(sorted[0]) sorted[0].cups.push({type:"gold"});
-  if(sorted[1]) sorted[1].cups.push({type:"silver"});
-}
-assignRound2Cups();
-
-function cupBadge(p,type){
-  const has = p.cups.some(c=>c.type===type);
-  return `<div class="cup-badge ${type} ${has?"":"inactive"}">${type}</div>`;
-}
 
 function updateLeaderboard(){
   const c = document.getElementById("leaderboard-content");
@@ -221,7 +213,7 @@ function updateLeaderboard(){
 
   players.forEach(p=>{
     c.innerHTML += `
-      <div class="grid row">
+      <div class="row">
 
         <img class="avatar" src="${p.avatar}">
         <div class="name">${p.name}</div>
@@ -231,12 +223,6 @@ function updateLeaderboard(){
         <div class="count old">${p.round3}</div>
 
         <div class="count total">${p.round1+p.round2+p.round3}</div>
-
-        <div class="cup-column">
-          ${cupBadge(p,"gold")}
-          ${cupBadge(p,"silver")}
-          ${cupBadge(p,"bronze")}
-        </div>
 
       </div>
     `;
@@ -248,23 +234,25 @@ updateLeaderboard();
 /* VIDEO LOGIKA */
 const overlay = document.getElementById("videoOverlay");
 const video = document.getElementById("prankVideo");
+const source = document.getElementById("videoSource");
 
 document.getElementById("dontPressBtn").onclick = () => {
-  overlay.classList.remove("hidden");
-  video.src = VIDEO_FILE;   // 🔥 EZ A LÉNYEG
-  video.currentTime = 0;
+  overlay.style.display = "flex";
+  source.src = VIDEO_FILE;
+  video.load();
   video.play();
 };
 
 function closeVideo(){
-  overlay.classList.add("hidden");
+  overlay.style.display = "none";
   video.pause();
+  video.currentTime = 0;
 }
 
 video.onended = closeVideo;
 
 document.addEventListener("keydown", (e)=>{
-  if(e.key==="Escape") closeVideo();
+  if(e.key === "Escape") closeVideo();
 });
 
 </script>
