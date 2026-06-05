@@ -211,10 +211,10 @@ const VIDEO_FILE = "video.mp4";
 
 const players = [
   { name:"On3door", avatar:"onedoor.png", round1:134, round2:0, round3:0, cups:[] },
-  { name:"Puki", avatar:"puki.gif", round1:134, round2:0, round3:0, cups:[] },
-  { name:"MiszterSusu", avatar:"misztersiba.gif", round1:134, round2:52, round3:0, cups:[] },
-  { name:"SusuSzaurusz", avatar:"dinoori.gif", round1:84, round2:75, round3:0, cups:[] },
-  { name:"Spudbay", avatar:"spudbaymaci.gif", round1:98, round2:42, round3:0, cups:[] },
+  { name:"Puki", avatar:"puki.gif", round1:0, round2:118, round3:201, cups:[] },
+  { name:"MiszterSusu", avatar:"misztersiba.gif", round1:134, round2:59, round3:16, cups:[] },
+  { name:"SusuSzaurusz", avatar:"dingo1.gif", round1:84, round2:125, round3:0, cups:[] },
+  { name:"Spudbay", avatar:"spudbaymaci.gif", round1:98, round2:42, round3:47, cups:[] },
   { name:"MrSusu", avatar:"Mrgrogu.gif", round1:50, round2:0, round3:0, cups:[] }
 ];
 
@@ -283,7 +283,7 @@ const source = document.getElementById("videoSource");
 
 document.getElementById("dontPressBtn").onclick = () => {
   overlay.style.display = "flex";
-  source.src = VIDEO_FILE;
+  source.src = mivan;
   video.load();
   video.play();
 };
