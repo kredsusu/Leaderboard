@@ -57,7 +57,6 @@ body{
   flex-direction:column;
 }
 
-/* 🔥 FIXED ROW */
 .row{
   display:flex;
   align-items:center;
@@ -70,9 +69,9 @@ body{
   box-shadow:2px 2px 8px rgba(0,0,0,.5);
 }
 
-/* TOP STYLES */
-.row.top1{border-color:#ffd700;background:rgba(255,215,0,0.1);border:3px solid #ffd700;}
-.row.top2{border:3px solid #e0e0e0;}
+/* TOP BORDER */
+.row.top1{border:3px solid gold;}
+.row.top2{border:3px solid silver;}
 .row.top3{border:3px solid #cd7f32;}
 
 .avatar{
@@ -83,7 +82,7 @@ body{
   border:2px solid #fff;
 }
 
-/* 🔥 NAME + CUPS FIX */
+/* 🔥 FIX: NÉV NEM VÁGÓDIK LE */
 .name-container{
   flex:1;
   display:flex;
@@ -97,46 +96,36 @@ body{
   font-weight:800;
   text-shadow:2px 2px 3px #000;
   white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  max-width:160px;
+  overflow:visible;   /* 🔥 FIX */
+  max-width:none;     /* 🔥 FIX */
 }
 
-/* 🔥 CUP FIX */
 .cups-wrapper{
   display:flex;
   gap:6px;
   align-items:center;
   flex-shrink:0;
-  margin-left:auto;
 }
 
 .cup-badge{
   display:flex;
   align-items:center;
-  justify-content:center;
   gap:4px;
-  color:#fff;
   padding:4px 10px;
   border-radius:8px;
   font-weight:900;
   font-size:14px;
   border:2px solid rgba(255,255,255,0.4);
-  box-shadow:0 3px 8px rgba(0,0,0,0.5);
 }
 
-.cup-badge span{font-size:18px;}
+.gold{background:gold;color:#000;}
+.silver{background:silver;color:#000;}
+.bronze{background:#cd7f32;color:#000;}
 
-.gold{background:linear-gradient(180deg,#ffeb3b,#fbc02d,#f57f17);}
-.silver{background:linear-gradient(180deg,#f5f5f5,#bdbdbd,#757575);}
-.bronze{background:linear-gradient(180deg,#a1887f,#795548,#4e342e);}
-
-/* 🔥 SCORE FIX */
 .score-group{
   display:flex;
   gap:10px;
   align-items:center;
-  flex-shrink:0;
 }
 
 .count{
@@ -153,67 +142,6 @@ body{
 .old{background:rgba(255,255,255,0.25);color:#fff;}
 .total{background:#4CAF50;color:#fff;}
 
-/* GAME */
-.rightCol{display:flex;flex-direction:column;gap:10px;}
-.hud{width:680px;display:flex;justify-content:space-between;font-weight:800;text-shadow:2px 2px 6px #000;}
-.pill{background:rgba(0,0,0,.35);padding:8px 12px;border-radius:999px;}
-
-#game{
-  width:680px;
-  height:380px;
-  background:url("jatekhatter.jpg") repeat-x;
-  border-radius:20px;
-  position:relative;
-  overflow:hidden;
-  box-shadow:0 0 20px #000;
-}
-
-#player{
-  position:absolute;
-  left:60px;
-  width:90px;
-  bottom:30px;
-  transform-origin:bottom;
-}
-
-#player.crouch{transform:scaleY(0.7);}
-
-.overlay{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:grid;
-  place-items:center;
-}
-
-.modal{
-  background:rgba(0,0,0,.85);
-  padding:20px;
-  border-radius:15px;
-  width:350px;
-  text-align:center;
-}
-
-.modal input{
-  width:80%;
-  padding:10px;
-  border-radius:10px;
-  border:none;
-  margin:10px 0;
-}
-
-.modal button{
-  padding:10px 20px;
-  border-radius:10px;
-  border:none;
-  cursor:pointer;
-  font-weight:900;
-}
-
-@media (max-width:1100px){
-  body{flex-direction:column;align-items:center;}
-  .leaderboard,.rightCol,#game{width:95vw;}
-}
 </style>
 </head>
 
@@ -223,42 +151,13 @@ body{
   <h2>Flakon Ranglista</h2>
 
   <div class="score-header">
-    <div class="header-item">Első<br>forduló</div>
-    <div class="header-item">Második<br>forduló</div>
-    <div class="header-item">Harmadik<br>forduló</div>
-    <div class="header-item" style="color:#4CAF50;">Összes<br>pont</div>
+    <div class="header-item">1.<br>forduló</div>
+    <div class="header-item">2.<br>forduló</div>
+    <div class="header-item">3.<br>forduló</div>
+    <div class="header-item" style="color:#4CAF50;">Összes</div>
   </div>
 
   <div id="leaderboard-content"></div>
-</div>
-
-<div class="rightCol">
-  <div class="hud">
-    <div class="pill" id="hudPlayer">Játékos: -</div>
-    <div class="pill" id="hudScore">Pont: 0</div>
-    <div class="pill" id="hudBest">Rekord: - - 0</div>
-  </div>
-
-  <div id="game">
-    <img id="player" src="majomka.png">
-
-    <div id="startOverlay" class="overlay">
-      <div class="modal">
-        <h3>Majom Jump</h3>
-        <input id="nameInput" maxlength="15" placeholder="Neved...">
-        <br>
-        <button id="startBtn">START</button>
-      </div>
-    </div>
-
-    <div id="overOverlay" class="overlay" style="display:none;">
-      <div class="modal">
-        <h3>Game Over</h3>
-        <div id="overText"></div>
-        <button id="restartBtn">Újra</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -282,21 +181,21 @@ function updateLeaderboard(){
   container.innerHTML="";
 
   players.forEach((p,i)=>{
-    let top=(i===0)?"top1":(i===1)?"top2":(i===2)?"top3":"";
 
-    let cups=p.cups.map(c=>
-      `<div class="cup-badge ${c.type}">
-        <span>${c.type==="gold"?"🏆":c.type==="silver"?"🥈":"🥉"}</span>
-        x${c.count}
-      </div>`
-    ).join("");
+    let cups=(p.cups||[]).map(c=>`
+      <div class="cup-badge ${c.type}">
+        ${c.type==="gold"?"🏆":c.type==="silver"?"🥈":"🥉"} x${c.count}
+      </div>
+    `).join("");
 
     container.innerHTML+=`
-      <div class="row ${top}">
+      <div class="row ${i===0?"top1":i===1?"top2":i===2?"top3":""}">
         <img class="avatar" src="${p.avatar}">
 
         <div class="name-container">
-          <div class="name">${p.name}</div>
+          <div class="name" title="${p.name}">
+            ${p.name}
+          </div>
           <div class="cups-wrapper">${cups}</div>
         </div>
 
@@ -312,128 +211,6 @@ function updateLeaderboard(){
 }
 
 updateLeaderboard();
-
-/* 🏆 cups */
-function addCup(name,type){
-  const p=players.find(x=>x.name===name);
-  if(!p)return;
-  let c=p.cups.find(x=>x.type===type);
-  if(!c)p.cups.push({type,count:1});
-  else c.count++;
-}
-
-addCup("Spudbay","gold");
-addCup("SusuSzaurusz","silver");
-
-/* ---- GAME (nem nyúlva) ---- */
-const BASE_SPEED=3.0,SPEED_DIV=1200,MAX_SPEED=7.0,GRAVITY=0.9,JUMP_V=19,API_URL="https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
-
-const game=document.getElementById("game"),
-playerEl=document.getElementById("player"),
-hudPlayer=document.getElementById("hudPlayer"),
-hudScore=document.getElementById("hudScore"),
-hudBest=document.getElementById("hudBest"),
-startOverlay=document.getElementById("startOverlay"),
-overOverlay=document.getElementById("overOverlay"),
-overText=document.getElementById("overText"),
-nameInput=document.getElementById("nameInput"),
-startBtn=document.getElementById("startBtn"),
-restartBtn=document.getElementById("restartBtn");
-
-let bestName="-",bestScore=0,running=false,alive=false,playerName="-",score=0,speed=4,y=0,vy=0,crouch=false,obstacles=[],dist=0,nextSpawnDist=0,bgX=0;
-
-function updateBest(){ hudBest.textContent=`Rekord: ${bestName} - ${bestScore}`; }
-
-async function loadBest(){ try{const r=await fetch(API_URL);const j=await r.json();bestName=j.name||"-";bestScore=j.score||0;}catch{} updateBest();}
-async function trySaveBest(n,s){ try{await fetch(API_URL,{method:"POST",body:JSON.stringify({name:n,score:s})});}catch{} loadBest();}
-
-loadBest();
-
-function resetGame(){
-  score=0;y=0;vy=0;dist=0;bgX=0;
-  game.style.backgroundPosition="0px 0px";
-  obstacles.forEach(o=>o.el.remove());
-  obstacles=[];
-  nextSpawnDist=420;
-  hudScore.textContent="Pont: 0";
-  playerEl.style.bottom="30px";
-  setCrouch(false);
-}
-
-function setCrouch(v){ crouch=v; playerEl.classList.toggle("crouch",v); }
-
-function startGame(){
-  playerName=nameInput.value.trim()||"Névtelen";
-  hudPlayer.textContent="Játékos: "+playerName;
-  resetGame();
-  alive=true;running=true;
-  startOverlay.style.display="none";
-  overOverlay.style.display="none";
-  requestAnimationFrame(loop);
-}
-
-startBtn.onclick=startGame;
-restartBtn.onclick=startGame;
-
-document.onkeydown=(e)=>{ if(e.code==="Space"&&y<=0){e.preventDefault();vy=JUMP_V;} if(e.code==="KeyS")setCrouch(true);};
-document.onkeyup=(e)=>{ if(e.code==="KeyS")setCrouch(false);};
-
-function loop(){
-  if(!running||!alive)return;
-
-  score++;
-  hudScore.textContent="Pont: "+score;
-
-  speed=Math.min(MAX_SPEED,BASE_SPEED+score/SPEED_DIV);
-  dist+=speed;
-  bgX-=speed;
-  game.style.backgroundPosition=bgX+"px 0px";
-
-  vy-=GRAVITY;
-  y+=vy;
-  if(y<0){y=0;vy=0;}
-  playerEl.style.bottom=(30+y)+"px";
-
-  if(dist>=nextSpawnDist){
-    const el=document.createElement("img");
-    el.className="obstacle";
-    const r=Math.random();
-    let type=(r<0.5)?"banana":(r<0.8)?"stone":"bird";
-
-    if(type==="banana"){el.src="banana.png";el.style.width="52px";el.style.bottom="30px";}
-    else if(type==="stone"){el.src="stone.png";el.style.width="46px";el.style.bottom="30px";}
-    else{el.src="madar.gif";el.style.width="70px";el.style.bottom="72px";}
-
-    el.style.position="absolute";
-    el.style.left=game.clientWidth+"px";
-    game.appendChild(el);
-
-    obstacles.push({el,x:game.clientWidth,w:40,h:40,bottom:parseInt(el.style.bottom)});
-    nextSpawnDist=dist+500+Math.random()*300;
-  }
-
-  let pb=crouch?{x:78,y:30+y,w:50,h:40}:{x:78,y:30+y,w:50,h:60};
-
-  for(let i=obstacles.length-1;i>=0;i--){
-    let o=obstacles[i];
-    o.x-=speed;
-    o.el.style.left=o.x+"px";
-
-    if(o.x<-100){o.el.remove();obstacles.splice(i,1);continue;}
-
-    if(pb.x<o.x+o.w&&pb.x+pb.w>o.x&&pb.y<o.bottom+o.h&&pb.y+pb.h>o.bottom){
-      alive=false;running=false;
-      overText.innerHTML=`Pont: <b>${score}</b>`;
-      overOverlay.style.display="grid";
-
-      let p=players.find(x=>x.name.toLowerCase()===playerName.toLowerCase());
-      if(p&&score>p.newScore){p.newScore=score;updateLeaderboard();}
-      if(score>bestScore)trySaveBest(playerName,score);
-    }
-  }
-
-  requestAnimationFrame(loop);
-}
 </script>
 
 </body>
