@@ -10,15 +10,18 @@ body{
   margin:0;
   font-family:Arial,sans-serif;
   background:url("hatter.jpg") center/cover no-repeat fixed;
+
   display:flex;
   justify-content:center;
+  align-items:flex-start;
+  gap:40px;
   padding:40px;
   color:#fff;
 }
 
 /* LEADERBOARD */
 .leaderboard{
-  width:850px;
+  width:900px;
   max-width:95vw;
   padding:25px;
   background:url("keret.png") center/cover no-repeat;
@@ -33,10 +36,10 @@ h2{
   margin:0 0 15px 0;
 }
 
-/* HEADER + ROW UGYANAZ A GRID */
+/* HEADER + ROW GRID */
 .grid{
   display:grid;
-  grid-template-columns: 70px 1.5fr 90px 90px 90px 110px 140px;
+  grid-template-columns: 70px 1fr 90px 90px 90px 110px 140px;
   gap:10px;
   align-items:center;
 }
@@ -44,10 +47,10 @@ h2{
 /* HEADER */
 .score-header{
   margin-bottom:10px;
-  text-align:center;
   font-size:11px;
   font-weight:bold;
   color:rgba(255,255,255,0.7);
+  text-align:center;
 }
 
 /* ROW */
@@ -68,7 +71,7 @@ h2{
   border:2px solid #fff;
 }
 
-/* NAME */
+/* NAME (NINCS FELIRAT, CSAK STÍLUS) */
 .name{
   font-size:18px;
   font-weight:900;
@@ -86,12 +89,12 @@ h2{
 .old{ background:rgba(255,255,255,0.25); }
 .total{ background:#4CAF50; }
 
-/* 🏆 KUPA OSZLOP FIX */
+/* 🏆 KUPA OSZLOP (FIX) */
 .cup-column{
   display:flex;
   flex-direction:column;
   gap:6px;
-  align-items:flex-start;
+  align-items:center;   /* <-- MOST TÉNYLEG OSZLOP ALÁ RENDEZ */
 }
 
 /* KUPA */
@@ -115,33 +118,46 @@ h2{
 .silver{ background:linear-gradient(180deg,#f5f5f5,#bdbdbd,#757575); }
 .bronze{ background:linear-gradient(180deg,#a1887f,#795548,#4e342e); }
 
-/* GOMB */
+/* RIGHT BUTTON (VISSZA AZ EREDETI STÍLUSHOZ) */
+.rightCol{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
 #dontPressBtn{
-  margin-top:20px;
-  width:240px;
-  height:85px;
+  width:300px;
+  height:120px;
   background:red;
   color:white;
-  font-size:22px;
+  font-size:28px;
   font-weight:900;
   border:none;
-  border-radius:18px;
+  border-radius:20px;
   cursor:pointer;
   box-shadow:0 0 25px rgba(255,0,0,0.8);
+  transition:0.2s;
+}
+
+#dontPressBtn:hover{
+  transform:scale(1.05);
+}
+
+#dontPressBtn:active{
+  transform:scale(0.98);
 }
 </style>
 </head>
 
 <body>
 
-<div>
-
+<!-- LEADERBOARD -->
 <div class="leaderboard">
   <h2>Flakon Ranglista</h2>
 
   <div class="grid score-header">
+    <div>Avatar</div>
     <div></div>
-    <div>Név</div>
     <div>1. forduló</div>
     <div>2. forduló</div>
     <div>3. forduló</div>
@@ -152,8 +168,9 @@ h2{
   <div id="leaderboard-content"></div>
 </div>
 
-<button id="dontPressBtn">NE NYOMD MEG</button>
-
+<!-- GOMB JOBB OLDALT -->
+<div class="rightCol">
+  <button id="dontPressBtn">NE NYOMD MEG</button>
 </div>
 
 <script>
