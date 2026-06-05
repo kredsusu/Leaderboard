@@ -10,24 +10,15 @@ body{
   margin:0;
   font-family:Arial,sans-serif;
   background:url("hatter.jpg") center/cover no-repeat fixed;
-
   display:flex;
   justify-content:center;
-  align-items:center;
-  min-height:100vh;
+  padding:40px;
   color:#fff;
-}
-
-.wrapper{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:20px;
 }
 
 /* LEADERBOARD */
 .leaderboard{
-  width:900px;
+  width:850px;
   max-width:95vw;
   padding:25px;
   background:url("keret.png") center/cover no-repeat;
@@ -42,13 +33,21 @@ h2{
   margin:0 0 15px 0;
 }
 
-/* GRID */
+/* HEADER + ROW UGYANAZ A GRID */
 .grid{
   display:grid;
-  grid-template-columns: 80px 90px 1fr 90px 90px 90px 110px;
+  grid-template-columns: 70px 1.5fr 90px 90px 90px 110px 140px;
   gap:10px;
   align-items:center;
-  justify-items:center; /* <-- FONTOS KÖZÉPRE */
+}
+
+/* HEADER */
+.score-header{
+  margin-bottom:10px;
+  text-align:center;
+  font-size:11px;
+  font-weight:bold;
+  color:rgba(255,255,255,0.7);
 }
 
 /* ROW */
@@ -73,45 +72,38 @@ h2{
 .name{
   font-size:18px;
   font-weight:900;
-  text-align:left;
-  justify-self:start; /* <-- NE legyen középen, csak a név */
 }
 
-/* COUNT */
+/* SCORE */
 .count{
+  text-align:center;
   font-size:16px;
   font-weight:900;
   padding:6px;
   border-radius:8px;
-  text-align:center;
-  width:100%;
 }
 
 .old{ background:rgba(255,255,255,0.25); }
 .total{ background:#4CAF50; }
 
-/* 🏆 KUPA OSZLOP */
+/* 🏆 KUPA OSZLOP FIX */
 .cup-column{
   display:flex;
   flex-direction:column;
   gap:6px;
-  align-items:center;   /* <-- EZ FIXÁLJA HOGY ALÁRENDEZVE LÁTSZÓDJON JÓL */
-  justify-content:center;
+  align-items:flex-start;
 }
 
 /* KUPA */
 .cup-badge{
-  display:flex;
+  display:inline-flex;
   align-items:center;
   gap:5px;
-
   padding:3px 8px;
   border-radius:8px;
   font-weight:900;
   font-size:12px;
-
   white-space:nowrap;
-  width:fit-content;
 }
 
 .cup-badge.inactive{
@@ -125,6 +117,7 @@ h2{
 
 /* GOMB */
 #dontPressBtn{
+  margin-top:20px;
   width:240px;
   height:85px;
   background:red;
@@ -141,10 +134,20 @@ h2{
 
 <body>
 
-<div class="wrapper">
+<div>
 
 <div class="leaderboard">
   <h2>Flakon Ranglista</h2>
+
+  <div class="grid score-header">
+    <div></div>
+    <div>Név</div>
+    <div>1. forduló</div>
+    <div>2. forduló</div>
+    <div>3. forduló</div>
+    <div>Összes</div>
+    <div>Kupák</div>
+  </div>
 
   <div id="leaderboard-content"></div>
 </div>
