@@ -11,17 +11,29 @@ body{
   font-family:Arial,sans-serif;
   background:url("hatter.jpg") center/cover no-repeat fixed;
 
+  min-height:100vh;
+
   display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  gap:40px;
+  flex-direction:column;
+  align-items:center;   /* <-- KÖZÉPRE */
+  justify-content:flex-start;
+
   padding:40px;
   color:#fff;
 }
 
+/* WRAPPER (EZ OLDJA MEG A KÖZÉP PROBLÉMÁT) */
+.wrapper{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:25px;
+}
+
 /* LEADERBOARD */
 .leaderboard{
-  width:680px;
+  width:900px;   /* <-- MEGNÖVELVE */
+  max-width:95vw;
   padding:25px;
   background:url("keret.png") center/cover no-repeat;
   border-radius:25px;
@@ -30,31 +42,29 @@ body{
 
 h2{
   text-align:center;
-  font-size:32px;
-  font-weight:800;
-  text-shadow:2px 2px 6px #000;
+  font-size:34px;
+  font-weight:900;
   margin:0 0 15px 0;
+  text-shadow:2px 2px 6px #000;
 }
 
-/* HEADER + ROW GRID */
+/* HEADER + ROW */
 .score-header,
 .row{
   display:grid;
-  grid-template-columns: 60px 1.4fr 70px 70px 70px 85px;
-  gap:8px;
-  padding:0 10px;
+  grid-template-columns: 70px 1.6fr 90px 90px 90px 110px;
+  gap:10px;
+  padding:0 12px;
 }
 
-/* HEADER */
 .score-header{
   margin-bottom:10px;
 }
 
 .header-item{
   text-align:center;
-  font-size:10px;
+  font-size:11px;
   font-weight:bold;
-  text-transform:uppercase;
   color:rgba(255,255,255,0.7);
 }
 
@@ -62,16 +72,16 @@ h2{
 .row{
   align-items:center;
   background:rgba(0,0,0,.4);
-  padding:10px 10px;
+  padding:12px;
   border-radius:18px;
-  margin:6px 0;
+  margin:8px 0;
   box-shadow:2px 2px 8px rgba(0,0,0,.5);
 }
 
 /* AVATAR */
 .avatar{
-  width:50px;
-  height:50px;
+  width:55px;
+  height:55px;
   border-radius:50%;
   object-fit:cover;
   border:2px solid #fff;
@@ -81,33 +91,32 @@ h2{
 .name-container{
   display:flex;
   align-items:center;
-  gap:6px;
-  flex-wrap:wrap;
+  gap:8px;
+  flex-wrap:nowrap;   /* <-- FONTOS: EGYSOROS */
   overflow:hidden;
 }
 
 .name{
   font-size:18px;
-  font-weight:800;
-  text-shadow:2px 2px 3px #000;
+  font-weight:900;
+  white-space:nowrap;
 }
 
-/* KUPÁK */
+/* 🏆 KUPÁK (FIX EGYSOROS) */
 .cup-badge{
-  display:flex;
+  display:inline-flex;
   align-items:center;
   gap:4px;
-  padding:2px 6px;
+
+  padding:3px 8px;
   border-radius:8px;
   font-weight:900;
-  font-size:11px;
+  font-size:12px;
+
   border:2px solid rgba(255,255,255,0.4);
   white-space:nowrap;
-  box-shadow:0 3px 8px rgba(0,0,0,0.5);
 
-  max-width:65px;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  flex-shrink:0;   /* <-- NE ESSEEN ÖSSZE */
 }
 
 .cup-badge.inactive{
@@ -121,30 +130,23 @@ h2{
 
 /* SCORE */
 .count{
-  font-size:15px;
-  font-weight:800;
   text-align:center;
-  padding:5px 0;
+  font-size:16px;
+  font-weight:900;
+  padding:6px 0;
   border-radius:8px;
 }
 
 .old{ background:rgba(255,255,255,0.25); }
-.total{ background:#4CAF50; color:#fff; }
+.total{ background:#4CAF50; }
 
-/* RIGHT SIDE */
-.rightCol{
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-}
-
-/* 🔴 GOMB KISEBB */
+/* 🔴 GOMB (ALUL) */
 #dontPressBtn{
-  width:220px;
-  height:80px;
+  width:260px;
+  height:90px;
   background:red;
   color:white;
-  font-size:20px;
+  font-size:22px;
   font-weight:900;
   border:none;
   border-radius:18px;
@@ -165,23 +167,25 @@ h2{
 
 <body>
 
-<!-- LEADERBOARD -->
-<div class="leaderboard">
-  <h2>Flakon Ranglista</h2>
+<div class="wrapper">
 
-  <div class="score-header">
-    <div class="header-item">1. forduló</div>
-    <div class="header-item">2. forduló</div>
-    <div class="header-item">3. forduló</div>
-    <div class="header-item">Összes</div>
+  <!-- LEADERBOARD -->
+  <div class="leaderboard">
+    <h2>Flakon Ranglista</h2>
+
+    <div class="score-header">
+      <div class="header-item">1. forduló</div>
+      <div class="header-item">2. forduló</div>
+      <div class="header-item">3. forduló</div>
+      <div class="header-item">Összes</div>
+    </div>
+
+    <div id="leaderboard-content"></div>
   </div>
 
-  <div id="leaderboard-content"></div>
-</div>
-
-<!-- RIGHT SIDE -->
-<div class="rightCol">
+  <!-- GOMB (ALUL KÖZÉPEN) -->
   <button id="dontPressBtn">NE NYOMD MEG</button>
+
 </div>
 
 <script>
@@ -193,10 +197,8 @@ const players = [
   { name:"MrSusu", avatar:"Mrgrogu.gif", round1:50, round2:0, round3:0, cups:[] }
 ];
 
-/* 🏆 kupa kiosztás */
 function assignRound2Cups(){
   const sorted = [...players].sort((a,b)=>b.round2-a.round2);
-
   players.forEach(p=>p.cups=[]);
 
   if(sorted[0]) sorted[0].cups.push({type:"gold",count:1});
@@ -204,13 +206,11 @@ function assignRound2Cups(){
 }
 assignRound2Cups();
 
-/* kupa szám */
 function getCupCount(player,type){
   const c = player.cups.find(x=>x.type===type);
   return c ? c.count : 0;
 }
 
-/* leaderboard */
 function updateLeaderboard(){
   const container = document.getElementById("leaderboard-content");
 
@@ -228,26 +228,16 @@ function updateLeaderboard(){
         <div class="name-container">
           <div class="name">${p.name}</div>
 
-          <div class="cup-badge gold ${getCupCount(p,"gold")?"":"inactive"}">
-            🏆 x${getCupCount(p,"gold")}
-          </div>
-
-          <div class="cup-badge silver ${getCupCount(p,"silver")?"":"inactive"}">
-            🥈 x${getCupCount(p,"silver")}
-          </div>
-
-          <div class="cup-badge bronze ${getCupCount(p,"bronze")?"":"inactive"}">
-            🥉 x${getCupCount(p,"bronze")}
-          </div>
+          <div class="cup-badge gold ${getCupCount(p,"gold")?"":"inactive"}">🏆 x${getCupCount(p,"gold")}</div>
+          <div class="cup-badge silver ${getCupCount(p,"silver")?"":"inactive"}">🥈 x${getCupCount(p,"silver")}</div>
+          <div class="cup-badge bronze ${getCupCount(p,"bronze")?"":"inactive"}">🥉 x${getCupCount(p,"bronze")}</div>
         </div>
 
         <div class="count old">${p.round1}</div>
         <div class="count old">${p.round2}</div>
         <div class="count old">${p.round3}</div>
 
-        <div class="count total">
-          ${p.round1+p.round2+p.round3}
-        </div>
+        <div class="count total">${p.round1+p.round2+p.round3}</div>
       </div>
     `;
   });
@@ -255,7 +245,6 @@ function updateLeaderboard(){
 
 updateLeaderboard();
 
-/* 🔴 gomb */
 document.getElementById("dontPressBtn").onclick = () => {
   alert("Mondtam hogy NE NYOMD MEG 😄💥");
 };
