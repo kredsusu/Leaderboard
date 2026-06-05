@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Flakon leaderboard</title>
+<title>Leaderboard</title>
 
 <style>
 body{
@@ -12,31 +12,42 @@ body{
   background:#111;
   display:flex;
   justify-content:center;
-  gap:40px;
   padding:40px;
   color:#fff;
 }
 
 /* LEADERBOARD */
 .leaderboard{
-  width:700px;
-  padding:25px;
+  width:750px;
   background:#222;
-  border-radius:20px;
+  padding:20px;
+  border-radius:16px;
 }
 
-h2{text-align:center}
+h2{
+  text-align:center;
+}
+
+/* HEADER */
+.header{
+  display:grid;
+  grid-template-columns: 60px 1fr 80px 80px 80px 120px;
+  gap:10px;
+  font-size:12px;
+  opacity:0.7;
+  margin-bottom:10px;
+}
 
 /* ROW */
 .row{
   display:grid;
-  grid-template-columns:60px 1fr 80px 80px 80px 90px;
+  grid-template-columns: 60px 1fr 80px 80px 80px 120px;
   gap:10px;
   align-items:center;
   padding:10px;
   margin:6px 0;
   background:#333;
-  border-radius:12px;
+  border-radius:10px;
 }
 
 .avatar{
@@ -45,12 +56,22 @@ h2{text-align:center}
   border-radius:50%;
 }
 
-/* KUPA */
-.cup-badge{
+/* NAME */
+.name{
+  font-weight:bold;
+}
+
+/* CUPS */
+.cups{
+  display:flex;
+  gap:6px;
+}
+
+.cup{
   padding:3px 6px;
-  font-size:12px;
   border-radius:6px;
-  margin-right:4px;
+  font-size:12px;
+  font-weight:bold;
   opacity:1;
 }
 
@@ -59,11 +80,11 @@ h2{text-align:center}
   filter:grayscale(1);
 }
 
-.gold{background:gold;color:#000}
-.silver{background:silver;color:#000}
-.bronze{background:#cd7f32;color:#000}
+.gold{background:gold;color:#000;}
+.silver{background:silver;color:#000;}
+.bronze{background:#cd7f32;color:#000;}
 
-/* ADMIN BUTTON */
+/* ADMIN */
 #adminBtn{
   position:fixed;
   top:20px;
@@ -71,15 +92,14 @@ h2{text-align:center}
   width:60px;
   height:60px;
   border-radius:50%;
-  background:#ff0000;
-  color:#fff;
-  font-size:22px;
   border:none;
+  background:red;
+  color:#fff;
+  font-size:20px;
   cursor:pointer;
 }
 
-/* MODAL */
-#adminPanel{
+#panel{
   display:none;
   position:fixed;
   inset:0;
@@ -88,30 +108,19 @@ h2{text-align:center}
   align-items:center;
 }
 
-.panel{
+.box{
   background:#222;
   padding:20px;
-  border-radius:12px;
+  border-radius:10px;
   width:300px;
-  text-align:center;
 }
 
-.panel button{
+.box button{
   width:100%;
-  margin:5px 0;
   padding:10px;
+  margin:5px 0;
   font-weight:bold;
   cursor:pointer;
-}
-
-/* VIDEO */
-#videoBox{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.9);
-  justify-content:center;
-  align-items:center;
 }
 </style>
 </head>
@@ -122,38 +131,47 @@ h2{text-align:center}
 
 <div class="leaderboard">
   <h2>Leaderboard</h2>
+
+  <div class="header">
+    <div></div>
+    <div>Név</div>
+    <div>R1</div>
+    <div>R2</div>
+    <div>R3</div>
+    <div>Kupák</div>
+  </div>
+
   <div id="board"></div>
 </div>
 
-<!-- ADMIN PANEL -->
-<div id="adminPanel">
-  <div class="panel">
-    <h3>ADMIN</h3>
+<!-- ADMIN -->
+<div id="panel">
+  <div class="box">
+    <h3>ADMIN PANEL</h3>
     <button onclick="playSound()">🔊 Hang</button>
-    <button onclick="openVideo()">🎬 Videó</button>
-    <button onclick="endRound()">🏁 2. forduló lezárás</button>
-    <button onclick="recalcCups()">🏆 Kupák újraszámolása</button>
-    <button onclick="closeAdmin()">Bezár</button>
+    <button onclick="playVideo()">🎬 Videó</button>
+    <button onclick="recalc()">🏆 Kupák újraszámolása</button>
+    <button onclick="closePanel()">Bezár</button>
   </div>
 </div>
 
 <!-- VIDEO -->
-<div id="videoBox" onclick="closeVideo()">
+<div id="videoBox" style="display:none;position:fixed;inset:0;background:black;justify-content:center;align-items:center;">
   <video width="600" controls autoplay>
     <source src="video.mp4" type="video/mp4">
   </video>
 </div>
 
 <script>
-/* PLAYERS */
+
 const players = [
   {name:"Spudbay", avatar:"a.png", r1:10, r2:50, r3:0, cups:[]},
   {name:"SusuSzaurusz", avatar:"b.png", r1:20, r2:30, r3:0, cups:[]},
   {name:"Kata", avatar:"c.png", r1:40, r2:10, r3:0, cups:[]}
 ];
 
-/* CUP LOGIC */
-function recalcCups(){
+/* KUPA */
+function recalc(){
   const sorted=[...players].sort((a,b)=>b.r2-a.r2);
   players.forEach(p=>p.cups=[]);
 
@@ -163,30 +181,22 @@ function recalcCups(){
   render();
 }
 
-/* END ROUND */
-function endRound(){
-  alert("2. forduló lezárva!");
-}
-
 /* SOUND */
 function playSound(){
-  const audio = new Audio("sound.mp3");
-  audio.play();
+  const a=new Audio("sound.mp3");
+  a.play();
 }
 
 /* VIDEO */
-function openVideo(){
+function playVideo(){
   document.getElementById("videoBox").style.display="flex";
-}
-function closeVideo(){
-  document.getElementById("videoBox").style.display="none";
 }
 
 /* ADMIN */
-const panel=document.getElementById("adminPanel");
+const panel=document.getElementById("panel");
 
 document.getElementById("adminBtn").onclick=()=>{
-  const pass=prompt("Admin jelszó:");
+  const pass=prompt("Jelszó:");
   if(pass==="1234"){
     panel.style.display="flex";
   }else{
@@ -194,7 +204,7 @@ document.getElementById("adminBtn").onclick=()=>{
   }
 };
 
-function closeAdmin(){
+function closePanel(){
   panel.style.display="none";
 }
 
@@ -207,20 +217,22 @@ function render(){
   const board=document.getElementById("board");
   board.innerHTML="";
 
+  players.sort((a,b)=>(b.r1+b.r2+b.r3)-(a.r1+a.r2+a.r3));
+
   players.forEach(p=>{
     board.innerHTML+=`
       <div class="row">
         <img class="avatar" src="${p.avatar}">
-        <div>${p.name}</div>
+        <div class="name">${p.name}</div>
 
         <div>${p.r1}</div>
         <div>${p.r2}</div>
         <div>${p.r3}</div>
 
-        <div>
-          <span class="cup-badge gold ${getCup(p,'gold')?'':'inactive'}">🥇</span>
-          <span class="cup-badge silver ${getCup(p,'silver')?'':'inactive'}">🥈</span>
-          <span class="cup-badge bronze inactive">🥉</span>
+        <div class="cups">
+          <div class="cup gold ${getCup(p,'gold')?'':'inactive'}">🥇</div>
+          <div class="cup silver ${getCup(p,'silver')?'':'inactive'}">🥈</div>
+          <div class="cup bronze inactive">🥉</div>
         </div>
       </div>
     `;
@@ -228,6 +240,7 @@ function render(){
 }
 
 render();
+
 </script>
 
 </body>
