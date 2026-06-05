@@ -7,40 +7,60 @@
 
 <style>
 body{
-  margin:0; font-family:Arial,sans-serif;
+  margin:0;
+  font-family:Arial,sans-serif;
   background:url("hatter.jpg") center/cover no-repeat fixed;
-  display:flex; justify-content:center; align-items:flex-start;
-  gap:60px; padding-top:40px; color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  gap:60px;
+  padding-top:40px;
+  color:#fff;
 }
 
 .leaderboard{
-  width:650px; padding:25px;
+  width:650px;
+  padding:25px;
   background:url("keret.png") center/cover no-repeat;
-  border-radius:25px; box-shadow:0 0 30px rgba(0,0,0,.7);
+  border-radius:25px;
+  box-shadow:0 0 30px rgba(0,0,0,.7);
 }
 
 .leaderboard h2{
-  text-align:center; font-size:32px; font-weight:800;
-  text-shadow:2px 2px 6px #000; margin:0 0 15px 0;
+  text-align:center;
+  font-size:32px;
+  font-weight:800;
+  text-shadow:2px 2px 6px #000;
+  margin:0 0 15px 0;
 }
 
 .score-header{
-  display:flex; justify-content:flex-end; gap:10px;
-  padding-right:14px; margin-bottom:8px;
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  padding-right:14px;
+  margin-bottom:8px;
 }
 
 .header-item{
-  width:80px; text-align:center; font-size:10px;
-  font-weight:bold; text-transform:uppercase;
-  color:rgba(255,255,255,0.7); line-height:1.2;
+  width:80px;
+  text-align:center;
+  font-size:10px;
+  font-weight:bold;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.7);
+  line-height:1.2;
 }
 
 #leaderboard-content{
-  display:flex; flex-direction:column;
+  display:flex;
+  flex-direction:column;
 }
 
 .row{
-  display:flex; align-items:center; justify-content:space-between;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
   gap:12px;
   background:rgba(0,0,0,.4);
   padding:10px 14px;
@@ -50,32 +70,62 @@ body{
 }
 
 .avatar{
-  width:50px; height:50px; border-radius:50%;
-  object-fit:cover; border:2px solid #fff;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid #fff;
 }
 
 .name-container{
-  flex:1; display:flex; align-items:center; gap:10px;
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
-.name{ font-size:18px; font-weight:800; text-shadow:2px 2px 3px #000; }
+.name{
+  font-size:18px;
+  font-weight:800;
+  text-shadow:2px 2px 3px #000;
+}
 
+/* 🏆 KUPÁK */
 .cup-badge{
-  padding:4px 10px; border-radius:8px;
-  font-weight:900; font-size:14px;
+  padding:4px 10px;
+  border-radius:8px;
+  font-weight:900;
+  font-size:14px;
   border:2px solid rgba(255,255,255,0.4);
   box-shadow:0 3px 8px rgba(0,0,0,0.5);
   margin-left:4px;
+  opacity:1;
+  transition:0.2s;
 }
 
-.gold{ background:linear-gradient(180deg,#ffeb3b,#fbc02d,#f57f17); }
-.silver{ background:linear-gradient(180deg,#f5f5f5,#bdbdbd,#757575); }
-.bronze{ background:linear-gradient(180deg,#a1887f,#795548,#4e342e); }
+/* halvány ha nincs */
+.cup-badge.inactive{
+  opacity:0.25;
+  filter: grayscale(1);
+}
+
+.gold{
+  background:linear-gradient(180deg,#ffeb3b,#fbc02d,#f57f17);
+}
+.silver{
+  background:linear-gradient(180deg,#f5f5f5,#bdbdbd,#757575);
+}
+.bronze{
+  background:linear-gradient(180deg,#a1887f,#795548,#4e342e);
+}
 
 .count{
-  font-size:16px; font-weight:800;
-  width:80px; text-align:center;
-  padding:6px 0; border-radius:8px;
+  font-size:16px;
+  font-weight:800;
+  width:80px;
+  text-align:center;
+  padding:6px 0;
+  border-radius:8px;
 }
 
 .old{ background:rgba(255,255,255,0.25); }
@@ -84,49 +134,66 @@ body{
 .rightCol{ display:flex; flex-direction:column; gap:10px; }
 
 .hud{
-  width:680px; display:flex; justify-content:space-between;
-  font-weight:800; text-shadow:2px 2px 6px #000;
+  width:680px;
+  display:flex;
+  justify-content:space-between;
+  font-weight:800;
+  text-shadow:2px 2px 6px #000;
 }
 
 .pill{
   background:rgba(0,0,0,.35);
-  padding:8px 12px; border-radius:999px;
+  padding:8px 12px;
+  border-radius:999px;
 }
 
 #game{
-  width:680px; height:380px;
+  width:680px;
+  height:380px;
   background:url("jatekhatter.jpg") repeat-x;
   border-radius:20px;
-  position:relative; overflow:hidden;
+  position:relative;
+  overflow:hidden;
   box-shadow:0 0 20px #000;
 }
 
 #player{
-  position:absolute; left:60px;
-  width:90px; bottom:30px;
+  position:absolute;
+  left:60px;
+  width:90px;
+  bottom:30px;
 }
 
 .overlay{
-  position:absolute; inset:0;
+  position:absolute;
+  inset:0;
   background:rgba(0,0,0,.6);
-  display:grid; place-items:center;
+  display:grid;
+  place-items:center;
 }
 
 .modal{
   background:rgba(0,0,0,.85);
-  padding:20px; border-radius:15px;
-  width:350px; text-align:center;
+  padding:20px;
+  border-radius:15px;
+  width:350px;
+  text-align:center;
 }
 
 .modal input{
-  width:80%; padding:10px;
-  border-radius:10px; border:none;
+  width:80%;
+  padding:10px;
+  border-radius:10px;
+  border:none;
   margin:10px 0;
 }
 
 .modal button{
-  padding:10px 20px; border-radius:10px;
-  border:none; cursor:pointer; font-weight:900;
+  padding:10px 20px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:900;
 }
 
 @media (max-width:1100px){
@@ -152,7 +219,6 @@ body{
 </div>
 
 <div class="rightCol">
-
   <div class="hud">
     <div class="pill" id="hudPlayer">Játékos: -</div>
     <div class="pill" id="hudScore">Pont: 0</div>
@@ -178,7 +244,6 @@ body{
         <button id="restartBtn">Újra</button>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -191,6 +256,7 @@ const players = [
   { name:"MrSusu", avatar:"Mrgrogu.gif", round1:50, round2:0, round3:0, cups:[] }
 ];
 
+/* 🏆 2. forduló kupa kiosztás */
 function assignRound2Cups(){
   const sorted = [...players].sort((a,b)=>b.round2-a.round2);
 
@@ -199,9 +265,15 @@ function assignRound2Cups(){
   if(sorted[0]) sorted[0].cups.push({type:"gold",count:1});
   if(sorted[1]) sorted[1].cups.push({type:"silver",count:1});
 }
-
 assignRound2Cups();
 
+/* 🏆 kupa szám lekérdezés */
+function getCupCount(player,type){
+  const c = player.cups.find(x=>x.type===type);
+  return c ? c.count : 0;
+}
+
+/* 📊 leaderboard */
 function updateLeaderboard(){
   const container = document.getElementById("leaderboard-content");
 
@@ -212,22 +284,30 @@ function updateLeaderboard(){
   container.innerHTML="";
 
   players.forEach(p=>{
-    let cups = p.cups.map(c =>
-      `<div class="cup-badge ${c.type}">
-        ${c.type==="gold"?"🏆":c.type==="silver"?"🥈":"🥉"} x${c.count}
-      </div>`
-    ).join("");
-
     container.innerHTML += `
       <div class="row">
         <img class="avatar" src="${p.avatar}">
+
         <div class="name-container">
           <div class="name">${p.name}</div>
-          ${cups}
+
+          <div class="cup-badge gold ${getCupCount(p,"gold")?"" : "inactive"}">
+            🏆 x${getCupCount(p,"gold")}
+          </div>
+
+          <div class="cup-badge silver ${getCupCount(p,"silver")?"" : "inactive"}">
+            🥈 x${getCupCount(p,"silver")}
+          </div>
+
+          <div class="cup-badge bronze ${getCupCount(p,"bronze")?"" : "inactive"}">
+            🥉 x${getCupCount(p,"bronze")}
+          </div>
         </div>
+
         <div class="count old">${p.round1}</div>
         <div class="count old">${p.round2}</div>
         <div class="count old">${p.round3}</div>
+
         <div class="count total">
           ${p.round1+p.round2+p.round3}
         </div>
