@@ -4,96 +4,215 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 <title>Flakon leaderboard</title>
+
 <style>
 body{
-  margin:0; font-family:Arial,sans-serif;
+  margin:0;
+  font-family:Arial,sans-serif;
   background:url("hatter.jpg") center/cover no-repeat fixed;
-  display:flex; justify-content:center; align-items:flex-start;
-  gap:60px; padding-top:40px; color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  gap:60px;
+  padding-top:40px;
+  color:#fff;
 }
+
 .leaderboard{
-  width:650px; padding:25px; background:url("keret.png") center/cover no-repeat;
-  border-radius:25px; box-shadow:0 0 30px rgba(0,0,0,.7);
-}
-.leaderboard h2{ text-align:center; font-size:32px; font-weight:800; text-shadow:2px 2px 6px #000; margin:0 0 15px 0; }
-
-.score-header { 
-  display: flex; 
-  justify-content: flex-end; 
-  gap: 10px; 
-  padding-right: 14px; 
-  margin-bottom: 8px; 
-}
-.header-item { 
-  width: 80px; 
-  text-align: center; 
-  font-size: 10px; 
-  font-weight: bold; 
-  text-transform: uppercase; 
-  color: rgba(255,255,255,0.7);
-  line-height: 1.2;
+  width:650px;
+  padding:25px;
+  background:url("keret.png") center/cover no-repeat;
+  border-radius:25px;
+  box-shadow:0 0 30px rgba(0,0,0,.7);
 }
 
-#leaderboard-content { display: flex; flex-direction: column; }
+.leaderboard h2{
+  text-align:center;
+  font-size:32px;
+  font-weight:800;
+  text-shadow:2px 2px 6px #000;
+  margin:0 0 15px 0;
+}
 
+.score-header{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  padding-right:14px;
+  margin-bottom:8px;
+}
+
+.header-item{
+  width:80px;
+  text-align:center;
+  font-size:10px;
+  font-weight:bold;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.7);
+  line-height:1.2;
+}
+
+#leaderboard-content{
+  display:flex;
+  flex-direction:column;
+}
+
+/* 🔥 FIXED ROW */
 .row{
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
-  background:rgba(0,0,0,.4); padding:10px 14px; border-radius:18px; margin:6px 0;
-  box-shadow:2px 2px 8px rgba(0,0,0,.5); border:3px solid transparent; transition: all 0.3s ease;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  background:rgba(0,0,0,.4);
+  padding:10px 14px;
+  border-radius:18px;
+  margin:6px 0;
+  box-shadow:2px 2px 8px rgba(0,0,0,.5);
 }
-.row.top1 { border-color: #ffd700; background: rgba(255, 215, 0, 0.1); }
-.row.top2 { border-color: #e0e0e0; }
-.row.top3 { border-color: #cd7f32; }
 
-.avatar{ width:50px; height:50px; border-radius:50%; object-fit:cover; border:2px solid #fff; }
+/* TOP STYLES */
+.row.top1{border-color:#ffd700;background:rgba(255,215,0,0.1);border:3px solid #ffd700;}
+.row.top2{border:3px solid #e0e0e0;}
+.row.top3{border:3px solid #cd7f32;}
 
-.name-container { flex: 1; display: flex; align-items: center; gap: 10px; overflow: hidden; }
-.name{ font-size:18px; font-weight:800; text-shadow:2px 2px 3px #000; white-space: nowrap; }
-
-.cups-wrapper { display: flex; gap: 6px; align-items: center; }
-.cup-badge {
-  display: flex; align-items: center; justify-content: center; gap: 4px;
-  color: #fff; padding: 4px 10px; border-radius: 8px; font-weight: 900; font-size: 14px;
-  border: 2px solid rgba(255,255,255,0.4); box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+.avatar{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid #fff;
 }
-.cup-badge span { font-size: 18px; }
-.gold { background: linear-gradient(180deg, #ffeb3b 0%, #fbc02d 50%, #f57f17 100%); }
-.silver { background: linear-gradient(180deg, #f5f5f5 0%, #bdbdbd 50%, #757575 100%); }
-.bronze { background: linear-gradient(180deg, #a1887f 0%, #795548 50%, #4e342e 100%); }
 
-.score-group { display: flex; gap: 10px; align-items: center; }
-
-.count { 
-  font-size: 16px; 
-  font-weight: 800; 
-  background: #f5f5f5; 
-  color: #000; 
-  padding: 6px 0; 
-  border-radius: 8px; 
-  width: 80px; 
-  text-align: center; 
+/* 🔥 NAME + CUPS FIX */
+.name-container{
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
 }
-.old { background: rgba(255,255,255,0.25); color: #fff; }
-.total { background: #4CAF50; color: #fff; }
 
-.rightCol{ display:flex; flex-direction:column; gap:10px; }
-.hud{ width:680px; display:flex; justify-content:space-between; font-weight:800; text-shadow:2px 2px 6px #000; }
-.pill{ background:rgba(0,0,0,.35); padding:8px 12px; border-radius:999px; }
+.name{
+  font-size:18px;
+  font-weight:800;
+  text-shadow:2px 2px 3px #000;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:160px;
+}
 
-#game{ width:680px; height:380px; background:url("jatekhatter.jpg") repeat-x; border-radius:20px; position:relative; overflow:hidden; box-shadow:0 0 20px #000; }
+/* 🔥 CUP FIX */
+.cups-wrapper{
+  display:flex;
+  gap:6px;
+  align-items:center;
+  flex-shrink:0;
+  margin-left:auto;
+}
 
-#player{ position:absolute; left:60px; width:90px; bottom:30px; transform-origin:bottom; }
-#player.crouch{ transform:scaleY(0.7); }
+.cup-badge{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  color:#fff;
+  padding:4px 10px;
+  border-radius:8px;
+  font-weight:900;
+  font-size:14px;
+  border:2px solid rgba(255,255,255,0.4);
+  box-shadow:0 3px 8px rgba(0,0,0,0.5);
+}
 
-.overlay{ position:absolute; inset:0; background:rgba(0,0,0,.6); display:grid; place-items:center; }
-.modal{ background:rgba(0,0,0,.85); padding:20px; border-radius:15px; width:350px; text-align:center; }
+.cup-badge span{font-size:18px;}
 
-.modal input{ width:80%; padding:10px; border-radius:10px; border:none; margin:10px 0; }
-.modal button{ padding:10px 20px; border-radius:10px; border:none; cursor:pointer; font-weight:900; }
+.gold{background:linear-gradient(180deg,#ffeb3b,#fbc02d,#f57f17);}
+.silver{background:linear-gradient(180deg,#f5f5f5,#bdbdbd,#757575);}
+.bronze{background:linear-gradient(180deg,#a1887f,#795548,#4e342e);}
+
+/* 🔥 SCORE FIX */
+.score-group{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-shrink:0;
+}
+
+.count{
+  font-size:16px;
+  font-weight:800;
+  background:#f5f5f5;
+  color:#000;
+  padding:6px 0;
+  border-radius:8px;
+  width:80px;
+  text-align:center;
+}
+
+.old{background:rgba(255,255,255,0.25);color:#fff;}
+.total{background:#4CAF50;color:#fff;}
+
+/* GAME */
+.rightCol{display:flex;flex-direction:column;gap:10px;}
+.hud{width:680px;display:flex;justify-content:space-between;font-weight:800;text-shadow:2px 2px 6px #000;}
+.pill{background:rgba(0,0,0,.35);padding:8px 12px;border-radius:999px;}
+
+#game{
+  width:680px;
+  height:380px;
+  background:url("jatekhatter.jpg") repeat-x;
+  border-radius:20px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 0 20px #000;
+}
+
+#player{
+  position:absolute;
+  left:60px;
+  width:90px;
+  bottom:30px;
+  transform-origin:bottom;
+}
+
+#player.crouch{transform:scaleY(0.7);}
+
+.overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:grid;
+  place-items:center;
+}
+
+.modal{
+  background:rgba(0,0,0,.85);
+  padding:20px;
+  border-radius:15px;
+  width:350px;
+  text-align:center;
+}
+
+.modal input{
+  width:80%;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  margin:10px 0;
+}
+
+.modal button{
+  padding:10px 20px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:900;
+}
 
 @media (max-width:1100px){
-  body{flex-direction:column; align-items:center;}
-  .leaderboard, .rightCol, #game{width:95vw;}
+  body{flex-direction:column;align-items:center;}
+  .leaderboard,.rightCol,#game{width:95vw;}
 }
 </style>
 </head>
@@ -144,36 +263,38 @@ body{
 
 <script>
 const players = [
-  { name: "On3door", avatar: "onedoor.png", oldScore: 134, newScore: 0, round3: 0, cups: [{type: "gold", count: 1}] },
-  { name: "Puki", avatar: "onedoor.png", oldScore: 0, newScore: 118, round3: 0, cups: [] },
-  { name: "MiszterSusu", avatar: "misztersiba.gif", oldScore: 134, newScore: 59, round3: 0, cups: [] },
-  { name: "SusuSzaurusz", avatar: "dinoori.gif", oldScore: 84, newScore: 125, round3: 0, cups: [{type: "silver", count: 1}] },
-  { name: "Spudbay", avatar: "spudbaymaci.gif", oldScore: 98, newScore: 198, round3: 0, cups: [{type: "gold", count: 1}] },
-  { name: "MrSusu", avatar: "Mrgrogu.gif", oldScore: 50, newScore: 0, round3: 0, cups: [] }
+  { name:"On3door", avatar:"onedoor.png", oldScore:134, newScore:0, round3:0, cups:[{type:"gold",count:1}] },
+  { name:"Puki", avatar:"onedoor.png", oldScore:0, newScore:118, round3:0, cups:[] },
+  { name:"MiszterSusu", avatar:"misztersiba.gif", oldScore:134, newScore:59, round3:0, cups:[] },
+  { name:"SusuSzaurusz", avatar:"dinoori.gif", oldScore:84, newScore:125, round3:0, cups:[{type:"silver",count:1}] },
+  { name:"Spudbay", avatar:"spudbaymaci.gif", oldScore:98, newScore:198, round3:0, cups:[{type:"gold",count:1}] },
+  { name:"MrSusu", avatar:"Mrgrogu.gif", oldScore:50, newScore:0, round3:0, cups:[] }
 ];
 
-function updateLeaderboard() {
-  const container = document.getElementById("leaderboard-content");
+function updateLeaderboard(){
+  const container=document.getElementById("leaderboard-content");
 
-  players.sort((a,b) =>
-    (b.oldScore + b.newScore + (b.round3||0)) -
-    (a.oldScore + a.newScore + (a.round3||0))
+  players.sort((a,b)=>
+    (b.oldScore+b.newScore+(b.round3||0))-
+    (a.oldScore+a.newScore+(a.round3||0))
   );
 
-  container.innerHTML = "";
+  container.innerHTML="";
 
-  players.forEach((p, i) => {
-    let top = (i===0)?"top1":(i===1)?"top2":(i===2)?"top3":"";
+  players.forEach((p,i)=>{
+    let top=(i===0)?"top1":(i===1)?"top2":(i===2)?"top3":"";
 
-    let cups = p.cups.map(c =>
+    let cups=p.cups.map(c=>
       `<div class="cup-badge ${c.type}">
-        <span>${c.type==="gold"?"🏆":c.type==="silver"?"🥈":"🥉"}</span> x${c.count}
+        <span>${c.type==="gold"?"🏆":c.type==="silver"?"🥈":"🥉"}</span>
+        x${c.count}
       </div>`
     ).join("");
 
-    container.innerHTML += `
+    container.innerHTML+=`
       <div class="row ${top}">
         <img class="avatar" src="${p.avatar}">
+
         <div class="name-container">
           <div class="name">${p.name}</div>
           <div class="cups-wrapper">${cups}</div>
@@ -182,8 +303,8 @@ function updateLeaderboard() {
         <div class="score-group">
           <div class="count old">${p.oldScore}</div>
           <div class="count">${p.newScore}</div>
-          <div class="count">${p.round3 || 0}</div>
-          <div class="count total">${p.oldScore + p.newScore + (p.round3||0)}</div>
+          <div class="count">${p.round3||0}</div>
+          <div class="count total">${p.oldScore+p.newScore+(p.round3||0)}</div>
         </div>
       </div>
     `;
@@ -192,63 +313,70 @@ function updateLeaderboard() {
 
 updateLeaderboard();
 
-/* 🏆 KUPÁK HOZZÁADÁSA (lezárt 2. forduló) */
-function addCup(name, type){
-  const p = players.find(x => x.name === name);
-  if(!p) return;
-
-  let cup = p.cups.find(c => c.type === type);
-  if(!cup){
-    p.cups.push({type, count:1});
-  } else {
-    cup.count++;
-  }
+/* 🏆 cups */
+function addCup(name,type){
+  const p=players.find(x=>x.name===name);
+  if(!p)return;
+  let c=p.cups.find(x=>x.type===type);
+  if(!c)p.cups.push({type,count:1});
+  else c.count++;
 }
 
-addCup("Spudbay", "gold");
-addCup("SusuSzaurusz", "silver");
+addCup("Spudbay","gold");
+addCup("SusuSzaurusz","silver");
 
-/* ---- GAME KÓD NEM NYÚLVA ---- */
-const BASE_SPEED=3.0, SPEED_DIV=1200, MAX_SPEED=7.0, GRAVITY=0.9, JUMP_V=19, API_URL="https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
-const game=document.getElementById("game"), playerEl=document.getElementById("player"), hudPlayer=document.getElementById("hudPlayer"), hudScore=document.getElementById("hudScore"), hudBest=document.getElementById("hudBest"), startOverlay=document.getElementById("startOverlay"), overOverlay=document.getElementById("overOverlay"), overText=document.getElementById("overText"), nameInput=document.getElementById("nameInput"), startBtn=document.getElementById("startBtn"), restartBtn=document.getElementById("restartBtn");
+/* ---- GAME (nem nyúlva) ---- */
+const BASE_SPEED=3.0,SPEED_DIV=1200,MAX_SPEED=7.0,GRAVITY=0.9,JUMP_V=19,API_URL="https://script.google.com/macros/s/AKfycbwx3XvDPbDE6P6x_gXfQlJvL9vAkbbo63wfYSWYOwzYSuH1U4Cz3i7qiCSDcSX8imue/exec";
 
-let bestName="-", bestScore=0, running=false, alive=false, playerName="-", score=0, speed=4, y=0, vy=0, crouch=false, obstacles=[], dist=0, nextSpawnDist=0, bgX=0;
+const game=document.getElementById("game"),
+playerEl=document.getElementById("player"),
+hudPlayer=document.getElementById("hudPlayer"),
+hudScore=document.getElementById("hudScore"),
+hudBest=document.getElementById("hudBest"),
+startOverlay=document.getElementById("startOverlay"),
+overOverlay=document.getElementById("overOverlay"),
+overText=document.getElementById("overText"),
+nameInput=document.getElementById("nameInput"),
+startBtn=document.getElementById("startBtn"),
+restartBtn=document.getElementById("restartBtn");
 
-async function loadBest(){ try{const r=await fetch(API_URL);const j=await r.json();bestName=j.name||"-";bestScore=j.score||0;}catch{} hudBest.textContent=`Rekord: ${bestName} - ${bestScore}`;}
+let bestName="-",bestScore=0,running=false,alive=false,playerName="-",score=0,speed=4,y=0,vy=0,crouch=false,obstacles=[],dist=0,nextSpawnDist=0,bgX=0;
+
+function updateBest(){ hudBest.textContent=`Rekord: ${bestName} - ${bestScore}`; }
+
+async function loadBest(){ try{const r=await fetch(API_URL);const j=await r.json();bestName=j.name||"-";bestScore=j.score||0;}catch{} updateBest();}
 async function trySaveBest(n,s){ try{await fetch(API_URL,{method:"POST",body:JSON.stringify({name:n,score:s})});}catch{} loadBest();}
+
 loadBest();
 
-function resetGame(){ score=0; y=0; vy=0; dist=0; bgX=0; game.style.backgroundPosition="0px 0px"; obstacles.forEach(o=>o.el.remove()); obstacles=[]; nextSpawnDist=420; hudScore.textContent="Pont: 0"; playerEl.style.bottom="30px"; setCrouch(false); }
+function resetGame(){
+  score=0;y=0;vy=0;dist=0;bgX=0;
+  game.style.backgroundPosition="0px 0px";
+  obstacles.forEach(o=>o.el.remove());
+  obstacles=[];
+  nextSpawnDist=420;
+  hudScore.textContent="Pont: 0";
+  playerEl.style.bottom="30px";
+  setCrouch(false);
+}
+
 function setCrouch(v){ crouch=v; playerEl.classList.toggle("crouch",v); }
 
 function startGame(){
   playerName=nameInput.value.trim()||"Névtelen";
   hudPlayer.textContent="Játékos: "+playerName;
-  resetGame(); alive=true; running=true;
-  startOverlay.style.display="none"; overOverlay.style.display="none";
+  resetGame();
+  alive=true;running=true;
+  startOverlay.style.display="none";
+  overOverlay.style.display="none";
   requestAnimationFrame(loop);
 }
 
 startBtn.onclick=startGame;
 restartBtn.onclick=startGame;
 
-document.onkeydown=(e)=>{ if(e.code==="Space" && y<=0){ e.preventDefault(); vy=JUMP_V; } if(e.code==="KeyS") setCrouch(true); };
-document.onkeyup=(e)=>{ if(e.code==="KeyS") setCrouch(false); };
-
-function spawnObstacle(){
-  const el=document.createElement("img"); el.className="obstacle";
-  const r=Math.random(); let type=(r<0.5)?"banana":(r<0.8)?"stone":"bird";
-
-  if(type==="banana"){el.src="banana.png";el.style.width="52px";el.style.bottom="30px";el.style.position="absolute";}
-  else if(type==="stone"){el.src="stone.png";el.style.width="46px";el.style.bottom="30px";el.style.position="absolute";}
-  else{el.src="madar.gif";el.style.width="70px";el.style.bottom="72px";el.style.position="absolute";}
-
-  el.style.left=game.clientWidth+"px";
-  game.appendChild(el);
-
-  obstacles.push({el,x:game.clientWidth,w:40,h:40,bottom:parseInt(el.style.bottom)});
-  nextSpawnDist=dist+500+Math.random()*300;
-}
+document.onkeydown=(e)=>{ if(e.code==="Space"&&y<=0){e.preventDefault();vy=JUMP_V;} if(e.code==="KeyS")setCrouch(true);};
+document.onkeyup=(e)=>{ if(e.code==="KeyS")setCrouch(false);};
 
 function loop(){
   if(!running||!alive)return;
@@ -266,7 +394,23 @@ function loop(){
   if(y<0){y=0;vy=0;}
   playerEl.style.bottom=(30+y)+"px";
 
-  if(dist>=nextSpawnDist)spawnObstacle();
+  if(dist>=nextSpawnDist){
+    const el=document.createElement("img");
+    el.className="obstacle";
+    const r=Math.random();
+    let type=(r<0.5)?"banana":(r<0.8)?"stone":"bird";
+
+    if(type==="banana"){el.src="banana.png";el.style.width="52px";el.style.bottom="30px";}
+    else if(type==="stone"){el.src="stone.png";el.style.width="46px";el.style.bottom="30px";}
+    else{el.src="madar.gif";el.style.width="70px";el.style.bottom="72px";}
+
+    el.style.position="absolute";
+    el.style.left=game.clientWidth+"px";
+    game.appendChild(el);
+
+    obstacles.push({el,x:game.clientWidth,w:40,h:40,bottom:parseInt(el.style.bottom)});
+    nextSpawnDist=dist+500+Math.random()*300;
+  }
 
   let pb=crouch?{x:78,y:30+y,w:50,h:40}:{x:78,y:30+y,w:50,h:60};
 
@@ -277,16 +421,14 @@ function loop(){
 
     if(o.x<-100){o.el.remove();obstacles.splice(i,1);continue;}
 
-    if(pb.x<o.x+o.w && pb.x+pb.w>o.x && pb.y<o.bottom+o.h && pb.y+pb.h>o.bottom){
-      alive=false;
-      running=false;
+    if(pb.x<o.x+o.w&&pb.x+pb.w>o.x&&pb.y<o.bottom+o.h&&pb.y+pb.h>o.bottom){
+      alive=false;running=false;
       overText.innerHTML=`Pont: <b>${score}</b>`;
       overOverlay.style.display="grid";
 
       let p=players.find(x=>x.name.toLowerCase()===playerName.toLowerCase());
       if(p&&score>p.newScore){p.newScore=score;updateLeaderboard();}
-
-      if(score>bestScore) trySaveBest(playerName,score);
+      if(score>bestScore)trySaveBest(playerName,score);
     }
   }
 
