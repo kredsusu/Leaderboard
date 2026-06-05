@@ -7,21 +7,27 @@
 
 <style>
 body{
-  margin:0; font-family:Arial,sans-serif;
+  margin:0;
+  font-family:Arial,sans-serif;
   background:url("hatter.jpg") center/cover no-repeat fixed;
-  display:flex; justify-content:center; align-items:flex-start;
-  gap:60px; padding-top:40px; color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  gap:40px;
+  padding:40px;
+  color:#fff;
 }
 
+/* LEADERBOARD */
 .leaderboard{
-  width:650px;
+  width:700px;
   padding:25px;
   background:url("keret.png") center/cover no-repeat;
   border-radius:25px;
   box-shadow:0 0 30px rgba(0,0,0,.7);
 }
 
-.leaderboard h2{
+h2{
   text-align:center;
   font-size:32px;
   font-weight:800;
@@ -29,12 +35,13 @@ body{
   margin:0 0 15px 0;
 }
 
+/* HEADER */
 .score-header{
   display:grid;
-  grid-template-columns: 60px 1fr 80px 80px 80px;
+  grid-template-columns: 60px 1fr 80px 80px 80px 90px;
   gap:10px;
-  padding-right:14px;
-  margin-bottom:8px;
+  padding:0 14px;
+  margin-bottom:10px;
 }
 
 .header-item{
@@ -45,16 +52,12 @@ body{
   color:rgba(255,255,255,0.7);
 }
 
-#leaderboard-content{
-  display:flex;
-  flex-direction:column;
-}
-
-/* 🔥 FIXED ROW (NEM CSÚSZIK SZÉT) */
+/* ROW FIX GRID */
 .row{
   display:grid;
-  grid-template-columns: 60px 1fr 80px 80px 80px;
+  grid-template-columns: 60px 1fr 80px 80px 80px 90px;
   align-items:center;
+  gap:10px;
 
   background:rgba(0,0,0,.4);
   padding:10px 14px;
@@ -75,19 +78,24 @@ body{
   display:flex;
   align-items:center;
   gap:10px;
+  overflow:hidden;
 }
 
 .name{
   font-size:18px;
   font-weight:800;
+  text-shadow:2px 2px 3px #000;
 }
 
-/* 🏆 kupák */
+/* KUPÁK */
 .cup-badge{
-  font-size:12px;
   padding:3px 8px;
   border-radius:8px;
+  font-weight:900;
+  font-size:12px;
   border:2px solid rgba(255,255,255,0.4);
+  box-shadow:0 3px 8px rgba(0,0,0,0.5);
+  white-space:nowrap;
   opacity:1;
   transition:0.2s;
 }
@@ -102,89 +110,147 @@ body{
 .silver{ background:linear-gradient(180deg,#f5f5f5,#bdbdbd,#757575); }
 .bronze{ background:linear-gradient(180deg,#a1887f,#795548,#4e342e); }
 
+/* SCORE */
 .count{
-  text-align:center;
+  font-size:16px;
   font-weight:800;
+  width:80px;
+  text-align:center;
   padding:6px 0;
   border-radius:8px;
 }
 
 .old{ background:rgba(255,255,255,0.25); }
-.total{ background:#4CAF50; }
+.total{ background:#4CAF50; color:#fff; }
 
+/* RIGHT SIDE */
+.rightCol{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+/* RED BUTTON */
+#dontPressBtn{
+  width:300px;
+  height:120px;
+  background:red;
+  color:white;
+  font-size:28px;
+  font-weight:900;
+  border:none;
+  border-radius:20px;
+  cursor:pointer;
+  box-shadow:0 0 25px rgba(255,0,0,0.8);
+  transition:0.2s;
+}
+
+#dontPressBtn:hover{
+  transform:scale(1.05);
+}
+
+#dontPressBtn:active{
+  transform:scale(0.98);
+}
 </style>
 </head>
 
 <body>
 
+<!-- LEADERBOARD -->
 <div class="leaderboard">
   <h2>Flakon Ranglista</h2>
 
   <div class="score-header">
     <div class="header-item">1. forduló</div>
     <div class="header-item">2. forduló</div>
+    <div class="header-item">3. forduló</div>
     <div class="header-item">Összes</div>
   </div>
 
   <div id="leaderboard-content"></div>
 </div>
 
+<!-- RIGHT SIDE -->
+<div class="rightCol">
+  <button id="dontPressBtn">NE NYOMD MEG</button>
+</div>
+
 <script>
 const players = [
-  { name: "On3door", avatar: "onedoor.png", oldScore: 134, newScore: 0, cups: [{type:"gold",count:1}] },
-  { name: "MiszterSusu", avatar: "misztersiba.gif", oldScore: 134, newScore: 52, cups: [{type:"gold",count:1}] },
-  { name: "SusuSzaurusz", avatar: "dinoori.gif", oldScore: 84, newScore: 75, cups: [{type:"bronze",count:1}] },
-  { name: "Spudbay", avatar: "spudbaymaci.gif", oldScore: 98, newScore: 42, cups: [{type:"silver",count:1}] },
-  { name: "MrSusu", avatar: "Mrgrogu.gif", oldScore: 50, newScore: 0, cups: [] }
+  { name:"On3door", avatar:"onedoor.png", round1:134, round2:0, round3:0, cups:[] },
+  { name:"MiszterSusu", avatar:"misztersiba.gif", round1:134, round2:52, round3:0, cups:[] },
+  { name:"SusuSzaurusz", avatar:"dinoori.gif", round1:84, round2:75, round3:0, cups:[] },
+  { name:"Spudbay", avatar:"spudbaymaci.gif", round1:98, round2:42, round3:0, cups:[] },
+  { name:"MrSusu", avatar:"Mrgrogu.gif", round1:50, round2:0, round3:0, cups:[] }
 ];
 
-function getCup(p,type){
-  const c = p.cups.find(x => x.type === type);
+/* 🏆 2. forduló kupa */
+function assignRound2Cups(){
+  const sorted = [...players].sort((a,b)=>b.round2-a.round2);
+
+  players.forEach(p=>p.cups=[]);
+
+  if(sorted[0]) sorted[0].cups.push({type:"gold",count:1});
+  if(sorted[1]) sorted[1].cups.push({type:"silver",count:1});
+}
+assignRound2Cups();
+
+/* kupa szám */
+function getCupCount(player,type){
+  const c = player.cups.find(x=>x.type===type);
   return c ? c.count : 0;
 }
 
+/* leaderboard */
 function updateLeaderboard(){
   const container = document.getElementById("leaderboard-content");
 
   players.sort((a,b)=>
-    (b.oldScore + b.newScore) - (a.oldScore + a.newScore)
+    (b.round1+b.round2+b.round3)-(a.round1+a.round2+a.round3)
   );
 
-  container.innerHTML = "";
+  container.innerHTML="";
 
-  players.forEach(p => {
-
+  players.forEach(p=>{
     container.innerHTML += `
       <div class="row">
-
         <img class="avatar" src="${p.avatar}">
 
         <div class="name-container">
           <div class="name">${p.name}</div>
 
-          <div class="cup-badge gold ${getCup(p,"gold")?"" : "inactive"}">
-            🏆 ${getCup(p,"gold")}
+          <div class="cup-badge gold ${getCupCount(p,"gold")?"":"inactive"}">
+            🏆 x${getCupCount(p,"gold")}
           </div>
 
-          <div class="cup-badge silver ${getCup(p,"silver")?"" : "inactive"}">
-            🥈 ${getCup(p,"silver")}
+          <div class="cup-badge silver ${getCupCount(p,"silver")?"":"inactive"}">
+            🥈 x${getCupCount(p,"silver")}
           </div>
 
-          <div class="cup-badge bronze ${getCup(p,"bronze")?"" : "inactive"}">
-            🥉 ${getCup(p,"bronze")}
+          <div class="cup-badge bronze ${getCupCount(p,"bronze")?"":"inactive"}">
+            🥉 x${getCupCount(p,"bronze")}
           </div>
         </div>
 
-        <div class="count old">${p.oldScore}</div>
-        <div class="count old">${p.newScore}</div>
-        <div class="count total">${p.oldScore + p.newScore}</div>
+        <div class="count old">${p.round1}</div>
+        <div class="count old">${p.round2}</div>
+        <div class="count old">${p.round3}</div>
 
+        <div class="count total">
+          ${p.round1+p.round2+p.round3}
+        </div>
       </div>
     `;
   });
 }
 
 updateLeaderboard();
+
+/* 🔴 gomb */
+document.getElementById("dontPressBtn").onclick = () => {
+  alert("Mondtam hogy NE NYOMD MEG 😄💥");
+};
 </script>
 
 </body>
