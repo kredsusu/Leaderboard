@@ -13,20 +13,21 @@ body{
   display:flex;
   justify-content:center;
   align-items:flex-start;
-  gap:60px;
-  padding-top:40px;
+  gap:40px;
+  padding:40px;
   color:#fff;
 }
 
+/* LEADERBOARD */
 .leaderboard{
-  width:650px;
+  width:700px;
   padding:25px;
   background:url("keret.png") center/cover no-repeat;
   border-radius:25px;
   box-shadow:0 0 30px rgba(0,0,0,.7);
 }
 
-.leaderboard h2{
+h2{
   text-align:center;
   font-size:32px;
   font-weight:800;
@@ -34,34 +35,30 @@ body{
   margin:0 0 15px 0;
 }
 
+/* HEADER */
 .score-header{
-  display:flex;
-  justify-content:flex-end;
+  display:grid;
+  grid-template-columns: 60px 1fr 80px 80px 80px 90px;
   gap:10px;
-  padding-right:14px;
-  margin-bottom:8px;
+  padding:0 14px;
+  margin-bottom:10px;
 }
 
 .header-item{
-  width:80px;
   text-align:center;
   font-size:10px;
   font-weight:bold;
   text-transform:uppercase;
   color:rgba(255,255,255,0.7);
-  line-height:1.2;
 }
 
-#leaderboard-content{
-  display:flex;
-  flex-direction:column;
-}
-
+/* ROW FIX GRID */
 .row{
-  display:flex;
+  display:grid;
+  grid-template-columns: 60px 1fr 80px 80px 80px 90px;
   align-items:center;
-  justify-content:space-between;
-  gap:12px;
+  gap:10px;
+
   background:rgba(0,0,0,.4);
   padding:10px 14px;
   border-radius:18px;
@@ -78,10 +75,10 @@ body{
 }
 
 .name-container{
-  flex:1;
   display:flex;
   align-items:center;
   gap:10px;
+  overflow:hidden;
 }
 
 .name{
@@ -90,35 +87,30 @@ body{
   text-shadow:2px 2px 3px #000;
 }
 
-/* 🏆 KUPÁK */
+/* KUPÁK */
 .cup-badge{
-  padding:4px 10px;
+  padding:3px 8px;
   border-radius:8px;
   font-weight:900;
-  font-size:14px;
+  font-size:12px;
   border:2px solid rgba(255,255,255,0.4);
   box-shadow:0 3px 8px rgba(0,0,0,0.5);
-  margin-left:4px;
+  white-space:nowrap;
   opacity:1;
   transition:0.2s;
 }
 
-/* halvány ha nincs */
+/* ha nincs kupa */
 .cup-badge.inactive{
   opacity:0.25;
   filter: grayscale(1);
 }
 
-.gold{
-  background:linear-gradient(180deg,#ffeb3b,#fbc02d,#f57f17);
-}
-.silver{
-  background:linear-gradient(180deg,#f5f5f5,#bdbdbd,#757575);
-}
-.bronze{
-  background:linear-gradient(180deg,#a1887f,#795548,#4e342e);
-}
+.gold{ background:linear-gradient(180deg,#ffeb3b,#fbc02d,#f57f17); }
+.silver{ background:linear-gradient(180deg,#f5f5f5,#bdbdbd,#757575); }
+.bronze{ background:linear-gradient(180deg,#a1887f,#795548,#4e342e); }
 
+/* SCORE */
 .count{
   font-size:16px;
   font-weight:800;
@@ -131,80 +123,41 @@ body{
 .old{ background:rgba(255,255,255,0.25); }
 .total{ background:#4CAF50; color:#fff; }
 
-.rightCol{ display:flex; flex-direction:column; gap:10px; }
-
-.hud{
-  width:680px;
+/* RIGHT SIDE */
+.rightCol{
   display:flex;
-  justify-content:space-between;
-  font-weight:800;
-  text-shadow:2px 2px 6px #000;
+  flex-direction:column;
+  gap:20px;
 }
 
-.pill{
-  background:rgba(0,0,0,.35);
-  padding:8px 12px;
-  border-radius:999px;
-}
-
-#game{
-  width:680px;
-  height:380px;
-  background:url("jatekhatter.jpg") repeat-x;
-  border-radius:20px;
-  position:relative;
-  overflow:hidden;
-  box-shadow:0 0 20px #000;
-}
-
-#player{
-  position:absolute;
-  left:60px;
-  width:90px;
-  bottom:30px;
-}
-
-.overlay{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:grid;
-  place-items:center;
-}
-
-.modal{
-  background:rgba(0,0,0,.85);
-  padding:20px;
-  border-radius:15px;
-  width:350px;
-  text-align:center;
-}
-
-.modal input{
-  width:80%;
-  padding:10px;
-  border-radius:10px;
-  border:none;
-  margin:10px 0;
-}
-
-.modal button{
-  padding:10px 20px;
-  border-radius:10px;
-  border:none;
-  cursor:pointer;
+/* RED BUTTON */
+#dontPressBtn{
+  width:300px;
+  height:120px;
+  background:red;
+  color:white;
+  font-size:28px;
   font-weight:900;
+  border:none;
+  border-radius:20px;
+  cursor:pointer;
+  box-shadow:0 0 25px rgba(255,0,0,0.8);
+  transition:0.2s;
 }
 
-@media (max-width:1100px){
-  body{flex-direction:column; align-items:center;}
-  .leaderboard,.rightCol,#game{width:95vw;}
+#dontPressBtn:hover{
+  transform:scale(1.05);
+}
+
+#dontPressBtn:active{
+  transform:scale(0.98);
 }
 </style>
 </head>
 
 <body>
 
+<!-- LEADERBOARD -->
 <div class="leaderboard">
   <h2>Flakon Ranglista</h2>
 
@@ -212,39 +165,15 @@ body{
     <div class="header-item">1. forduló</div>
     <div class="header-item">2. forduló</div>
     <div class="header-item">3. forduló</div>
-    <div class="header-item" style="color:#4CAF50;">Összes</div>
+    <div class="header-item">Összes</div>
   </div>
 
   <div id="leaderboard-content"></div>
 </div>
 
+<!-- RIGHT SIDE -->
 <div class="rightCol">
-  <div class="hud">
-    <div class="pill" id="hudPlayer">Játékos: -</div>
-    <div class="pill" id="hudScore">Pont: 0</div>
-    <div class="pill" id="hudBest">Rekord: -</div>
-  </div>
-
-  <div id="game">
-    <img id="player" src="majomka.png">
-
-    <div id="startOverlay" class="overlay">
-      <div class="modal">
-        <h3>Majom Jump</h3>
-        <input id="nameInput" maxlength="15" placeholder="Neved...">
-        <br>
-        <button id="startBtn">START</button>
-      </div>
-    </div>
-
-    <div id="overOverlay" class="overlay" style="display:none;">
-      <div class="modal">
-        <h3>Game Over</h3>
-        <div id="overText"></div>
-        <button id="restartBtn">Újra</button>
-      </div>
-    </div>
-  </div>
+  <button id="dontPressBtn">NE NYOMD MEG</button>
 </div>
 
 <script>
@@ -256,7 +185,7 @@ const players = [
   { name:"MrSusu", avatar:"Mrgrogu.gif", round1:50, round2:0, round3:0, cups:[] }
 ];
 
-/* 🏆 2. forduló kupa kiosztás */
+/* 🏆 2. forduló kupa */
 function assignRound2Cups(){
   const sorted = [...players].sort((a,b)=>b.round2-a.round2);
 
@@ -267,13 +196,13 @@ function assignRound2Cups(){
 }
 assignRound2Cups();
 
-/* 🏆 kupa szám lekérdezés */
+/* kupa szám */
 function getCupCount(player,type){
   const c = player.cups.find(x=>x.type===type);
   return c ? c.count : 0;
 }
 
-/* 📊 leaderboard */
+/* leaderboard */
 function updateLeaderboard(){
   const container = document.getElementById("leaderboard-content");
 
@@ -291,15 +220,15 @@ function updateLeaderboard(){
         <div class="name-container">
           <div class="name">${p.name}</div>
 
-          <div class="cup-badge gold ${getCupCount(p,"gold")?"" : "inactive"}">
+          <div class="cup-badge gold ${getCupCount(p,"gold")?"":"inactive"}">
             🏆 x${getCupCount(p,"gold")}
           </div>
 
-          <div class="cup-badge silver ${getCupCount(p,"silver")?"" : "inactive"}">
+          <div class="cup-badge silver ${getCupCount(p,"silver")?"":"inactive"}">
             🥈 x${getCupCount(p,"silver")}
           </div>
 
-          <div class="cup-badge bronze ${getCupCount(p,"bronze")?"" : "inactive"}">
+          <div class="cup-badge bronze ${getCupCount(p,"bronze")?"":"inactive"}">
             🥉 x${getCupCount(p,"bronze")}
           </div>
         </div>
@@ -317,6 +246,11 @@ function updateLeaderboard(){
 }
 
 updateLeaderboard();
+
+/* 🔴 gomb */
+document.getElementById("dontPressBtn").onclick = () => {
+  alert("Mondtam hogy NE NYOMD MEG 😄💥");
+};
 </script>
 
 </body>
